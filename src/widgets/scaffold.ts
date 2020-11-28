@@ -3,22 +3,22 @@ import { TemplateResult, html } from 'lit-html';
 import { WidgetBuilder } from '../utils/blocs';
 import 'lay-them';
 
-export interface ScaffoldState{
+export interface ScaffoldState {
     showMenu: boolean;
     showSnackbar: boolean;
     snackBarMessage?: string;
 }
 
 export class ScaffoldBloc extends Bloc<ScaffoldState>{
-    constructor(){
+    constructor() {
         super({
             showMenu: false,
             showSnackbar: false
         });
     }
 
-    toggleMenu(){
-        let newState = {...this.state};
+    toggleMenu() {
+        let newState = { ...this.state };
         newState.showMenu = !newState.showMenu;
         this.emit(newState);
     }
@@ -28,24 +28,24 @@ export class ScaffoldBloc extends Bloc<ScaffoldState>{
      * @param message : message
      * @param timeout : in milliseconds
      */
-    postMessageToSnackBar(message: string, timeout: number=2000){
-        let newState = {...this.state};
+    postMessageToSnackBar(message: string, timeout: number = 2000) {
+        let newState = { ...this.state };
         newState.showSnackbar = true;
         newState.snackBarMessage = message;
         this.emit(newState);
-        setTimeout(()=>{
-            let newState = {...this.state};
+        setTimeout(() => {
+            let newState = { ...this.state };
             newState.showSnackbar = false;
             newState.snackBarMessage = undefined;
             this.emit(newState);
-        },timeout);
+        }, timeout);
     }
 }
 
 
-export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc,ScaffoldState>{
-    constructor(){
-        super(ScaffoldBloc,{
+export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
+    constructor() {
+        super(ScaffoldBloc, {
             useThisBloc: new ScaffoldBloc()
         });
     }
@@ -90,21 +90,20 @@ export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc,ScaffoldState>{
 
 }
 
-customElements.define("ut-scaffold",ScaffoldBuilder);
+customElements.define("ut-scaffold", ScaffoldBuilder);
 
-class MenuButton extends WidgetBuilder<ScaffoldBloc,ScaffoldState>{
-    constructor(){
+class MenuButton extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
+    constructor() {
         super(ScaffoldBloc);
+    }
+
+    _animateIcon=()=>{ 
+        //@ts-ignore
+        this.shadowRoot.querySelector("#animateTransform5322").beginElement();
     }
 
     builder(state: ScaffoldState): TemplateResult {
         return html`<svg
-        xmlns:anigen="http://www.anigen.org/namespace"
-        xmlns:dc="http://purl.org/dc/elements/1.1/"
-        xmlns:cc="http://creativecommons.org/ns#"
-        xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-        xmlns:svg="http://www.w3.org/2000/svg"
-        xmlns="http://www.w3.org/2000/svg"
         width="25mm"
         height="25mm"
         viewBox="0 0 25 25"
@@ -112,7 +111,7 @@ class MenuButton extends WidgetBuilder<ScaffoldBloc,ScaffoldState>{
         id="svg845"
         preserveAspectRatio="xMidYMid"
         anigen:version="0.8.1"
-        >
+        @click=${this._animateIcon}>
         <g
             id="icon"
             transform="translate(-1.5748032e-7,1.4999999)"
@@ -158,4 +157,4 @@ class MenuButton extends WidgetBuilder<ScaffoldBloc,ScaffoldState>{
     }
 }
 
-customElements.define("ut-scaffold-menu-button",MenuButton);
+customElements.define("ut-scaffold-menu-button", MenuButton);

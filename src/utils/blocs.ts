@@ -16,7 +16,6 @@ export abstract class WidgetBuilder<B extends Bloc<S>, S> extends BlocBuilder<B,
         this._theme={...theme,...this.useAttribute};
     }
 
-    
     public get theme() : Theme {
         return this._theme;
     }
