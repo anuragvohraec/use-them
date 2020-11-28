@@ -1,6 +1,6 @@
 # \<use-them>
 
-This webcomponent follows the [open-wc](https://github.com/open-wc/open-wc) recommendation.
+A set of Webcomponents to create apps. Seamlessly works with **bloc-them** 
 
 ## Installation
 ```bash

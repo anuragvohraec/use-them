@@ -1,26 +1,4 @@
-import { html, css, LitElement, property } from 'lit-element';
-
-export class UseThem extends LitElement {
-  static styles =css`
-    :host {
-      display: block;
-      padding: 25px;
-      color: var(--use-them-text-color, #000);
-    }
-  `;
-
-  @property({type: String}) title = 'Hey there';
-
-  @property({type: Number}) counter = 5;
-
-  __increment() {
-    this.counter += 1;
-  }
-
-  render() {
-    return html`
-      <h2>${this.title} Nr. ${this.counter}!</h2>
-      <button @click=${this.__increment}>increment</button>
-    `;
-  }
-}
+export * from './widgets/theme.js';
+export * from './widgets/loading-bar.js';
+export * from './utils/blocs.js';
+export * from './widgets/scaffold.js';

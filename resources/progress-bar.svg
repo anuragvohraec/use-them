@@ -1,0 +1,11 @@
+<svg inkscape:version="1.0.1 (0767f8302a, 2020-10-17)" sodipodi:docname="progress-bar.svg" version="1.1" viewBox="0 0 800 50" xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd">
+ <sodipodi:namedview bordercolor="#666666" borderopacity="1.0" inkscape:current-layer="layer1" inkscape:cx="378.97272" inkscape:cy="134.02195" inkscape:document-rotation="0" inkscape:document-units="mm" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-height="1002" inkscape:window-maximized="1" inkscape:window-width="1920" inkscape:window-x="0" inkscape:window-y="0" inkscape:zoom="0.98994949" pagecolor="#ffffff" showgrid="true">
+  <inkscape:grid type="xygrid"/>
+ </sodipodi:namedview>
+ <g inkscape:groupmode="layer" inkscape:label="Layer 1">
+  <g id="progress-bar" stroke-linejoin="round" stroke-opacity=".65882" stroke-width="1.9238">
+   <rect id="base" x="10" y="10" width="780" height="30" fill="#ededed"/>
+   <rect id="progress" x="10" y="10" width="780" height="30" fill="#f00"/>
+  </g>
+ </g>
+</svg>
