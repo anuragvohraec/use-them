@@ -117,21 +117,21 @@ class MenuButton extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
             transform="translate(-1.5748032e-7,1.4999999)"
             onclick="">
             <rect
-            style="fill:#000000;stroke-width:1.92378;stroke-linejoin:round;stroke-opacity:0.658819"
+            style="fill:${this.theme.iconColor};stroke-width:1.92378;stroke-linejoin:round;stroke-opacity:0.658819"
             id="rect835"
             width="15"
             height="2"
             x="5"
             y="5" />
             <rect
-            style="fill:#000000;stroke-width:1.92378;stroke-linejoin:round;stroke-opacity:0.658819"
+            style="fill:${this.theme.iconColor};stroke-width:1.92378;stroke-linejoin:round;stroke-opacity:0.658819"
             id="rect837"
             width="15"
             height="2"
             x="5"
             y="10" />
             <rect
-            style="fill:#000000;stroke-width:1.92378;stroke-linejoin:round;stroke-opacity:0.658819"
+            style="fill:${this.theme.iconColor};stroke-width:1.92378;stroke-linejoin:round;stroke-opacity:0.658819"
             id="rect839"
             width="15"
             height="2"

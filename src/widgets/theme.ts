@@ -6,6 +6,8 @@ export class Theme{
     public primaryColor: string ="#ff2052";
     public secondaryColor: string = "#4e00ec";
 
+    public iconColor: string ="#ffffff";
+
     public backgroundColor: string = "#ededed";
     public cornerRadius : number = 10;
 }
