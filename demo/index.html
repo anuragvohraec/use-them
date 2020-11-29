@@ -16,7 +16,7 @@
 
   <script type="module">
     import { html, render } from 'lit-html';
-    import {ThemeProvider, Theme, ProgressBloc, ProgressBarBuilder} from '../dist/index.js';
+    import {ThemeProvider, Theme, ProgressBloc, ProgressBarBuilder, I18NBlocProvider} from '../dist/index.js';
     
 
     //theme 
@@ -33,6 +33,16 @@
     }
 
     customElements.define("my-app-theme",MyAppThemeProvider);
+
+    class MyI18NProvider extends I18NBlocProvider{
+      constructor(){
+        super({
+          hello: "Halo"
+        })
+      }
+    }
+
+    customElements.define("i18n-provider",MyI18NProvider);
     
     //progress bar example
     class VideoCompressBloc extends ProgressBloc{
@@ -67,14 +77,20 @@
 
     render(
       html`
-        <my-app-theme>
-          <ut-scaffold>
-            <h1 slot="title" style="color: white;">MyApp</h1>
-            <div slot="body">
-                <video-compressor></video-compressor>
-                <video-compressor use="primaryColor: #107fdf; backgroundColor: #df10dc"></video-compressor>
-            </div>
-          </ut-scaffold>
+        <my-app-theme><!--Provides Theme to all components below-->
+
+          <i18n-provider><!--Provides i18n features to all components below-->
+
+            <ut-scaffold><!--Provides is a basic scaffold with menu button and menu layover-->
+              <h1 slot="title" style="color: white;"><ut-h1>hello</ut-h1></h1>
+              <div slot="body">
+                  <video-compressor></video-compressor>
+                  <video-compressor use="primaryColor: #107fdf; backgroundColor: #df10dc"></video-compressor>
+              </div>
+            </ut-scaffold>
+
+          </i18n-provider>
+
         </my-app-theme>
       `,
       document.querySelector('#demo')
