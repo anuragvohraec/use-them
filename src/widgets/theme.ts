@@ -11,6 +11,8 @@ export class Theme{
     public backgroundColor: string = "#ededed";
     public cornerRadius : number = 10;
 
+    public input_bg_color="#0000008c";
+
     public glass_black="#0000008c";
 
     public P_font_size:string = "2em";
