@@ -17,6 +17,8 @@ export class Theme{
     public H1_font_size:string = "4.5em";
     public H5_font_size:string ="1.5em";
     public H6_font_size:string ="1.2em";
+
+    public color: string ="black";
 }
 
 
