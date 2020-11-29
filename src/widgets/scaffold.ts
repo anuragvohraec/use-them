@@ -59,7 +59,11 @@ export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
                 width: 100%;
             }
         </style>
-<lay-them for="scaffold">
+<!-- <lay-them in="stack" ca="stretch">
+            
+            <div>Hello</div>
+</lay-them> -->
+<lay-them for="base of scaffold" ma="flex-start" ca="stretch">
     <div class="appbar">
         <lay-them in="stack">
             <div style="height: 150px; position: fixed; width: 100%">
@@ -79,9 +83,9 @@ export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
             <div style="position: absolute; left : 10px;">
                 <ut-scaffold-menu-button></ut-scaffold-menu-button>
             </div>
-       </lay-them>
+    </lay-them>
     </div>
-    <div class="body">
+    <div class="body" style="flex: 1 1 auto;">
         <slot name="body"></slot>
     </div>
 </lay-them>

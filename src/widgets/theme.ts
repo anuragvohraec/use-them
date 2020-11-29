@@ -37,6 +37,6 @@ export abstract class ThemeProvider extends BlocsProvider{
         (<any>document).useThemTheme=theme;
     }
     builder(): TemplateResult {
-       return html`<div><slot></slot></div>`;
+       return html`<div style="width:100%; height: 100%;"><slot></slot></div>`;
     }
 }
