@@ -37,7 +37,8 @@
     class MyI18NProvider extends I18NBlocProvider{
       constructor(){
         super({
-          hello: "Halo"
+          hello: "Hello",
+          "say-thank-you":"Thank you"
         })
       }
     }
@@ -82,10 +83,16 @@
           <i18n-provider><!--Provides i18n features to all components below-->
 
             <ut-scaffold><!--Provides is a basic scaffold with menu button and menu layover-->
-              <h1 slot="title" style="color: white;"><ut-h1>hello</ut-h1></h1>
+              <div slot="title" style="color: white;"><ut-h1>hello</ut-h1></div>
               <div slot="body">
                   <video-compressor></video-compressor>
                   <video-compressor use="primaryColor: #107fdf; backgroundColor: #df10dc"></video-compressor>
+                  <div><ut-h1>say-thank-you</ut-h1></div>
+                  <div><ut-h2>say-thank-you</ut-h2></div>
+                  <div><ut-h3>say-thank-you</ut-h3></div>
+                  <div><ut-p>say-thank-you</ut-p></div>
+                  <div><ut-h5>say-thank-you</ut-h5></div>
+                  <div><ut-h6>say-thank-you</ut-h6></div>
               </div>
             </ut-scaffold>
 

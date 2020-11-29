@@ -70,13 +70,11 @@ export class UtTextP extends _I18NText{
 
 customElements.define("ut-p", UtTextP);
 
-export class UtTextH1 extends WidgetBuilder<I18NBloc,LanguagePack >{
-    builder(state: LanguagePack): TemplateResult {  
-        return html`<span style="font-size: ${this.theme.H1_font_size}">${state[this.textContent!]}</span>`;
-    }
+export class UtTextH1 extends _I18NText{
     
     constructor(){
-        super(I18NBloc);
+        super();
+        this.font_size= this.theme.H1_font_size;
     }
 }
 
@@ -84,50 +82,42 @@ customElements.define("ut-h1", UtTextH1);
 
 
 
-export class UtTextH2 extends WidgetBuilder<I18NBloc,LanguagePack >{
-    builder(state: LanguagePack): TemplateResult {
-        return html`<span style="font-size: ${this.theme.H2_font_size}">${state[this.textContent!]}</span>`;
-    }
+export class UtTextH2 extends _I18NText{
     
     constructor(){
-        super(I18NBloc);
+        super();
+        this.font_size= this.theme.H2_font_size;
     }
 }
 
 customElements.define("ut-h2", UtTextH2);
 
-export class UtTextH3 extends WidgetBuilder<I18NBloc,LanguagePack >{
-    builder(state: LanguagePack): TemplateResult {
-        return html`<span style="font-size: ${this.theme.H3_font_size}">${state[this.textContent!]}</span>`;
-    }
+export class UtTextH3 extends _I18NText{
     
     constructor(){
-        super(I18NBloc);
+        super();
+        this.font_size= this.theme.H3_font_size;
     }
 }
 
 customElements.define("ut-h3", UtTextH3);
 
 
-export class UtTextH5 extends WidgetBuilder<I18NBloc,LanguagePack >{
-    builder(state: LanguagePack): TemplateResult {
-        return html`<span style="font-size: ${this.theme.H5_font_size}">${state[this.textContent!]}</span>`;
-    }
+export class UtTextH5 extends _I18NText{
     
     constructor(){
-        super(I18NBloc);
+        super();
+        this.font_size= this.theme.H5_font_size;
     }
 }
 
 customElements.define("ut-h5", UtTextH5);
 
-export class UtTextH6 extends WidgetBuilder<I18NBloc,LanguagePack >{
-    builder(state: LanguagePack): TemplateResult {
-        return html`<span style="font-size: ${this.theme.H6_font_size}">${state[this.textContent!]}</span>`;
-    }
+export class UtTextH6 extends _I18NText{
     
     constructor(){
-        super(I18NBloc);
+        super();
+        this.font_size= this.theme.H6_font_size;
     }
 }
 

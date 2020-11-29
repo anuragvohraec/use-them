@@ -11,12 +11,12 @@ export class Theme{
     public backgroundColor: string = "#ededed";
     public cornerRadius : number = 10;
 
-    public P_font_size:string = "1em";
-    public H3_font_size:string = "1.4em";
-    public H2_font_size:string="1.7em";
-    public H1_font_size:string = "2em";
-    public H5_font_size:string ="0.8em";
-    public H6_font_size:string ="0.5em";
+    public P_font_size:string = "2em";
+    public H3_font_size:string = "2.5em";
+    public H2_font_size:string="3.5em";
+    public H1_font_size:string = "5em";
+    public H5_font_size:string ="1.5em";
+    public H6_font_size:string ="1.2em";
 }
 
 
