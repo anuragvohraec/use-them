@@ -129,7 +129,7 @@ class MenuButton extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
     }
 
     toggleMenuBar=()=>{
-        this.bloc?.toggleMenu();
+        setTimeout(()=>{this.bloc?.toggleMenu();},300);
         //@ts-ignore
         this.shadowRoot.querySelector("#animateTransform5322").beginElement();
     }
