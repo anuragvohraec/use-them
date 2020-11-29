@@ -95,7 +95,7 @@ export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
                         </div>
                 </lay-them>
                 </div>
-                <div class="body" style="flex: 1 1 auto;">
+                <div class="body" style="flex: 1 1 auto; overflow-y: auto;">
                     <slot name="body"></slot>
                 </div>
             </lay-them>
