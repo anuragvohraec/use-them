@@ -14,7 +14,7 @@ export class Theme{
     public P_font_size:string = "2em";
     public H3_font_size:string = "2.5em";
     public H2_font_size:string="3.5em";
-    public H1_font_size:string = "5em";
+    public H1_font_size:string = "4.5em";
     public H5_font_size:string ="1.5em";
     public H6_font_size:string ="1.2em";
 }
