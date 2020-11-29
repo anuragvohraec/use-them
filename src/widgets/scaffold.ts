@@ -61,6 +61,7 @@ export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
             .appbar {
                 height: 150px;
                 width: 100%;
+                box-shadow: 0px 2px 10px black;
             }
             .expanded{
                 width:100%; 
