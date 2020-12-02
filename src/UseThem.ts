@@ -4,3 +4,6 @@ export * from './utils/blocs.js';
 export * from './widgets/scaffold.js';
 export * from './widgets/text.js';
 export * from './widgets/containers.js';
+export * from './widgets/forms.js';
+export * from './widgets/inputs/togglebutton.js';
+export * from './widgets/test.js';

@@ -1,5 +1,6 @@
 import { WidgetBuilder } from '../utils/blocs';
 import { Bloc, BlocType } from 'bloc-them';
+import { TemplateResult, html } from 'lit-html';
 
 /**
  * Have to support
@@ -11,10 +12,15 @@ import { Bloc, BlocType } from 'bloc-them';
  /**
   * This class is used to provide logi to input builders, as input builders will not be extensible, so we need to provide this logic to them.
   */
-export abstract class FormInput<V>{
-    constructor(private _value:V){}
+export abstract class FormInput<S, V>{
+    constructor(private _value:V, private _formBloc: FormBloc<S>){}
 
     
+    public get formBloc() : FormBloc<S> {
+        return this._formBloc;
+    }
+    
+
     public get value() : V {
         return this._value;
     }
@@ -46,23 +52,19 @@ export enum FormStatus{
     SUBMISSION_SUCCEEDED,
 }
 
-export class Message{
-    constructor(public forInputId:string, public message: string){}
-}
-
 interface MessageRegistry{
-    [key:string]:Message;
+    [key:string]:string;
 }
 
-export class FormState{
-    constructor(public formStatus: FormStatus, public messages:MessageRegistry={}){}
+export class FormState<S>{
+    constructor(public data:S, public formStatus: FormStatus, public messages:MessageRegistry={}){}
 }
 
-export abstract class FormBloc extends Bloc<FormState>{
-        private _activeFormInputRegistry:{[key:string]:FormInput<any>}={};
+export abstract class FormBloc<S> extends Bloc<FormState<S>>{
+        private _activeFormInputRegistry:{[key:string]:FormInput<S,any>}={};
 
-        constructor(){
-            super(new FormState(FormStatus.PURE));
+        constructor(initState: S){
+            super(new FormState(initState,FormStatus.PURE));
         }
 
         /**
@@ -70,9 +72,9 @@ export abstract class FormBloc extends Bloc<FormState>{
          * should return new object every time.
          * @param nameOfInput 
          */
-        abstract getFormInputForName(nameOfInput: string):FormInput<any>;
+        abstract getFormInputForName(nameOfInput: string):FormInput<S,any>|undefined;
 
-        _subscribe=(nameOfInput: string):FormInput<any>=>{
+        _subscribe=(nameOfInput: string):FormInput<S,any>=>{
             let t = this.getFormInputForName(nameOfInput);
             if(!t){
                 throw `No FormInput found for ${nameOfInput}`;
@@ -90,18 +92,18 @@ export abstract class FormBloc extends Bloc<FormState>{
         }
 
 
-        _validate=()=>{
+        validate=()=>{
             let msgs: MessageRegistry = {};
             let formStatus = FormStatus.VALID;
             for(let i of Object.keys(this._activeFormInputRegistry)){
-                let s = this._activeFormInputRegistry[i].validate();
-                if(s){
+                let m = this._activeFormInputRegistry[i].validate();
+                if(m){
                     formStatus=FormStatus.INVALID;
-                    msgs[i]=new Message(i,s);
+                    msgs[i]=m;
                 }
             }
             if(formStatus===FormStatus.INVALID){
-                this.emit(new FormState(formStatus, msgs));
+                this.emit(new FormState<S>(this.state.data,formStatus, msgs));
             }
         }
 }
@@ -110,11 +112,11 @@ export abstract class FormBloc extends Bloc<FormState>{
 /**
  * Always provide a name attribute on FormInputBuilder
  */
-export abstract class FormInputBuilder<V> extends WidgetBuilder<FormBloc,FormState>{
+export abstract class FormInputBuilder<S,V> extends WidgetBuilder<FormBloc<S>,FormState<S>>{
     private _name?: string;
-    private _formInput?: FormInput<V>;
+    private _formInput?: FormInput<S,V>;
 
-    constructor(private type: BlocType<FormState>){
+    constructor(type: BlocType<FormState<S>>){
         super(type);
         let t = this.getAttribute("name");
         if(t){
@@ -137,11 +139,33 @@ export abstract class FormInputBuilder<V> extends WidgetBuilder<FormBloc,FormSta
     /**
      * use this to use onchange and validation logic
      */
-    public get formInput() : FormInput<V> {
+    public get formInput() : FormInput<S,V> {
         return this._formInput!;
     }
-    
 
 }
 
-//TODO Message builder to 
+/**
+ * Extend and only pass bloc type to constructor. and html tag pass for attribute
+ */
+export abstract class ErrorMessageBuilder<S,V>  extends WidgetBuilder<FormBloc<S>,FormState<S>>{
+    private _msg? : string;
+
+    builder(state: FormState<S>): TemplateResult {
+        return html`<span>${this._msg}</span>`;
+    }
+    
+    constructor(type: BlocType<FormState<S>>){
+        super(type,{
+            buildWhen:(p,n)=>{
+                let t = this.getAttribute("for");
+                if(p!==n && t && n.messages[t]){
+                    this._msg = n.messages[t];
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+}
+
