@@ -51,18 +51,18 @@ export class ToggleButton<F extends FormBloc> extends FormInputBuilder<boolean, 
   </defs>
   <g id="base-animation">
     <rect id="toggle-button-base" x="3.6e-07" y="1.3968" width="167.37" height="83.685997" rx="39.641998" ry="41.841999" fill="${this.theme.input_bg_color}" stroke-linejoin="round" stroke-opacity="0.65882" stroke-width="0.42366">
-      <animate attributeType="auto" attributeName="fill" values="${this.theme.input_bg_color};${this.theme.primaryColor}" calcMode="spline" keyTimes="0;1" keySplines="0 0 1 1" dur="0.3s" begin="indefinite" 
+      <animate attributeType="auto" attributeName="fill" values="${this.theme.input_bg_color};${this.theme.primaryColor}" calcMode="spline" keyTimes="0;1" keySplines="0 0 1 1" dur="0.2s" begin="indefinite" 
       repeatCount="1" additive="replace" accumulate="none" fill="freeze" id="on_switch_color"></animate>
-      <animate attributeType="auto" attributeName="fill" values="${this.theme.primaryColor};${this.theme.input_bg_color}" calcMode="spline" keyTimes="0;1" keySplines="0 0 1 1" dur="0.3s" begin="indefinite" 
+      <animate attributeType="auto" attributeName="fill" values="${this.theme.primaryColor};${this.theme.input_bg_color}" calcMode="spline" keyTimes="0;1" keySplines="0 0 1 1" dur="0.2s" begin="indefinite" 
       repeatCount="1" additive="replace" accumulate="none" fill="freeze" id="off_switch_color"></animate>
     </rect>
   </g>
   <g id="switch-animation">
     <circle id="switch" transform="matrix(0.28025,0,0,0.28025,53.809,1.3968)" cx="250.24001" cy="148.7" r="128.07001" fill="#ffffff" filter="url(#filter915)" stroke-linejoin="round" stroke-opacity="0.65882" stroke-width="2.0532"></circle>
   <animateTransform attributeName="transform" attributeType="auto" type="translate" values="0 0;-81.68950659534471 0" calcMode="spline" keyTimes="0;1" 
-  keySplines="0 0 1 1" dur="0.3s" begin="indefinite" repeatCount="1" additive="replace" accumulate="none" fill="freeze" id="on_base_move"></animateTransform>
+  keySplines="0 0 1 1" dur="0.2s" begin="indefinite" repeatCount="1" additive="replace" accumulate="none" fill="freeze" id="on_base_move"></animateTransform>
   <animateTransform attributeName="transform" attributeType="auto" type="translate" values="0 0;81.68950659534471 0" calcMode="spline" keyTimes="0;1" 
-  keySplines="0 0 1 1" dur="0.3s" begin="indefinite" repeatCount="1" additive="sum" accumulate="none" fill="freeze" id="off_base_move"></animateTransform>
+  keySplines="0 0 1 1" dur="0.2s" begin="indefinite" repeatCount="1" additive="sum" accumulate="none" fill="freeze" id="off_base_move"></animateTransform>
   </g>
 </svg>
         `;

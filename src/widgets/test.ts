@@ -2,12 +2,14 @@ import { FormBloc, ValidatorFunction, FormBlocProvider } from './forms';
 import { ToggleButton } from './inputs/togglebutton';
 import { BlocsProvider } from 'bloc-them';
 import { TemplateResult } from 'lit-html';
+import { RangeSelector, Range } from './inputs/rangeselector';
 
 
 export class MyFormBloc extends FormBloc{
     constructor(){
         super({
-            userChoice: true
+            userChoice: true,
+            priceRange: {start: 10, end: 30}
         });
     }
 
@@ -17,6 +19,12 @@ export class MyFormBloc extends FormBloc{
                 return (newValue:boolean)=>{
                     if(newValue === undefined){
                         return 'value for userChoice cannot be undefined';
+                    }
+                }
+            case 'priceRange':
+                return (newValue: Range)=>{
+                    if(newValue ==undefined){
+                        return `value canno eb null for priceRange`;
                     }
                 }
             default:
@@ -41,3 +49,12 @@ export class MyForm extends FormBlocProvider<MyFormBloc>{
 }
 
 customElements.define("my-form", MyForm);
+
+
+export class PriceRange extends RangeSelector<MyFormBloc>{
+    constructor(){
+        super(MyFormBloc)
+    }
+}
+
+customElements.define("price-range", PriceRange);
