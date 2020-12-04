@@ -11,8 +11,29 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
     private max:number;
     private min:number;
     private isint:boolean;
-    private start:number;
-    private end: number;
+    private start?:number;
+    private end?: number;
+
+    private start_drag_on: boolean=false;
+
+    _drag_on(e:Event){
+       console.log("ON");
+       
+      this.start_drag_on=true;
+    }
+
+    _drag_off(e:Event){
+      console.log("Off");
+       this.start_drag_on=false;
+    }
+
+    _drag(e: Event){
+       if(this.start_drag_on){
+         console.log(e);
+      }else{
+         console.log("no drag on");
+      }
+    }
     
     builder(state: FormState): TemplateResult {
         return html`
@@ -149,6 +170,9 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
        cx="calc(0% + 30)"
        cy="60"
        r="30"
+       @touchstart=${this._drag_on}
+       @touchend=${this._drag_off}
+       @touchmove=${this._drag}
        />
     <circle
        style="fill:${this.theme.primaryColor};cursor: move;fill-opacity:1;filter:url(#filter1261);stroke:#ffffff;stroke-miterlimit:4;stroke-dasharray:none"
@@ -165,19 +189,41 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
         super(type);
         let max = this.getAttribute("max");
         let min = this.getAttribute("min");
-        let start = this.getAttribute("start");
-        let end = this.getAttribute("end");
-        
-        if(!(max && min && start && end)){
-            throw `Not all attributes provided for a range selector: min, max, start and end`;
+
+        if(!(max && min)){
+            throw `Not all attributes provided for a range selector: min and max`;
         }else{
             this.max = Number(max);
             this.min = Number(min);
-            this.start = Number(start);
-            this.end = Number(end);
         }
         
         let isint = this.getAttribute("isint");
         this.isint = isint?true:false;
     }
+
+    connectedCallback(){
+       super.connectedCallback();
+       this.start = this.bloc?.state.priceRange.start;
+       this.end = this.bloc?.state.priceRange.end;
+         if(!(this.start ==0 ||(this.start && this.start>=0) && this.end ==0 || (this.end && this.end>=0))){
+            throw `No start and end provided for range selector in form initialization for : ${this.name}`
+         }
+
+         if(this.start! > this.end!){
+            throw `For a range selector start cannot be less then end value, please check initialization of rang selector: ${this.name}`;
+         }
+         
+         this.setStartReading(this.start!);
+         this.setEndReading(this.end!);
+    }
+
+    private setStartReading(percentage: number){
+       this.shadowRoot?.querySelector("#start-handle")?.setAttribute("cx",`calc(${percentage}% + 30)`);
+       this.shadowRoot?.querySelector("#active-range")?.setAttribute("x",`calc(${percentage}%)`);
+    }
+
+    private setEndReading(percentage: number){
+      this.shadowRoot?.querySelector("#end-handle")?.setAttribute("cx",`calc(${percentage}% - 30)`);
+      this.shadowRoot?.querySelector("#active-range")?.setAttribute("width",`calc(${percentage-this.start!}%)`);
+   }
 }
