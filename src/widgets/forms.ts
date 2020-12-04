@@ -51,8 +51,8 @@ import { TemplateResult, html } from 'lit-html';
  }
 
  export abstract class FormInputBuilder<V, F extends FormBloc> extends WidgetBuilder<F,FormState>{
-     private onChange?:OnChangeFunction<V>;
-     private validator?:ValidatorFunction<V>;
+     protected onChange?:OnChangeFunction<V>;
+     protected validator?:ValidatorFunction<V>;
      private name?:string;
      private messageBloc?: FormMessageBloc;
 
