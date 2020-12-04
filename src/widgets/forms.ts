@@ -1,171 +1,127 @@
+/**
+ * Inputs must be unware of form existense.
+ */
+
+import { Bloc, BlocType, BlocsProvider } from 'bloc-them'
 import { WidgetBuilder } from '../utils/blocs';
-import { Bloc, BlocType } from 'bloc-them';
 import { TemplateResult, html } from 'lit-html';
 
-/**
- * Have to support
- * input disable/enable
- * on error.
- * on focus
- */
+ export interface FormState{
+     [key:string]:any;
+ }
 
- /**
-  * This class is used to provide logi to input builders, as input builders will not be extensible, so we need to provide this logic to them.
-  */
-export abstract class FormInput<S, V>{
-    constructor(private _value:V, private _formBloc: FormBloc<S>){}
+ export interface ValidatorFunction<V>{
+     (currentValue: V):string|undefined;
+ }
 
-    
-    public get formBloc() : FormBloc<S> {
-        return this._formBloc;
+ export interface OnChangeFunction<V>{
+     (currentValue:V):void;
+ }
+
+
+ export interface FormMessageState{
+     [key:string]: string;
+ }
+
+ export class FormMessageBloc extends Bloc<FormMessageState>{
+     constructor(){
+         super({});
+     }
+
+     postMessage(nameOfInput: string, msg: string){
+         this.state[nameOfInput]=msg;
+         this.emit({...this.state});
+     }
+ }
+
+ export abstract class FormBloc extends Bloc<FormState>{
+
+    constructor(initState: FormState){
+        super(initState);
     }
-    
 
-    public get value() : V {
-        return this._value;
+    onChangeFunctionGiver(nameOfInput:string):OnChangeFunction<any>|undefined{
+        return (newValue: any)=>{
+            this.state[nameOfInput]=newValue;
+            this.emit({...this.state});
+        }
     }
-    
-    
-    public set value(v : V) {
-        this._value = v;
-        this.onchange?.(v);
-    }
-    
-    /**
-     * Any on change action that need to be performed, like some checks or validation
-     * @param newValue 
-     */
-    abstract onchange(newValue: V):void;
 
-    /**
-     * The validation function to be used by the form to validate the form, before submit.
-     */
-    abstract validate():string|undefined;
-}
+    abstract validatorFunctionGiver(nameOfInput: string): ValidatorFunction<any>|undefined
+ }
 
-export enum FormStatus{
-    PURE,
-    VALID,
-    INVALID,
-    SUBMISSION_FAILED,
-    SUBMISSION_IN_PROGRESS,
-    SUBMISSION_SUCCEEDED,
-}
+ export abstract class FormInputBuilder<V, F extends FormBloc> extends WidgetBuilder<F,FormState>{
+     private onChange?:OnChangeFunction<V>;
+     private validator?:ValidatorFunction<V>;
+     private name?:string;
+     private messageBloc?: FormMessageBloc;
 
-interface MessageRegistry{
-    [key:string]:string;
-}
+     constructor( private type:BlocType<F,FormState>){
+         super(type);
+         let t1 = this.getAttribute("name");
+         if(t1){
+             this.name = t1;
+         }else{
+             throw `Every form Input Widget must be given a name attribute.`
+         }
+     }
 
-export class FormState<S>{
-    constructor(public data:S, public formStatus: FormStatus, public messages:MessageRegistry={}){}
-}
-
-export abstract class FormBloc<S> extends Bloc<FormState<S>>{
-        private _activeFormInputRegistry:{[key:string]:FormInput<S,any>}={};
-
-        constructor(initState: S){
-            super(new FormState(initState,FormStatus.PURE));
-        }
-
-        /**
-         * this one maps a form input for a give input id (name attribute of the input builders)
-         * should return new object every time.
-         * @param nameOfInput 
-         */
-        abstract getFormInputForName(nameOfInput: string):FormInput<S,any>|undefined;
-
-        _subscribe=(nameOfInput: string):FormInput<S,any>=>{
-            let t = this.getFormInputForName(nameOfInput);
-            if(!t){
-                throw `No FormInput found for ${nameOfInput}`;
-            }else{
-                this._activeFormInputRegistry[nameOfInput]=t;
-                return t;
-            }
-        }
-
-        _unsubscribe=(nameOfInput: string)=>{
-            let t = this._activeFormInputRegistry[nameOfInput];
-            if(t){
-                delete this._activeFormInputRegistry[nameOfInput];
-            }
-        }
-
-
-        validate=()=>{
-            let msgs: MessageRegistry = {};
-            let formStatus = FormStatus.VALID;
-            for(let i of Object.keys(this._activeFormInputRegistry)){
-                let m = this._activeFormInputRegistry[i].validate();
-                if(m){
-                    formStatus=FormStatus.INVALID;
-                    msgs[i]=m;
+     connectedCallback(){
+         super.connectedCallback();
+         this.messageBloc=BlocsProvider.of(FormMessageBloc,this);
+         this.validator = this.bloc?.validatorFunctionGiver(this.name!);
+         let t1 = this.bloc?.onChangeFunctionGiver(this.name!);
+         if(t1){
+            this.onChange = (newValue:V)=>{
+                t1!(newValue);
+                if(this.validator){
+                    let t2 = this.validator(newValue);
+                    if(t2){
+                        this.messageBloc?.postMessage(this.name!,t2);
+                    }
                 }
             }
-            if(formStatus===FormStatus.INVALID){
-                this.emit(new FormState<S>(this.state.data,formStatus, msgs));
-            }
-        }
-}
+         }
+     }
+ }
+
+ export class MessageBuilder extends WidgetBuilder<FormMessageBloc,FormMessageState>{
+     private name?: string;
+
+     constructor(){
+         super(FormMessageBloc, {
+             buildWhen:(p,n)=>{
+                 let t = this.getAttribute("for");
+                 if(t){
+                    if(n[t]){
+                        this.name = n[t];
+                        return true;
+                    }else{
+                        return false;
+                    }
+                 }else{
+                     throw `No for attribute present on Message`;
+                 }
+             }
+         });
+     }
+
+     builder(state: FormMessageState): TemplateResult {
+         return html`<span>${this.name}</span>`;
+     }
+
+ }
 
 
-/**
- * Always provide a name attribute on FormInputBuilder
- */
-export abstract class FormInputBuilder<S,V> extends WidgetBuilder<FormBloc<S>,FormState<S>>{
-    private _name?: string;
-    private _formInput?: FormInput<S,V>;
+ export class FormBlocProvider<F extends FormBloc> extends BlocsProvider{
+     builder(): TemplateResult {
+         return html`<div><slot></slot></div>`;
+     }
 
-    constructor(type: BlocType<FormState<S>>){
-        super(type);
-        let t = this.getAttribute("name");
-        if(t){
-            this._name = t;
-        }else{
-            throw "no name attribute provided for the FormInputBuilder";
-        }
-    }
-
-    disconnectedCallback(){
-        super.disconnectedCallback();
-        this.bloc?._unsubscribe(this._name!);
-    }
-
-    connectedCallback(){
-        super.connectedCallback();
-        this._formInput = this.bloc?._subscribe(this._name!);
-    }
-
-    /**
-     * use this to use onchange and validation logic
-     */
-    public get formInput() : FormInput<S,V> {
-        return this._formInput!;
-    }
-
-}
-
-/**
- * Extend and only pass bloc type to constructor. and html tag pass for attribute
- */
-export abstract class ErrorMessageBuilder<S,V>  extends WidgetBuilder<FormBloc<S>,FormState<S>>{
-    private _msg? : string;
-
-    builder(state: FormState<S>): TemplateResult {
-        return html`<span>${this._msg}</span>`;
-    }
-    
-    constructor(type: BlocType<FormState<S>>){
-        super(type,{
-            buildWhen:(p,n)=>{
-                let t = this.getAttribute("for");
-                if(p!==n && t && n.messages[t]){
-                    this._msg = n.messages[t];
-                    return true;
-                }
-                return false;
-            }
-        });
-    }
-}
-
+     constructor(formBloc: F){
+         super([
+             new FormMessageBloc(),
+             formBloc
+         ]);
+     }
+ }

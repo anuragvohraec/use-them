@@ -10,7 +10,7 @@ export class BogusBloc extends Bloc<number>{
 export abstract class WidgetBuilder<B extends Bloc<S>, S> extends BlocBuilder<B,S>{
     private _theme : Theme;
     
-    constructor(blocType: BlocType<S>, configs?: BlocBuilderConfig<B, S>){
+    constructor(blocType: BlocType<B,S>, configs?: BlocBuilderConfig<B, S>){
         super(blocType, configs);
         let theme: Theme = (<any>document).useThemTheme; 
         this._theme={...theme,...this.useAttribute};

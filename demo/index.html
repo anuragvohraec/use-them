@@ -18,7 +18,7 @@
 
   <script type="module">
     import { html, render } from 'lit-html';
-    import {ThemeProvider, Theme, ProgressBloc, ProgressBarBuilder, I18NBlocProvider, FormBloc, FormInput} from '../dist/index.js';
+    import {ThemeProvider, Theme, ProgressBloc, ProgressBarBuilder, I18NBlocProvider, FormBloc} from '../dist/index.js';
     
 
     //theme 
@@ -89,7 +89,9 @@
             <ut-scaffold><!--Provides is a basic scaffold with menu button and menu layover-->
               <div slot="title"><ut-h1 use="color: white">hello</ut-h1></div>
               <div slot="body" style="height: 100%">
-                
+                  <my-form>
+                    <my-toggle-button name="userChoice"></my-toggle-button>
+                  </my-form>
                   <video-compressor></video-compressor>
                   <video-compressor use="primaryColor: #107fdf; backgroundColor: #df10dc"></video-compressor>
                   <div><ut-h1 use="color: red;">say-thank-you</ut-h1></div>

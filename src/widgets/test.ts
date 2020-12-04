@@ -1,51 +1,43 @@
-import { FormInput, FormBloc } from "./forms";
+import { FormBloc, ValidatorFunction, FormBlocProvider } from './forms';
 import { ToggleButton } from './inputs/togglebutton';
-import { BlocsProvider, BlocBuilder } from 'bloc-them';
+import { BlocsProvider } from 'bloc-them';
 import { TemplateResult } from 'lit-html';
 
 
-export interface MyFormState{
-    isOK: boolean;
-}
-
-export class MyToggleButtonInput extends FormInput<MyFormState, boolean>{
-    onchange(newValue: boolean): void {
-        throw new Error("Method not implemented.");
-    }
-    validate(): string | undefined {
-        throw new Error("Method not implemented.");
-    }
-}
-
-export class MyFormBloc extends FormBloc<MyFormState>{
+export class MyFormBloc extends FormBloc{
     constructor(){
         super({
-            isOK:false
-        })
+            userChoice: true
+        });
     }
-    getFormInputForName(nameOfInput: string): FormInput<MyFormState, any>|undefined {
-        if(name==="mytooglebutton")   {
-            return new MyToggleButtonInput(false, this);
+
+    validatorFunctionGiver(nameOfInput: string): ValidatorFunction<any> | undefined {
+        switch (nameOfInput) {
+            case 'userChoice':
+                return (newValue:boolean)=>{
+                    if(newValue === undefined){
+                        return 'value for userChoice cannot be undefined';
+                    }
+                }
+            default:
+                break;
         }
     }
+
 }
 
-export class MySwitch extends ToggleButton<MyFormState>{
+export class MyToggleButton extends ToggleButton<MyFormBloc>{
     constructor(){
-        super(MyFormBloc)
+        super(MyFormBloc);
     }
 }
 
-customElements.define("my-toggle-switch",MySwitch);
+customElements.define("my-toggle-button", MyToggleButton);
 
-export class MyFormBuilder extends BlocBuilder<MyFormBloc,MyFormState>{
+export class MyForm extends FormBlocProvider<MyFormBloc>{
     constructor(){
-        super(MyFormBloc,{
-            useThisBloc: new MyFormBloc()
-        })
+        super(new MyFormBloc())
     }
-    builder(state: MyFormState): TemplateResult {
-        throw new Error("Method not implemented.");
-    }
-
 }
+
+customElements.define("my-form", MyForm);
