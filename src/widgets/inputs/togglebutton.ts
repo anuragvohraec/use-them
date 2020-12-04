@@ -30,7 +30,6 @@ export class ToggleButton<F extends FormBloc> extends FormInputBuilder<boolean, 
 
     builder(state: FormState): TemplateResult {
         return html`
-<div>
 <svg @click=${this.toggle}
  xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
  xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" 
@@ -51,10 +50,10 @@ export class ToggleButton<F extends FormBloc> extends FormInputBuilder<boolean, 
     </filter>
   </defs>
   <g id="base-animation">
-    <rect id="toggle-button-base" x="3.6e-07" y="1.3968" width="167.37" height="83.685997" rx="39.641998" ry="41.841999" fill="#cccccc" stroke-linejoin="round" stroke-opacity="0.65882" stroke-width="0.42366">
-      <animate attributeType="auto" attributeName="fill" values="#cccccc;#00a6ff" calcMode="spline" keyTimes="0;1" keySplines="0 0 1 1" dur="0.3s" begin="indefinite" 
+    <rect id="toggle-button-base" x="3.6e-07" y="1.3968" width="167.37" height="83.685997" rx="39.641998" ry="41.841999" fill="${this.theme.input_bg_color}" stroke-linejoin="round" stroke-opacity="0.65882" stroke-width="0.42366">
+      <animate attributeType="auto" attributeName="fill" values="${this.theme.input_bg_color};${this.theme.primaryColor}" calcMode="spline" keyTimes="0;1" keySplines="0 0 1 1" dur="0.3s" begin="indefinite" 
       repeatCount="1" additive="replace" accumulate="none" fill="freeze" id="on_switch_color"></animate>
-      <animate attributeType="auto" attributeName="fill" values="#00a6ff;#cccccc" calcMode="spline" keyTimes="0;1" keySplines="0 0 1 1" dur="0.3s" begin="indefinite" 
+      <animate attributeType="auto" attributeName="fill" values="${this.theme.primaryColor};${this.theme.input_bg_color}" calcMode="spline" keyTimes="0;1" keySplines="0 0 1 1" dur="0.3s" begin="indefinite" 
       repeatCount="1" additive="replace" accumulate="none" fill="freeze" id="off_switch_color"></animate>
     </rect>
   </g>
@@ -66,7 +65,6 @@ export class ToggleButton<F extends FormBloc> extends FormInputBuilder<boolean, 
   keySplines="0 0 1 1" dur="0.3s" begin="indefinite" repeatCount="1" additive="sum" accumulate="none" fill="freeze" id="off_base_move"></animateTransform>
   </g>
 </svg>
- </div>
         `;
     }
     constructor(type: BlocType<F,FormState>){
