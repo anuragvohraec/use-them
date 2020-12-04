@@ -8,6 +8,12 @@ export interface Range{
 }
 
 export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>{
+    private max:number;
+    private min:number;
+    private isint:boolean;
+    private start:number;
+    private end: number;
+    
     builder(state: FormState): TemplateResult {
         return html`
 <svg
@@ -70,7 +76,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
        id="linearGradient1199"
        x1="13.141692"
        y1="15.874999"
-       x2="198.12952"
+       x2="500"
        y2="15.874999"
        gradientUnits="userSpaceOnUse" />
     <filter
@@ -125,29 +131,29 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
      id="layer1">
     <rect
        style="fill:${this.theme.input_bg_color};fill-opacity:0.54902;stroke-width:0.477727;stroke-linejoin:round;stroke-opacity:0.658819"
-       id="rect879"
+       id="base"
        width="100%"
        height="15"
        x="0"
        y="50" />
     <rect
        style="fill:url(#linearGradient1199);fill-opacity:1;stroke-width:0.477727;stroke-linejoin:round;stroke-opacity:0.658819"
-       id="rect1191"
+       id="active-range"
        width="100%"
        height="15"
        x="0"
        y="50" />
     <circle
-       style="fill:${this.theme.secondaryColor};fill-opacity:1;filter:url(#filter1261);stroke:#ffffff;stroke-miterlimit:4;stroke-dasharray:none"
-       id="path881"
-       cx="30"
+       style="fill:${this.theme.secondaryColor};cursor: move;fill-opacity:1;filter:url(#filter1261);stroke:#ffffff;stroke-miterlimit:4;stroke-dasharray:none"
+       id="start-handle"
+       cx="calc(0% + 30)"
        cy="60"
        r="30"
        />
     <circle
-       style="fill:${this.theme.primaryColor};fill-opacity:1;filter:url(#filter1261);stroke:#ffffff;stroke-miterlimit:4;stroke-dasharray:none"
-       id="circle1263"
-       cx="calc(100% - 30px)"
+       style="fill:${this.theme.primaryColor};cursor: move;fill-opacity:1;filter:url(#filter1261);stroke:#ffffff;stroke-miterlimit:4;stroke-dasharray:none"
+       id="end-handle"
+       cx="calc(100% - 30)"
        cy="60"
        r="30"/>
   </g>
@@ -157,5 +163,21 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
 
     constructor(type: BlocType<F,FormState>){
         super(type);
+        let max = this.getAttribute("max");
+        let min = this.getAttribute("min");
+        let start = this.getAttribute("start");
+        let end = this.getAttribute("end");
+        
+        if(!(max && min && start && end)){
+            throw `Not all attributes provided for a range selector: min, max, start and end`;
+        }else{
+            this.max = Number(max);
+            this.min = Number(min);
+            this.start = Number(start);
+            this.end = Number(end);
+        }
+        
+        let isint = this.getAttribute("isint");
+        this.isint = isint?true:false;
     }
 }
