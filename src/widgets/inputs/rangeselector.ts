@@ -186,7 +186,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
 
    _start_drag=(e: TouchEvent)=>{
       if(this.start_drag_on){
-        let p = this.calculatePercentage(e);
+        let p = this.calculatePercentageForStart(e);
         this.setStartReading(p);
      }else{
         console.log("no drag on");
@@ -199,9 +199,16 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
       passive: true
    }
 
-   private calculatePercentage = (e:TouchEvent):number=>{
+   private calculatePercentageForStart = (e:TouchEvent):number=>{
       let posX = e.changedTouches[0].clientX;
-      return (posX-this.left!)*100/this.width!;
+      let diff = posX - this.left!;
+      let maxExtent = this.width!-60;
+      if(diff < 0){
+         return 0;
+      }else if(diff>maxExtent){
+         diff = maxExtent;
+      }
+      return diff*100/this.width!;
    }
 
     constructor(type: BlocType<F,FormState>){
