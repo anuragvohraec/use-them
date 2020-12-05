@@ -13,27 +13,11 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
     private isint:boolean;
     private start?:number;
     private end?: number;
+    private width?:number;
 
     private start_drag_on: boolean=false;
 
-    _drag_on(e:Event){
-       console.log("ON");
-       
-      this.start_drag_on=true;
-    }
-
-    _drag_off(e:Event){
-      console.log("Off");
-       this.start_drag_on=false;
-    }
-
-    _drag(e: Event){
-       if(this.start_drag_on){
-         console.log(e);
-      }else{
-         console.log("no drag on");
-      }
-    }
+    
     
     builder(state: FormState): TemplateResult {
         return html`
@@ -151,7 +135,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
   <g
      id="layer1">
     <rect
-       style="fill:${this.theme.input_bg_color};fill-opacity:0.54902;stroke-width:0.477727;stroke-linejoin:round;stroke-opacity:0.658819"
+       style="fill:${this.theme.input_bg_color};stroke-width:0.477727;stroke-linejoin:round;stroke-opacity:0.658819"
        id="base"
        width="100%"
        height="15"
@@ -165,14 +149,14 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
        x="0"
        y="50" />
     <circle
-       style="fill:${this.theme.secondaryColor};cursor: move;fill-opacity:1;filter:url(#filter1261);stroke:#ffffff;stroke-miterlimit:4;stroke-dasharray:none"
+       style="fill:${this.theme.secondaryColor};cursor: move;fill-opacity:1;filter:url(#filter1261);stroke:#ffffff;stroke-miterlimit:5;stroke-dasharray:none"
        id="start-handle"
        cx="calc(0% + 30)"
        cy="60"
        r="30"
-       @touchstart=${this._drag_on}
-       @touchend=${this._drag_off}
-       @touchmove=${this._drag}
+       @touchstart=${this._start_drag_on}
+       @touchend=${this._end_drag_off}
+       @touchmove=${this._start_dragHandler}
        />
     <circle
        style="fill:${this.theme.primaryColor};cursor: move;fill-opacity:1;filter:url(#filter1261);stroke:#ffffff;stroke-miterlimit:4;stroke-dasharray:none"
@@ -184,6 +168,41 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
 </svg>
         `;
     }
+
+    
+    private _calculate_width() : number {
+       let t = this.shadowRoot?.querySelector("svg");
+       return t!.clientWidth;
+    }
+    
+
+    _start_drag_on= (e:TouchEvent)=>{
+     this.start_drag_on=true;
+   }
+
+   _end_drag_off=(e:TouchEvent)=>{
+      this.start_drag_on=false;
+   }
+
+   _start_drag=(e: TouchEvent)=>{
+      if(this.start_drag_on){
+        let p = this.calculatePercentage(e);
+        this.setStartReading(p);
+     }else{
+        console.log("no drag on");
+     }
+   }
+
+
+   _start_dragHandler ={
+      handleEvent: this._start_drag,
+      passive: true
+   }
+
+   private calculatePercentage = (e:TouchEvent):number=>{
+      let posX = e.changedTouches[0].clientX;
+      return (posX-this.left!)*100/this.width!;
+   }
 
     constructor(type: BlocType<F,FormState>){
         super(type);
@@ -201,6 +220,8 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
         this.isint = isint?true:false;
     }
 
+    private left?:number;
+
     connectedCallback(){
        super.connectedCallback();
        this.start = this.bloc?.state.priceRange.start;
@@ -215,6 +236,9 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
          
          this.setStartReading(this.start!);
          this.setEndReading(this.end!);
+         
+         this.width = this._calculate_width();
+         this.left = this.shadowRoot?.querySelector("svg")?.clientLeft;
     }
 
     private setStartReading(percentage: number){

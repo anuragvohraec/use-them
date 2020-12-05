@@ -59,7 +59,7 @@ export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
         <!-- TODO menu bar-->
         <style>
             .appbar {
-                height: 150px;
+                min-height: 150px;
                 width: 100%;
                 box-shadow: 0px 2px 10px black;
             }
