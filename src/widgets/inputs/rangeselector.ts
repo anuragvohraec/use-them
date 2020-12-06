@@ -213,6 +213,10 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
       }
       this.setStartPos(posX!);
       this.setActiveStart(posX!);
+      let en =  this.positionToValue(this.posEnd);
+      let st = this.positionToValue(this.posStart);
+      let r:Range = {start: st, end:en};
+      this.onChange!(r);
    }
 
    _end_drag=(e:TouchEvent)=>{
@@ -227,6 +231,10 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
       }
       this.setEndPos(posX!);
       this.setActiveEnd(posX!);
+      let en =  this.positionToValue(this.posEnd);
+      let st = this.positionToValue(this.posStart);
+      let r:Range = {start: st, end:en};
+      this.onChange!(r);
    }
 
 
@@ -247,6 +255,10 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
 
    percentageToPosition(percentage:number):number{
       return this.handleRadius+percentage * (this.posMax-this.posMin-2*this.handleRadius)/100;
+   }
+
+   positionToValue(posX:number){
+      return this.min + ((this.max-this.min)/(this.width-2*this.handleRadius))*(posX-this.handleRadius);
    }
 
    private handleRadius:number;
@@ -300,9 +312,6 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
          let end_posX = this.percentageToPosition(this.valueToPercentage(this.end!));
          this.setEndPos(end_posX);
 
-         console.log(start_posX, end_posX);
-         
-
          this.setActiveStart(start_posX);
     }
 
@@ -326,6 +335,4 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
       this.shadowRoot?.querySelector("#end-handle")?.setAttribute("cx",`${posX}`);
       this.posEnd = posX;
     }
-
-
 }
