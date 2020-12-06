@@ -14,7 +14,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
     private start?:number;
     private end?: number;
 
-    private start_drag_on: boolean=false;
+    private isDraging: boolean=false;
 
     
     
@@ -153,8 +153,8 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
        cx="calc(0% + 30)"
        cy="60"
        r="${this.handleRadius}"
-       @touchstart=${this._start_drag_on}
-       @touchend=${this._start_drag_off}
+       @touchstart=${this._drag_ON}
+       @touchend=${this._drag_OFF}
        @touchmove=${this._start_dragHandler}
        />
     <circle
@@ -162,26 +162,48 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
        id="end-handle"
        cx="calc(100% - 30)"
        cy="60"
-       r="${this.handleRadius}"/>
+       r="${this.handleRadius}"
+       @touchstart=${this._drag_ON}
+       @touchend=${this._drag_OFF}
+       @touchmove=${this._end_dragHandler}/>
   </g>
 </svg>
         `;
     }
 
-    _start_drag_on= (e:TouchEvent)=>{
-     this.start_drag_on=true;
+    _drag_ON= (e:TouchEvent)=>{
+     this.isDraging=true;
    }
 
-   _start_drag_off=(e:TouchEvent)=>{
-      this.start_drag_on=false;
+   _drag_OFF=(e:TouchEvent)=>{
+      this.isDraging=false;
    }
 
-   _start_drag=(e: TouchEvent)=>{
-      if(this.start_drag_on){
-        
+   _drag=(e: TouchEvent)=>{
+      if(this.isDraging){
+        let posX = e.changedTouches[0].clientX;
+        let minEx = this.posMin+this.handleRadius;
+        let maxEx = this.posMax-this.handleRadius;
+
+        if(posX<minEx){
+           posX = minEx;
+        }else if(posX>maxEx){
+           posX = maxEx;
+        }
+        return posX;
      }else{
         console.log("no drag on");
      }
+   }
+
+   _start_drag=(e:TouchEvent)=>{
+      let posX = this._drag(e);
+      this.setStartPos(posX!);
+   }
+
+   _end_drag=(e:TouchEvent)=>{
+      let posX = this._drag(e);
+      this.setEndPos(posX!);
    }
 
 
@@ -190,6 +212,11 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
       passive: true
    }
    
+
+   _end_dragHandler ={
+      handleEvent: this._end_drag,
+      passive: true
+   }
 
    valueToPercentage(value:number):number{
       return ((value-(this.min+ this.handleRadius/this.width))/(this.max - this.min- (2*this.handleRadius/this.width)))*100;
@@ -251,5 +278,10 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
     setStartPos(posX:number){
       this.shadowRoot?.querySelector("#start-handle")?.setAttribute("cx",`${posX}`);
     }
+
+    setEndPos(posX:number){
+      this.shadowRoot?.querySelector("#end-handle")?.setAttribute("cx",`${posX}`);
+    }
+
 
 }
