@@ -155,7 +155,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
        cy="60"
        r="30"
        @touchstart=${this._start_drag_on}
-       @touchend=${this._end_drag_off}
+       @touchend=${this._start_drag_off}
        @touchmove=${this._start_dragHandler}
        />
     <circle
@@ -180,7 +180,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
      this.start_drag_on=true;
    }
 
-   _end_drag_off=(e:TouchEvent)=>{
+   _start_drag_off=(e:TouchEvent)=>{
       this.start_drag_on=false;
    }
 
@@ -208,7 +208,12 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
       }else if(diff>maxExtent){
          diff = maxExtent;
       }
-      return diff*100/this.width!;
+      let r =  diff*100/this.width!;
+      if(r>this.end!){
+         return this.end!;
+      }else{
+         return r;
+      }
    }
 
     constructor(type: BlocType<F,FormState>){
