@@ -179,9 +179,9 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
       this.isDraging=false;
    }
 
-   _drag=(e: TouchEvent)=>{
+   _drag=(posX:number)=>{
       if(this.isDraging){
-        let posX = e.changedTouches[0].clientX;
+        //let posX = e.changedTouches[0].clientX;
         let minEx = this.posMin+this.handleRadius;
         let maxEx = this.posMax-this.handleRadius;
 
@@ -190,19 +190,35 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
         }else if(posX>maxEx){
            posX = maxEx;
         }
-        return posX;
      }else{
         console.log("no drag on");
      }
+     return posX;
    }
 
    _start_drag=(e:TouchEvent)=>{
-      let posX = this._drag(e);
+      let posX = e.changedTouches[0].clientX;
+      posX = this._drag(posX);
+      if(posX! > this.posEnd){
+         posX = this.posEnd - 2*this.handleRadius;
+      }
+      let t = this.posMax-3* this.handleRadius;
+      if(posX > t){
+         posX = t;
+      }
       this.setStartPos(posX!);
    }
 
    _end_drag=(e:TouchEvent)=>{
-      let posX = this._drag(e);
+      let posX = e.changedTouches[0].clientX;
+      posX = this._drag(posX);
+      if(posX!<this.posStart){
+         posX = this.posStart + 2*this.handleRadius;
+      }
+      let t = this.posMin + 3* this.handleRadius;
+      if(posX < t){
+         posX = t;
+      }
       this.setEndPos(posX!);
    }
 
@@ -229,6 +245,8 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
    private handleRadius:number;
    private posMax:number=0;
    private posMin:number=0;
+   private posStart:number =0;
+   private posEnd:number=0;
 
     constructor(type: BlocType<F,FormState>){
         super(type);
@@ -273,14 +291,19 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
 
          let start_posX = this.percentageToPosition(this.valueToPercentage(this.start!));
          this.setStartPos(start_posX);
+
+         let end_posX = this.percentageToPosition(this.valueToPercentage(this.end!));
+         this.setEndPos(end_posX);
     }
 
     setStartPos(posX:number){
       this.shadowRoot?.querySelector("#start-handle")?.setAttribute("cx",`${posX}`);
+      this.posStart=posX;
     }
 
     setEndPos(posX:number){
       this.shadowRoot?.querySelector("#end-handle")?.setAttribute("cx",`${posX}`);
+      this.posEnd = posX;
     }
 
 
