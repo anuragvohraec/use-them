@@ -164,7 +164,6 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
     <circle
        style="fill:${this.theme.secondaryColor};stroke:#ffffff;stroke-width: 4;"
        id="start-handle"
-       cx="calc(0% + 30)"
        cy="60"
        r="${this.handleRadius}"
        @touchstart=${this._drag_ON}
@@ -174,7 +173,6 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
     <circle
        style="fill:${this.theme.primaryColor};stroke:#ffffff;stroke-width: 4;"
        id="end-handle"
-       cx="calc(100% - 30)"
        cy="60"
        r="${this.handleRadius}"
        @touchstart=${this._drag_ON}
