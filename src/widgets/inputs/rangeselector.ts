@@ -154,7 +154,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
        <path
        id="acrange"
        style="fill:url(#linearGradient1199);"
-       d="m ${this.posStart},50 h 400 v 15 h -400 z"
+       d=""
        id="path833" />
     <circle
        style="fill:${this.theme.secondaryColor};cursor: move;fill-opacity:1;filter:url(#filter1261);stroke:#ffffff;stroke-miterlimit:5;stroke-dasharray:none"
@@ -336,9 +336,10 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
          let end_posX = this.percentageToPosition(this.valueToPercentage(this.end!));
          this.setEndPos(end_posX);
 
-         this.setActiveStart(start_posX);
+         
          this.value = {start: this.start!, end: this.end!};
          this.bloc?.emit({...this.bloc.state})
+         this.setActiveStart(start_posX);
     }
 
     setStartPos(posX:number){
@@ -347,7 +348,8 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
     }
 
     setActiveStart(posX:number){
-      let d=`m ${posX},50 h ${this.posEnd-this.posStart} v 15 h ${this.posStart-this.posEnd} z`;
+      let s = this.posEnd-this.posStart;
+      let d=`m ${posX},50 h ${s} v 15 h -${s} z`;
       this.shadowRoot?.querySelector("#acrange")?.setAttribute("d",d);
     }
 
