@@ -9,7 +9,7 @@ export class MyFormBloc extends FormBloc{
     constructor(){
         super({
             userChoice: true,
-            priceRange: {start: 0, end:100}
+            priceRange: {start: 120, end:700}
         });
     }
 

@@ -13,6 +13,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
     private isint:boolean;
     private start?:number;
     private end?: number;
+    private value:Range={start:0 , end:0}
 
     private isDraging: boolean=false;
 
@@ -20,6 +21,9 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
     
     builder(state: FormState): TemplateResult {
         return html`
+      <lay-them in="row" ma="center">
+         <div style="font-weight: bold;  font-size: ${this.theme.H3_font_size};">${this.value.start}</div>
+      </lay-them>
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -173,6 +177,11 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
        @touchmove=${this._end_dragHandler}/>
   </g>
 </svg>
+<lay-them in="row" ma="space-between">
+   <div><ut-p>${this.min}</ut-p></div>
+   <div style="font-weight: bold;  font-size: ${this.theme.H3_font_size};">${this.value.end}</div>
+   <div><ut-p>${this.max}</ut-p></div>
+</lay-them>
         `;
     }
 
@@ -213,10 +222,8 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
       }
       this.setStartPos(posX!);
       this.setActiveStart(posX!);
-      let en =  this.positionToValue(this.posEnd);
-      let st = this.positionToValue(this.posStart);
-      let r:Range = {start: st, end:en};
-      this.onChange!(r);
+      
+      this._postChange();
    }
 
    _end_drag=(e:TouchEvent)=>{
@@ -231,10 +238,19 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
       }
       this.setEndPos(posX!);
       this.setActiveEnd(posX!);
+      
+      this._postChange();
+   }
+
+   _postChange(){
       let en =  this.positionToValue(this.posEnd);
       let st = this.positionToValue(this.posStart);
-      let r:Range = {start: st, end:en};
-      this.onChange!(r);
+      if(this.isint){
+         en = Math.ceil(en);
+         st = Math.floor(st);
+      }
+      this.value = {start: st, end:en};
+      this.onChange!(this.value);
    }
 
 
@@ -298,7 +314,15 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
          if(this.start! > this.end!){
             throw `For a range selector start cannot be less then end value, please check initialization of rang selector: ${this.name}`;
          }
+
+         if(this.start!<this.min){
+            throw `Start ${this.start} cannot be less than min value ${this.min}, check form init values for this range selector`;
+         }
          
+         if(this.end!>this.max){
+            throw `End ${this.end} cannot be more than max value ${this.max}, check form init values for this range selector`;
+         }
+
          let width =  this.shadowRoot?.querySelector("svg")?.clientWidth;
          let left = this.shadowRoot?.querySelector("svg")?.clientLeft;
 
@@ -313,6 +337,8 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
          this.setEndPos(end_posX);
 
          this.setActiveStart(start_posX);
+         this.value = {start: this.start!, end: this.end!};
+         this.bloc?.emit({...this.bloc.state})
     }
 
     setStartPos(posX:number){
