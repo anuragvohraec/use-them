@@ -140,13 +140,18 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
        height="15"
        x="0"
        y="50" />
-    <rect
+    <!-- <rect
        style="fill:url(#linearGradient1199);fill-opacity:1;stroke-width:0.477727;stroke-linejoin:round;stroke-opacity:0.658819"
        id="active-range"
        width="100%"
        height="15"
        x="0"
-       y="50" />
+       y="50" /> -->
+       <path
+       id="acrange"
+       style="fill:url(#linearGradient1199);"
+       d="m ${this.posStart},50 h 400 v 15 h -400 z"
+       id="path833" />
     <circle
        style="fill:${this.theme.secondaryColor};cursor: move;fill-opacity:1;filter:url(#filter1261);stroke:#ffffff;stroke-miterlimit:5;stroke-dasharray:none"
        id="start-handle"
@@ -203,10 +208,11 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
          posX = this.posEnd - 2*this.handleRadius;
       }
       let t = this.posMax-3* this.handleRadius;
-      if(posX > t){
+      if(posX >= t){
          posX = t;
       }
       this.setStartPos(posX!);
+      this.setActiveStart(posX!);
    }
 
    _end_drag=(e:TouchEvent)=>{
@@ -216,10 +222,11 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
          posX = this.posStart + 2*this.handleRadius;
       }
       let t = this.posMin + 3* this.handleRadius;
-      if(posX < t){
+      if(posX <= t){
          posX = t;
       }
       this.setEndPos(posX!);
+      this.setActiveEnd(posX!);
    }
 
 
@@ -287,18 +294,29 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
          this.posMax = width!+ this.posMin;
          this.width = this.posMax-this.posMin;
 
-         console.log(this.start,this.valueToPercentage(this.start!), this.percentageToPosition(this.valueToPercentage(this.start!)) )
-
          let start_posX = this.percentageToPosition(this.valueToPercentage(this.start!));
          this.setStartPos(start_posX);
 
          let end_posX = this.percentageToPosition(this.valueToPercentage(this.end!));
          this.setEndPos(end_posX);
+
+         this.setActiveStart(start_posX);
     }
 
     setStartPos(posX:number){
       this.shadowRoot?.querySelector("#start-handle")?.setAttribute("cx",`${posX}`);
       this.posStart=posX;
+    }
+
+    setActiveStart(posX:number){
+      let d=`m ${posX},50 h ${this.posEnd-this.posStart} v 15 h ${this.posStart-this.posEnd} z`;
+      this.shadowRoot?.querySelector("#acrange")?.setAttribute("d",d);
+    }
+
+    setActiveEnd(posX:number){
+       let s = this.posStart-this.posMin;
+      let d=`m ${s},50 h ${posX-s} v 15 h ${s-posX} z`;
+      this.shadowRoot?.querySelector("#acrange")?.setAttribute("d",d);
     }
 
     setEndPos(posX:number){
