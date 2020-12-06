@@ -246,7 +246,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
    }
 
    percentageToPosition(percentage:number):number{
-      return percentage * (this.posMax-this.posMin-2*this.handleRadius)/100;
+      return this.handleRadius+percentage * (this.posMax-this.posMin-2*this.handleRadius)/100;
    }
 
    private handleRadius:number;
@@ -299,6 +299,9 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
 
          let end_posX = this.percentageToPosition(this.valueToPercentage(this.end!));
          this.setEndPos(end_posX);
+
+         console.log(start_posX, end_posX);
+         
 
          this.setActiveStart(start_posX);
     }
