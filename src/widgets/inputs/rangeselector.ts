@@ -13,7 +13,6 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
     private isint:boolean;
     private start?:number;
     private end?: number;
-    private width?:number;
 
     private start_drag_on: boolean=false;
 
@@ -153,7 +152,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
        id="start-handle"
        cx="calc(0% + 30)"
        cy="60"
-       r="30"
+       r="${this.handleRadius}"
        @touchstart=${this._start_drag_on}
        @touchend=${this._start_drag_off}
        @touchmove=${this._start_dragHandler}
@@ -163,18 +162,11 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
        id="end-handle"
        cx="calc(100% - 30)"
        cy="60"
-       r="30"/>
+       r="${this.handleRadius}"/>
   </g>
 </svg>
         `;
     }
-
-    
-    private _calculate_width() : number {
-       let t = this.shadowRoot?.querySelector("svg");
-       return t!.clientWidth;
-    }
-    
 
     _start_drag_on= (e:TouchEvent)=>{
      this.start_drag_on=true;
@@ -186,8 +178,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
 
    _start_drag=(e: TouchEvent)=>{
       if(this.start_drag_on){
-        let p = this.calculatePercentageForStart(e);
-        this.setStartReading(p);
+        
      }else{
         console.log("no drag on");
      }
@@ -198,28 +189,26 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
       handleEvent: this._start_drag,
       passive: true
    }
+   
 
-   private calculatePercentageForStart = (e:TouchEvent):number=>{
-      let posX = e.changedTouches[0].clientX;
-      let diff = posX - this.left!;
-      let maxExtent = this.width!-60;
-      if(diff < 0){
-         return 0;
-      }else if(diff>maxExtent){
-         diff = maxExtent;
-      }
-      let r =  diff*100/this.width!;
-      if(r>this.end!){
-         return this.end!;
-      }else{
-         return r;
-      }
+   valueToPercentage(value:number):number{
+      return ((value-(this.min+ this.handleRadius/this.width))/(this.max - this.min- (2*this.handleRadius/this.width)))*100;
    }
+
+   percentageToPosition(percentage:number):number{
+      return percentage * (this.posMax-this.posMin-2*this.handleRadius)/100;
+   }
+
+   private handleRadius:number;
+   private posMax:number=0;
+   private posMin:number=0;
 
     constructor(type: BlocType<F,FormState>){
         super(type);
         let max = this.getAttribute("max");
         let min = this.getAttribute("min");
+
+        this.handleRadius = 30;
 
         if(!(max && min)){
             throw `Not all attributes provided for a range selector: min and max`;
@@ -232,7 +221,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
         this.isint = isint?true:false;
     }
 
-    private left?:number;
+    private width:number=0;
 
     connectedCallback(){
        super.connectedCallback();
@@ -246,20 +235,21 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
             throw `For a range selector start cannot be less then end value, please check initialization of rang selector: ${this.name}`;
          }
          
-         this.setStartReading(this.start!);
-         this.setEndReading(this.end!);
-         
-         this.width = this._calculate_width();
-         this.left = this.shadowRoot?.querySelector("svg")?.clientLeft;
+         let width =  this.shadowRoot?.querySelector("svg")?.clientWidth;
+         let left = this.shadowRoot?.querySelector("svg")?.clientLeft;
+
+         this.posMin = left!;
+         this.posMax = width!+ this.posMin;
+         this.width = this.posMax-this.posMin;
+
+         console.log(this.start,this.valueToPercentage(this.start!), this.percentageToPosition(this.valueToPercentage(this.start!)) )
+
+         let start_posX = this.percentageToPosition(this.valueToPercentage(this.start!));
+         this.setStartPos(start_posX);
     }
 
-    private setStartReading(percentage: number){
-       this.shadowRoot?.querySelector("#start-handle")?.setAttribute("cx",`calc(${percentage}% + 30)`);
-       this.shadowRoot?.querySelector("#active-range")?.setAttribute("x",`calc(${percentage}%)`);
+    setStartPos(posX:number){
+      this.shadowRoot?.querySelector("#start-handle")?.setAttribute("cx",`${posX}`);
     }
 
-    private setEndReading(percentage: number){
-      this.shadowRoot?.querySelector("#end-handle")?.setAttribute("cx",`calc(${percentage}% - 30)`);
-      this.shadowRoot?.querySelector("#active-range")?.setAttribute("width",`calc(${percentage-this.start!}%)`);
-   }
 }
