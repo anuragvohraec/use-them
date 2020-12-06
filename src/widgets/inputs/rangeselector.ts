@@ -22,7 +22,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
     builder(state: FormState): TemplateResult {
         return html`
       <lay-them in="row" ma="center">
-         <div style="font-weight: bold;  font-size: ${this.theme.H3_font_size};">${this.value.start}</div>
+         <div style="font-weight: bold;  font-size: ${this.theme.H3_font_size};">${this.isint?this.value.start:this.value.start.toFixed(2)}</div>
       </lay-them>
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -179,7 +179,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
 </svg>
 <lay-them in="row" ma="space-between">
    <div><ut-p>${this.min}</ut-p></div>
-   <div style="font-weight: bold;  font-size: ${this.theme.H3_font_size};">${this.value.end}</div>
+   <div style="font-weight: bold;  font-size: ${this.theme.H3_font_size};">${this.isint?this.value.end:this.value.end.toFixed(2)}</div>
    <div><ut-p>${this.max}</ut-p></div>
 </lay-them>
         `;
