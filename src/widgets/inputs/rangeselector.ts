@@ -21,8 +21,13 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
     
     builder(state: FormState): TemplateResult {
         return html`
+        <style>
+           .no-select{
+            user-select: none;
+           }
+        </style>
       <lay-them in="row" ma="center">
-         <div style="font-weight: bold;  font-size: ${this.theme.H3_font_size};">${this.isint?this.value.start:this.value.start.toFixed(2)}</div>
+         <div class="no-select" style="font-weight: bold;  font-size: ${this.theme.H3_font_size};">${this.isint?this.value.start:this.value.start.toFixed(2)}</div>
       </lay-them>
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -157,7 +162,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
        d=""
        id="path833" />
     <circle
-       style="fill:${this.theme.secondaryColor};cursor: move;fill-opacity:1;filter:url(#filter1261);stroke:#ffffff;stroke-miterlimit:5;stroke-dasharray:none"
+       style="fill:${this.theme.secondaryColor};stroke:#ffffff;stroke-width: 4;"
        id="start-handle"
        cx="calc(0% + 30)"
        cy="60"
@@ -167,7 +172,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
        @touchmove=${this._start_dragHandler}
        />
     <circle
-       style="fill:${this.theme.primaryColor};cursor: move;fill-opacity:1;filter:url(#filter1261);stroke:#ffffff;stroke-miterlimit:4;stroke-dasharray:none"
+       style="fill:${this.theme.primaryColor};stroke:#ffffff;stroke-width: 4;"
        id="end-handle"
        cx="calc(100% - 30)"
        cy="60"
@@ -178,9 +183,9 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
   </g>
 </svg>
 <lay-them in="row" ma="space-between">
-   <div><ut-p>${this.min}</ut-p></div>
-   <div style="font-weight: bold;  font-size: ${this.theme.H3_font_size};">${this.isint?this.value.end:this.value.end.toFixed(2)}</div>
-   <div><ut-p>${this.max}</ut-p></div>
+   <div class="no-select"><ut-p>${this.min}</ut-p></div>
+   <div class="no-select" style="font-weight: bold;  font-size: ${this.theme.H3_font_size};">${this.isint?this.value.end:this.value.end.toFixed(2)}</div>
+   <div class="no-select"><ut-p>${this.max}</ut-p></div>
 </lay-them>
         `;
     }
