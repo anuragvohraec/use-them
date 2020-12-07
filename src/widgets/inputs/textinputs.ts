@@ -104,9 +104,10 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
         }
     }
 
-    getInputType=():string=>{
+    getInputType=():"hidden" | "text" | "search" | "tel" | "url" | "email" | "password" | "datetime" | "date" | "month" | "week" | "time" | "datetime-local" | "number" | "range" | "color" | "checkbox" | "radio" | "file" | "submit" | "image" | "reset" | "button" =>{
         let type=this.getAttribute("type");
         if(type){
+            //@ts-ignore
             return type;
         }else{
             return "text";

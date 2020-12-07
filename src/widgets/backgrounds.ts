@@ -50,3 +50,14 @@ export class AnimatedGradientBackground extends WidgetBuilder<BogusBloc,number>{
 }
 
 customElements.define("animated-grad-bg", AnimatedGradientBackground);
+
+export class ImageBackground extends WidgetBuilder<BogusBloc,number>{
+    builder(state: number): TemplateResult {
+        throw new Error("Method not implemented.");
+    }
+    constructor(){
+        super(BogusBloc,{
+            useThisBloc: new BogusBloc()
+        })
+    }
+}
