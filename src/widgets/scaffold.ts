@@ -120,7 +120,7 @@ export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
                 <div style="flex: 1 1 auto;" @click=${this.toggleMenuBar}></div>
             </lay-them>
         </div>
-        <div class="snack-bar" style="border-radius: ${this.theme.cornerRadius}px; display: ${(()=>{
+        <div class="snack-bar" style="border-radius: ${this.theme.cornerRadius}; display: ${(()=>{
             if(state.showSnackbar){
                 return "block";
             }else{

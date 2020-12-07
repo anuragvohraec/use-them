@@ -32,12 +32,17 @@ export abstract class RaisedButton<B extends Bloc<S>, S> extends WidgetBuilder<B
                     justify-content: center;
                     align-items: stretch;
                     user-select: none;
+                    padding: 20px; 
+                    min-height: 80px;
+                    text-align: center; 
+                    background-color: ${this.bgColor};
+                    border-radius:${this.theme.cornerRadius}
                 }
                 .button:active{
                     box-shadow: 0px 0px 0px 0px #0000009e
                 }
             </style>
-            <div class="ripple button" style="padding: 20px; min-height: 80px;text-align: center; background-color: ${this.bgColor};border-radius:${this.theme.cornerRadius}px" @click=${this.buttonAction}><slot></slot></div>
+            <div class="ripple button" style="" @click=${this.buttonAction}><slot></slot></div>
         `;
     }
 

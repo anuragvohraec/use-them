@@ -6,6 +6,7 @@ import { RangeSelector, Range } from './inputs/rangeselector';
 import { RaisedButton } from './buttons';
 import { BogusBloc } from '../utils/blocs';
 import { ScaffoldBloc, ScaffoldState } from './scaffold';
+import { SingleLineInput } from './inputs/textinputs';
 
 
 export class MyFormBloc extends FormBloc{
@@ -73,3 +74,12 @@ export class MyButton extends RaisedButton<ScaffoldBloc,ScaffoldState>{
 }
 
 customElements.define("my-button", MyButton)
+
+
+export class UserPassword extends SingleLineInput<MyFormBloc>{
+    constructor(){
+        super(MyFormBloc);
+    }
+}
+
+customElements.define("user-password", UserPassword);

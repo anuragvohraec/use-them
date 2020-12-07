@@ -9,9 +9,13 @@ export class Theme{
     public iconColor: string ="#ffffff";
 
     public backgroundColor: string = "#ededed";
-    public cornerRadius : number = 10;
+    public cornerRadius : string = "10px";
 
     public input_bg_color="#0000008c";
+    public input_height="80px";
+    public input_padding="40px";
+    public input_cursor_color:string= "#ffffff";
+    public input_text_color="#ffffff";
 
     public snack_bar_bg="#000000b3";
 
