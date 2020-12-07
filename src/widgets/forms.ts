@@ -73,8 +73,6 @@ import { TemplateResult, html } from 'lit-html';
          let t1 = this.bloc?.onChangeFunctionGiver(this.name!);
          if(t1){
             this.onChange = (newValue:V)=>{
-                console.log(newValue);
-                
                 t1!(newValue);
                 if(this.validator){
                     let t2 = this.validator(newValue);
@@ -99,8 +97,6 @@ import { TemplateResult, html } from 'lit-html';
 
      builder(state: FormMessageState): TemplateResult {
          let msg = state[this.name!];
-         console.log("New message: ",msg);
-         
          return html`<span>${msg}</span>`;
      }
 
