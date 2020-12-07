@@ -46,15 +46,34 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
                 padding-left: 20px;
             }
         </style>
+        ${this.getDataList()}
         <div class="sli-bg glass">
             <lay-them in="row">
                 ${this.getIcon()}
                 <div style="flex: 1">
-                    <input style="height: 130px;" value="${ifDefined(this.getValue())}" class="sli-bg" placeholder="${this.getPlaceHolder()}" type="${this.getInputType()}">
+                    <input list="${ifDefined(this.dataList)}" style="height: 130px;" value="${ifDefined(this.getValue())}" class="sli-bg" placeholder="${this.getPlaceHolder()}" type="${this.getInputType()}">
                 </div>
             </lay-them>
         </div>
         `;
+    }
+
+    
+    public get dataList() : string|undefined {
+        if(this.valueList){
+            return "dataList";
+        }
+    }
+    
+
+    getDataList=()=>{
+        if(this.valueList){
+            return html`
+<datalist id="dataList">
+    ${this.valueList.map(i=>html`<option value="${i}">`)}
+</datalist>
+        `;
+        }
     }
 
     getIcon= ()=>{
@@ -96,7 +115,7 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
 
     private _i18n? : I18NBloc;
 
-    constructor(type: BlocType<F,FormState>){
+    constructor(type: BlocType<F,FormState>, private valueList?: string[]){
         super(type);
         this._i18n = BlocsProvider.of(I18NBloc, this);
     }

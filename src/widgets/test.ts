@@ -83,3 +83,11 @@ export class UserPassword extends SingleLineInput<MyFormBloc>{
 }
 
 customElements.define("user-password", UserPassword);
+
+export class SelectLang extends SingleLineInput<MyFormBloc>{
+    constructor(){
+        super(MyFormBloc, ["English", "Hindi", "German"]);
+    }
+}
+
+customElements.define("select-lang", SelectLang);
