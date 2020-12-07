@@ -1,9 +1,10 @@
-import { WidgetBuilder } from '../utils/blocs';
+import { WidgetBuilder, ActionBloc } from '../utils/blocs';
 import { Bloc, BlocType, BlocBuilderConfig } from 'bloc-them';
 import { TemplateResult, html } from 'lit-html';
 import { ColorUtil } from '../utils/utils';
 
-export class RaisedButton<B extends Bloc<S>, S> extends WidgetBuilder<B,S>{
+
+export abstract class RaisedButton<B extends Bloc<S>, S> extends WidgetBuilder<B,S>{
     private bgColor: string;
     private onPressButtonColor:string;
     private light: string;
@@ -36,7 +37,7 @@ export class RaisedButton<B extends Bloc<S>, S> extends WidgetBuilder<B,S>{
                     box-shadow: 0px 0px 0px 0px #0000009e
                 }
             </style>
-            <div class="ripple button" style="padding: 20px; min-height: 80px;text-align: center; background-color: ${this.bgColor};border-radius:${this.theme.cornerRadius}px"><slot></slot></div>
+            <div class="ripple button" style="padding: 20px; min-height: 80px;text-align: center; background-color: ${this.bgColor};border-radius:${this.theme.cornerRadius}px" @click=${this.buttonAction}><slot></slot></div>
         `;
     }
 
@@ -52,5 +53,9 @@ export class RaisedButton<B extends Bloc<S>, S> extends WidgetBuilder<B,S>{
         this.onPressButtonColor=ColorUtil.shadeColor(this.bgColor,20);
         this.light=ColorUtil.shadeColor(this.bgColor,80);
     }
+
+    abstract onPress():void;
+
+    buttonAction = ()=>{this.onPress()};
 
 }

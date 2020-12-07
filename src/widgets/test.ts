@@ -5,6 +5,7 @@ import { TemplateResult } from 'lit-html';
 import { RangeSelector, Range } from './inputs/rangeselector';
 import { RaisedButton } from './buttons';
 import { BogusBloc } from '../utils/blocs';
+import { ScaffoldBloc, ScaffoldState } from './scaffold';
 
 
 export class MyFormBloc extends FormBloc{
@@ -62,9 +63,12 @@ export class PriceRange extends RangeSelector<MyFormBloc>{
 customElements.define("price-range", PriceRange);
 
 //You can make it : MyFormBloc too if needed
-export class MyButton extends RaisedButton<BogusBloc,number>{
+export class MyButton extends RaisedButton<ScaffoldBloc,ScaffoldState>{
+    onPress(): void {
+        this.bloc?.postMessageToSnackBar("Hi this is a message for you!")
+    }
     constructor(){
-        super(BogusBloc,{useThisBloc: new BogusBloc()})
+        super(ScaffoldBloc)
     }
 }
 
