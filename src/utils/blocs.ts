@@ -20,3 +20,10 @@ export abstract class WidgetBuilder<B extends Bloc<S>, S> extends BlocBuilder<B,
         return this._theme;
     }
 }
+
+
+export class ActionBloc<S> extends Bloc<S>{
+    constructor(initState: S){
+        super(initState);
+    }
+}
