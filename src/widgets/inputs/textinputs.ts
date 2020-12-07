@@ -51,13 +51,12 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
             <lay-them in="row">
                 ${this.getIcon()}
                 <div style="flex: 1">
-                    <input list="${ifDefined(this.dataList)}" style="height: 130px;" value="${ifDefined(this.getValue())}" class="sli-bg" placeholder="${this.getPlaceHolder()}" type="${this.getInputType()}">
+                    <input @change=${this._delegateChange} list="${ifDefined(this.dataList)}" style="height: 130px;" value="${ifDefined(this.getValue())}" class="sli-bg" placeholder="${this.getPlaceHolder()}" type="${this.getInputType()}">
                 </div>
             </lay-them>
         </div>
         `;
     }
-
     
     public get dataList() : string|undefined {
         if(this.valueList){
@@ -65,6 +64,9 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
         }
     }
     
+    _delegateChange=(e: InputEvent)=>{
+        this.onChange!((e.target as HTMLInputElement).value);
+    }
 
     getDataList=()=>{
         if(this.valueList){
