@@ -28,7 +28,18 @@ export class MyFormBloc extends FormBloc{
             case 'priceRange':
                 return (newValue: Range)=>{
                     if(newValue ==undefined){
-                        return `value canno eb null for priceRange`;
+                        return `value cannot be null for priceRange`;
+                    }
+                }
+            case 'userInput':
+                return (newValue: string)=>{
+                    if(newValue ==undefined){
+                        return `value cannot be null for priceRange`;
+                    }
+
+                    let re = /[A-Za-z]/;
+                    if(!re.test(newValue)){
+                        return "Only alphabets allowed";
                     }
                 }
             default:

@@ -73,12 +73,12 @@ import { TemplateResult, html } from 'lit-html';
          let t1 = this.bloc?.onChangeFunctionGiver(this.name!);
          if(t1){
             this.onChange = (newValue:V)=>{
+                console.log(newValue);
+                
                 t1!(newValue);
                 if(this.validator){
                     let t2 = this.validator(newValue);
-                    if(t2){
-                        this.messageBloc?.postMessage(this.name!,t2);
-                    }
+                    this.messageBloc?.postMessage(this.name!,t2!);
                 }
             }
          }
@@ -89,28 +89,24 @@ import { TemplateResult, html } from 'lit-html';
      private name?: string;
 
      constructor(){
-         super(FormMessageBloc, {
-             buildWhen:(p,n)=>{
-                 let t = this.getAttribute("for");
-                 if(t){
-                    if(n[t]){
-                        this.name = n[t];
-                        return true;
-                    }else{
-                        return false;
-                    }
-                 }else{
-                     throw `No for attribute present on Message`;
-                 }
-             }
-         });
+         super(FormMessageBloc);
+         let forAtt = this.getAttribute("for");
+         if(!forAtt){
+             throw 'No for attribute present on a form message';
+         }
+         this.name = forAtt;
      }
 
      builder(state: FormMessageState): TemplateResult {
-         return html`<span>${this.name}</span>`;
+         let msg = state[this.name!];
+         console.log("New message: ",msg);
+         
+         return html`<span>${msg}</span>`;
      }
 
  }
+
+ customElements.define("form-message", MessageBuilder);
 
 
  export class FormBlocProvider<F extends FormBloc> extends BlocsProvider{
