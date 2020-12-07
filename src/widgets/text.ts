@@ -18,6 +18,19 @@ export class I18NBloc  extends Bloc<LanguagePack>{
     changeLanguage(newState: LanguagePack){
         this.emit(newState);
     }
+
+    getText(textKey: string|null): string|undefined{
+        if(textKey){
+            let t = textKey.toLowerCase();
+            let r= this.state[t];
+               if(r){
+                   return r;
+               }else{
+                   console.log("Text keys not found: ", textKey.substring(0,30));
+                   return textKey;
+               }
+        }
+    }
 }
 
 export abstract class I18NBlocProvider extends BlocsProvider{

@@ -1,7 +1,10 @@
 import { FormInputBuilder, FormBloc, FormState } from '../forms';
 import { TemplateResult, html } from 'lit-html';
-import { BlocType } from 'bloc-them';
+import { BlocType, BlocsProvider } from 'bloc-them';
 import '@polymer/iron-icons';
+import { I18NBloc } from '../text';
+import {ifDefined} from 'lit-html/directives/if-defined';
+
 
 export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string,F>{
     builder(state: FormState): TemplateResult {
@@ -30,6 +33,9 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
             input:focus{
                 outline-width: 0;
             }
+            input::placeholder{
+                color: ${this.theme.input_place_holder_color};
+            }
             .iconCtrl{
                 --iron-icon-height: 80px;
                 --iron-icon-width: 80px;
@@ -42,16 +48,56 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
         </style>
         <div class="sli-bg glass">
             <lay-them in="row">
-                <div class="iconCtrl"><iron-icon icon="search" style="fill: white;"></iron-icon></div>
+                ${this.getIcon()}
                 <div style="flex: 1">
-                    <input class="sli-bg">
+                    <input style="height: 130px;" value="${ifDefined(this.getValue())}" class="sli-bg" placeholder="${this.getPlaceHolder()}" type="${this.getInputType()}">
                 </div>
             </lay-them>
         </div>
         `;
     }
-    
+
+    getIcon= ()=>{
+        let icon = this.getAttribute("icon");
+        if(icon){
+            return html`<div class="iconCtrl"><iron-icon icon="${icon}" style="fill: ${this.theme.input_icon_color};"></iron-icon></div>`;
+        }
+    }
+
+    getValue =(): string|undefined=>{
+        let value = this.getAttribute("value");
+        if(value){
+            return value;
+        }
+    }
+
+    getPlaceHolder= (): string=>{
+        let placeholder = this.getAttribute("placeholder");
+        if(placeholder){
+            if(this._i18n){
+                let t = this._i18n.getText(placeholder);
+                return t?t:"";
+            }else{
+                return placeholder;
+            }
+        }else{
+            return "";
+        }
+    }
+
+    getInputType=():string=>{
+        let type=this.getAttribute("type");
+        if(type){
+            return type;
+        }else{
+            return "text";
+        }
+    }
+
+    private _i18n? : I18NBloc;
+
     constructor(type: BlocType<F,FormState>){
         super(type);
+        this._i18n = BlocsProvider.of(I18NBloc, this);
     }
 }

@@ -13,9 +13,11 @@ export class Theme{
 
     public input_bg_color="#0000008c";
     public input_height="80px";
-    public input_padding="40px";
+    public input_padding="40px 20px";
     public input_cursor_color:string= "#ffffff";
     public input_text_color="#ffffff";
+    public input_place_holder_color="#a8a8a8";
+    public input_icon_color="#ffffff";
 
     public snack_bar_bg="#000000b3";
 
