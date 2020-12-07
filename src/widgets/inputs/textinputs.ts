@@ -29,6 +29,7 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
                 -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
                 -moz-box-sizing: border-box;    /* Firefox, other Gecko */
                 box-sizing: border-box;
+                font-weight: bold;
             }
             input:focus{
                 outline-width: 0;
@@ -51,7 +52,7 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
             <lay-them in="row">
                 ${this.getIcon()}
                 <div style="flex: 1">
-                    <input @change=${this._delegateChange} list="${ifDefined(this.dataList)}" style="height: 130px;" value="${ifDefined(this.getValue())}" class="sli-bg" placeholder="${this.getPlaceHolder()}" type="${this.getInputType()}">
+                    <input @change=${this._delegateChange} list="${ifDefined(this.dataList)}" style="height: 130px;" inputmode="${this.getInputMode()}" value="${ifDefined(this.getValue())}" class="sli-bg" placeholder="${this.getPlaceHolder()}" type="${this.getInputType()}">
                 </div>
             </lay-them>
         </div>
@@ -66,6 +67,15 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
     
     _delegateChange=(e: InputEvent)=>{
         this.onChange!((e.target as HTMLInputElement).value);
+    }
+
+    getInputMode=()=>{
+        let inputmode = this.getAttribute("inputmode");
+        if(inputmode){
+            return inputmode;
+        }else{
+            return "text";
+        }
     }
 
     getDataList=()=>{
