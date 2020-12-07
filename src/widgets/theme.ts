@@ -13,6 +13,8 @@ export class Theme{
 
     public input_bg_color="#0000008c";
 
+    public snack_bar_bg="#000000b3";
+
     public glass_black="#0000008c";
 
     public P_font_size:string = "2em";

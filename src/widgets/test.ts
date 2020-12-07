@@ -3,6 +3,8 @@ import { ToggleButton } from './inputs/togglebutton';
 import { BlocsProvider } from 'bloc-them';
 import { TemplateResult } from 'lit-html';
 import { RangeSelector, Range } from './inputs/rangeselector';
+import { RaisedButton } from './buttons';
+import { BogusBloc } from '../utils/blocs';
 
 
 export class MyFormBloc extends FormBloc{
@@ -58,3 +60,12 @@ export class PriceRange extends RangeSelector<MyFormBloc>{
 }
 
 customElements.define("price-range", PriceRange);
+
+//You can make it : MyFormBloc too if needed
+export class MyButton extends RaisedButton<BogusBloc,number>{
+    constructor(){
+        super(BogusBloc,{useThisBloc: new BogusBloc()})
+    }
+}
+
+customElements.define("my-button", MyButton)

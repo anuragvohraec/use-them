@@ -70,6 +70,9 @@ export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
             .glass{
                 background-color: ${this.theme.glass_black};
             }
+            .snack-bar{
+                background-color: ${this.theme.snack_bar_bg};position: fixed; bottom: 100px; padding:10px; max-width: 90%; color: white;
+            }
         </style>
 <div class="expanded">
     <lay-them in="stack">
@@ -114,6 +117,15 @@ export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
                 </div>
                 <div style="flex: 1 1 auto;" @click=${this.toggleMenuBar}></div>
             </lay-them>
+        </div>
+        <div class="snack-bar" style="display: ${(()=>{
+            if(state.showSnackbar){
+                return "block";
+            }else{
+                return "none";
+            }
+        })()}">
+            <ut-h3 use="color:white">${state.snackBarMessage}</ut-h3>
         </div>
     </lay-them>
 </div>
