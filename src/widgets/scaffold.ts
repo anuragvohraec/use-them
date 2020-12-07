@@ -81,15 +81,17 @@ export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
                 <div class="appbar">
                     <lay-them in="stack">
                         <div style="height: 150px; position: fixed; width: 100%">
-                            <svg version="1.1" viewBox="0 0 100 100" preserveAspectRatio="none" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                                <defs>
-                                    <linearGradient id="linearGradient850" x1="-28.773" x2="119.68" y1="53.936" y2="50.846" gradientUnits="userSpaceOnUse">
-                                        <stop stop-color="${this.theme.secondaryColor}" offset="0"></stop>
-                                        <stop stop-color="${this.theme.primaryColor}" offset="1"></stop>
-                                    </linearGradient>
-                                </defs>
-                                <rect width="100" height="100" fill="url(#linearGradient850)" stroke-linejoin="round" stroke-width="2.1354"></rect>
-                            </svg>
+                            <slot name="appbar-bg">
+                                <svg version="1.1" viewBox="0 0 100 100" preserveAspectRatio="none" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                    <defs>
+                                        <linearGradient id="linearGradient850" x1="-28.773" x2="119.68" y1="53.936" y2="50.846" gradientUnits="userSpaceOnUse">
+                                            <stop stop-color="${this.theme.secondaryColor}" offset="0"></stop>
+                                            <stop stop-color="${this.theme.primaryColor}" offset="1"></stop>
+                                        </linearGradient>
+                                    </defs>
+                                    <rect width="100" height="100" fill="url(#linearGradient850)" stroke-linejoin="round" stroke-width="2.1354"></rect>
+                                </svg>
+                            </slot>
                         </div>
                         <div>
                             <slot name="title"></slot>

@@ -9,3 +9,4 @@ export * from './widgets/inputs/togglebutton.js';
 export * from './widgets/test.js';
 export * from './widgets/buttons.js';
 export * from './utils/utils.js';
+export * from './widgets/backgrounds.js';
