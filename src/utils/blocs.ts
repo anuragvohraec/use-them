@@ -1,7 +1,14 @@
 import { Bloc, BlocBuilder, BlocType, BlocBuilderConfig } from "bloc-them";
 import { Theme } from '../widgets/theme';
 
-export class BogusBloc extends Bloc<number>{
+
+export class ActionBloc<S> extends Bloc<S>{
+    constructor(initState: S){
+        super(initState);
+    }
+}
+
+export class BogusBloc extends ActionBloc<number>{
     constructor(){
         super(0);
     }
@@ -22,8 +29,3 @@ export abstract class WidgetBuilder<B extends Bloc<S>, S> extends BlocBuilder<B,
 }
 
 
-export class ActionBloc<S> extends Bloc<S>{
-    constructor(initState: S){
-        super(initState);
-    }
-}
