@@ -249,7 +249,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
       let en =  this.positionToValue(this.posEnd);
       let st = this.positionToValue(this.posStart);
       if(this.isint){
-         en = Math.ceil(en);
+         en = Math.floor(en);
          st = Math.floor(st);
       }
       this.value = {start: st, end:en};
