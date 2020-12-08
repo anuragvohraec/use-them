@@ -18,6 +18,13 @@ import { TemplateResult, html } from 'lit-html';
      (currentValue:V):void;
  }
 
+ /**
+  * Is run after validation, along with validation result.
+  */
+ export interface PostValidationOnChangeFunction<V>{
+    (currentValue:V, validation:string|undefined):void;
+ }
+
 
  export interface FormMessageState{
      [key:string]: string;
@@ -40,14 +47,25 @@ import { TemplateResult, html } from 'lit-html';
         super(initState);
     }
 
-    onChangeFunctionGiver(nameOfInput:string):OnChangeFunction<any>|undefined{
+    _basicOnChange(nameOfInput:string):OnChangeFunction<any>|undefined{
         return (newValue: any)=>{
             this.state[nameOfInput]=newValue;
             this.emit({...this.state});
         }
     }
 
+    /**
+     * returns a validator function for a given name of input
+     * @param nameOfInput 
+     */
     abstract validatorFunctionGiver(nameOfInput: string): ValidatorFunction<any>|undefined
+    /**
+     * returns a postValidation onChange function for a given name of input.
+     * There is an inbuilt-onchange-function, however onchange function returned by ths method is executed (if returned) after this inbuilt-onchange-function.
+     * This postOnChange function must perform custom business logic user wants to be executed after value change, for example change other input values or other stuffs.
+     * @param nameOfInput 
+     */
+    abstract postOnChangeFunctionGiver(nameOfInput: string):PostValidationOnChangeFunction<any>|undefined
  }
 
  export abstract class FormInputBuilder<V, F extends FormBloc> extends WidgetBuilder<F,FormState>{
@@ -55,6 +73,7 @@ import { TemplateResult, html } from 'lit-html';
      protected validator?:ValidatorFunction<V>;
      protected name?:string;
      protected messageBloc?: FormMessageBloc;
+     private postOnChange?:PostValidationOnChangeFunction<V>;
 
      constructor( private type:BlocType<F,FormState>){
          super(type);
@@ -70,13 +89,22 @@ import { TemplateResult, html } from 'lit-html';
          super.connectedCallback();
          this.messageBloc=BlocsProvider.of(FormMessageBloc,this);
          this.validator = this.bloc?.validatorFunctionGiver(this.name!);
-         let t1 = this.bloc?.onChangeFunctionGiver(this.name!);
+         this.postOnChange = this.bloc?.postOnChangeFunctionGiver(this.name!);
+         
+         let t1 = this.bloc?._basicOnChange(this.name!);
          if(t1){
             this.onChange = (newValue:V)=>{
-                t1!(newValue);
-                if(this.validator){
-                    let t2 = this.validator(newValue);
-                    this.messageBloc?.postMessage(this.name!,t2!);
+                try{
+                    t1!(newValue);
+                    if(this.validator){
+                        let t2 = this.validator(newValue);
+                        this.messageBloc?.postMessage(this.name!,t2!);
+                        if(this.postOnChange){
+                            this.postOnChange(newValue, t2);
+                        }
+                    }
+                }catch(e){
+                    console.error(e);
                 }
             }
          }

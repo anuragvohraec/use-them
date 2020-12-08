@@ -1,15 +1,20 @@
-import { FormBloc, ValidatorFunction, FormBlocProvider } from './forms';
+import { FormBloc, ValidatorFunction, FormBlocProvider, PostValidationOnChangeFunction } from './forms';
 import { ToggleButton } from './inputs/togglebutton';
-import { BlocsProvider } from 'bloc-them';
-import { TemplateResult } from 'lit-html';
 import { RangeSelector, Range } from './inputs/rangeselector';
 import { RaisedButton } from './buttons';
-import { BogusBloc } from '../utils/blocs';
 import { ScaffoldBloc, ScaffoldState } from './scaffold';
 import { SingleLineInput } from './inputs/textinputs';
 
 
 export class MyFormBloc extends FormBloc{
+    postOnChangeFunctionGiver(nameOfInput: string): PostValidationOnChangeFunction<any> | undefined {
+        switch(nameOfInput){
+            case 'userChoice':
+                return (nv:boolean, val)=>{
+                    console.log("user choice is : ",nv);
+                }
+        }
+    }
     constructor(){
         super({
             userChoice: true,
