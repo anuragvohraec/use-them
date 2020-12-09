@@ -8,6 +8,16 @@ export abstract class RaisedButton<B extends Bloc<S>, S> extends WidgetBuilder<B
     private bgColor: string;
     private onPressButtonColor:string;
     private light: string;
+    
+    isDisabled(){
+        let t = this.hasAttribute("disabled");
+        
+        if(t){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
     builder(state: S): TemplateResult {
         return html`
@@ -35,14 +45,24 @@ export abstract class RaisedButton<B extends Bloc<S>, S> extends WidgetBuilder<B
                     padding: 20px; 
                     min-height: 80px;
                     text-align: center; 
-                    background-color: ${this.bgColor};
+                    background-color: ${this.isDisabled()?this.theme.button_disable_color:this.bgColor};
                     border-radius:${this.theme.cornerRadius}
                 }
                 .button:active{
                     box-shadow: 0px 0px 0px 0px #0000009e
                 }
             </style>
-            <div class="ripple button" style="" @click=${this.buttonAction}><slot></slot></div>
+            <div class="${(()=>{
+                if(this.isDisabled()){
+                    return "button";
+                }else{
+                    return "ripple button";
+                }
+            })()}" style="" @click=${()=>{
+                if(!this.isDisabled()){
+                    this.buttonAction();
+                }
+            }}><slot></slot></div>
         `;
     }
 

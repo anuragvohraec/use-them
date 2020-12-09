@@ -19,6 +19,8 @@ export class Theme{
     public input_place_holder_color="#d2d2d2";
     public input_icon_color="#ffffff";
 
+    public button_disable_color="#0000008c";
+
     public snack_bar_bg="#000000b3";
 
     public glass_black="#0000008c";

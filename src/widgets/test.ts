@@ -19,7 +19,7 @@ export class MyFormBloc extends FormBloc{
         super({
             userChoice: true,
             priceRange: {start: 200, end:700},
-            areDisabled: new Set(["userChoice"])
+            areDisabled: new Set([])
         });
     }
 
