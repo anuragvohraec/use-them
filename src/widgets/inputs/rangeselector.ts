@@ -309,40 +309,41 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
     connectedCallback(){
        super.connectedCallback();
        this.start = this.bloc?.state.priceRange.start;
-       this.end = this.bloc?.state.priceRange.end;
-         if(!(this.start ==0 ||(this.start && this.start>=0) && this.end ==0 || (this.end && this.end>=0))){
-            throw `No start and end provided for range selector in form initialization for : ${this.name}`
-         }
-
-         if(this.start! > this.end!){
-            throw `For a range selector start cannot be less then end value, please check initialization of rang selector: ${this.name}`;
-         }
-
-         if(this.start!<this.min){
-            throw `Start ${this.start} cannot be less than min value ${this.min}, check form init values for this range selector`;
-         }
-         
-         if(this.end!>this.max){
-            throw `End ${this.end} cannot be more than max value ${this.max}, check form init values for this range selector`;
-         }
-
-         let width =  this.shadowRoot?.querySelector("svg")?.clientWidth;
-         let left = this.shadowRoot?.querySelector("svg")?.clientLeft;
-
-         this.posMin = left!;
-         this.posMax = width!+ this.posMin;
-         this.width = this.posMax-this.posMin;
-
-         let start_posX = this.percentageToPosition(this.valueToPercentage(this.start!));
-         this.setStartPos(start_posX);
-
-         let end_posX = this.percentageToPosition(this.valueToPercentage(this.end!));
-         this.setEndPos(end_posX);
-
-         
-         this.value = {start: this.start!, end: this.end!};
-         this.bloc?.emit({...this.bloc.state})
-         this.setActiveStart(start_posX);
+         this.end = this.bloc?.state.priceRange.end;
+           if(!(this.start ==0 ||(this.start && this.start>=0) && this.end ==0 || (this.end && this.end>=0))){
+              throw `No start and end provided for range selector in form initialization for : ${this.name}`
+           }
+   
+           if(this.start! > this.end!){
+              throw `For a range selector start cannot be less then end value, please check initialization of rang selector: ${this.name}`;
+           }
+   
+           if(this.start!<this.min){
+              throw `Start ${this.start} cannot be less than min value ${this.min}, check form init values for this range selector`;
+           }
+           
+           if(this.end!>this.max){
+              throw `End ${this.end} cannot be more than max value ${this.max}, check form init values for this range selector`;
+           }
+   
+           let width =  this.shadowRoot?.querySelector("#svg8")?.clientWidth;
+           let left = this.shadowRoot?.querySelector("#svg8")?.clientLeft;
+           console.log("here");
+           
+           this.posMin = left!;
+           this.posMax = width!+ this.posMin;
+           this.width = this.posMax-this.posMin;
+   
+           let start_posX = this.percentageToPosition(this.valueToPercentage(this.start!));
+           this.setStartPos(start_posX);
+   
+           let end_posX = this.percentageToPosition(this.valueToPercentage(this.end!));
+           this.setEndPos(end_posX);
+   
+           
+           this.value = {start: this.start!, end: this.end!};
+           this.bloc?.emit({...this.bloc.state})
+           this.setActiveStart(start_posX);
     }
 
     setStartPos(posX:number){

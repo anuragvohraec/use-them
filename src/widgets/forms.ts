@@ -8,6 +8,10 @@ import { TemplateResult, html } from 'lit-html';
 
  export interface FormState{
      [key:string]:any;
+     /**
+      * An entry in this set will disable this element
+      */
+     areDisabled?:Set<string>
  }
 
  export interface ValidatorFunction<V>{
@@ -47,6 +51,27 @@ import { TemplateResult, html } from 'lit-html';
         super(initState);
     }
 
+    disableAnInput(nameOfInput: string){
+        if(!this.state.areDisabled){
+            this.state.areDisabled= new Set<string>();
+        }
+        this.state.areDisabled.add(nameOfInput);
+    }
+
+    enableAnInput(nameOfInput: string){
+        if(this.state.areDisabled){
+            this.state.delete(nameOfInput);
+        }
+    }
+
+    isDisabled(nameOfInput: string): boolean{
+        if(this.state.areDisabled){
+            return this.state.areDisabled.has(nameOfInput);
+        }else{
+            return true;
+        }
+    }
+
     _basicOnChange(nameOfInput:string):OnChangeFunction<any>|undefined{
         return (newValue: any)=>{
             this.state[nameOfInput]=newValue;
@@ -74,6 +99,16 @@ import { TemplateResult, html } from 'lit-html';
      protected name?:string;
      protected messageBloc?: FormMessageBloc;
      private postOnChange?:PostValidationOnChangeFunction<V>;
+
+     
+     public get disabled() : boolean {
+         if(this.bloc){
+            return this.bloc.isDisabled(this.name!);
+         }else{
+             return true;
+         }
+     }
+     
 
      constructor( private type:BlocType<F,FormState>){
          super(type);
