@@ -56,19 +56,21 @@ import { TemplateResult, html } from 'lit-html';
             this.state.areDisabled= new Set<string>();
         }
         this.state.areDisabled.add(nameOfInput);
+        this.emit({...this.state});
     }
 
     enableAnInput(nameOfInput: string){
         if(this.state.areDisabled){
             this.state.delete(nameOfInput);
         }
+        this.emit({...this.state});
     }
 
     isDisabled(nameOfInput: string): boolean{
         if(this.state.areDisabled){
             return this.state.areDisabled.has(nameOfInput);
         }else{
-            return true;
+            return false;
         }
     }
 

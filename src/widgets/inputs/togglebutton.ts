@@ -19,6 +19,7 @@ export class ToggleButton<F extends FormBloc> extends FormInputBuilder<boolean, 
     }
 
     toggle=()=>{
+      if(!this.disabled){
         if(this.value){
           this._OFF_animate(); 
         }else{
@@ -26,9 +27,11 @@ export class ToggleButton<F extends FormBloc> extends FormInputBuilder<boolean, 
         }
         this.value= !this.value;
         this.onChange!(this.value);
+      }
     }
 
     builder(state: FormState): TemplateResult {
+      let inputCircleColor = this.disabled?this.theme.backgroundColor:"#ffffff";
         return html`
 <svg @click=${this.toggle}
  xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
@@ -58,7 +61,7 @@ export class ToggleButton<F extends FormBloc> extends FormInputBuilder<boolean, 
     </rect>
   </g>
   <g id="switch-animation">
-    <circle id="switch" transform="matrix(0.28025,0,0,0.28025,53.809,1.3968)" cx="250.24001" cy="148.7" r="128.07001" fill="#ffffff" filter="url(#filter915)" stroke-linejoin="round" stroke-opacity="0.65882" stroke-width="2.0532"></circle>
+    <circle id="switch" transform="matrix(0.28025,0,0,0.28025,53.809,1.3968)" cx="250.24001" cy="148.7" r="128.07001" fill="${inputCircleColor}" filter="url(#filter915)" stroke-linejoin="round" stroke-opacity="0.65882" stroke-width="2.0532"></circle>
   <animateTransform attributeName="transform" attributeType="auto" type="translate" values="0 0;-81.68950659534471 0" calcMode="spline" keyTimes="0;1" 
   keySplines="0 0 1 1" dur="0.2s" begin="indefinite" repeatCount="1" additive="replace" accumulate="none" fill="freeze" id="on_base_move"></animateTransform>
   <animateTransform attributeName="transform" attributeType="auto" type="translate" values="0 0;81.68950659534471 0" calcMode="spline" keyTimes="0;1" 

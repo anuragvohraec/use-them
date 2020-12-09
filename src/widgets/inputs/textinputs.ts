@@ -52,7 +52,7 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
             <lay-them in="row">
                 ${this.getIcon()}
                 <div style="flex: 1">
-                    <input @input=${this._delegateChange} list="${ifDefined(this.dataList)}" style="height: 130px;" inputmode="${this.getInputMode()}" value="${ifDefined(this.getValue())}" class="sli-bg" placeholder="${this.getPlaceHolder()}" type="${this.getInputType()}">
+                    <input ?disabled=${this.disabled} @input=${this._delegateChange} list="${ifDefined(this.dataList)}" style="height: 130px;" inputmode="${this.getInputMode()}" value="${ifDefined(this.getValue())}" class="sli-bg" placeholder="${this.getPlaceHolder()}" type="${this.getInputType()}">
                 </div>
             </lay-them>
         </div>

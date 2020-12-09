@@ -20,6 +20,14 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
     
     
     builder(state: FormState): TemplateResult {
+       let isDisabled = this.disabled;
+       if(isDisabled){
+          this.start_color = this.base_color;
+          this.end_color = this.base_color;
+       }else{
+            this.start_color = this.theme.primaryColor;
+            this.end_color = this.theme.secondaryColor;
+       }
         return html`
         <style>
            .no-select{
@@ -45,11 +53,11 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
     <linearGradient
        id="linearGradient1197">
       <stop
-         style="stop-color:${this.theme.secondaryColor};stop-opacity:1"
+         style="stop-color:${this.end_color};stop-opacity:1"
          offset="0"
          id="stop1193" />
       <stop
-         style="stop-color:${this.theme.primaryColor};stop-opacity:1"
+         style="stop-color:${this.start_color};stop-opacity:1"
          offset="1"
          id="stop1195" />
     </linearGradient>
@@ -143,7 +151,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
   <g
      id="layer1">
     <rect
-       style="fill:${this.theme.input_bg_color};stroke-width:0.477727;stroke-linejoin:round;stroke-opacity:0.658819"
+       style="fill:${this.base_color};stroke-width:0.477727;stroke-linejoin:round;stroke-opacity:0.658819"
        id="base"
        width="100%"
        height="15"
@@ -162,7 +170,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
        d=""
        id="path833" />
     <circle
-       style="fill:${this.theme.secondaryColor};stroke:#ffffff;stroke-width: 4;"
+       style="fill:${this.end_color};stroke:#ffffff;stroke-width: 4;"
        id="start-handle"
        cy="60"
        r="${this.handleRadius}"
@@ -171,7 +179,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
        @touchmove=${this._start_dragHandler}
        />
     <circle
-       style="fill:${this.theme.primaryColor};stroke:#ffffff;stroke-width: 4;"
+       style="fill:${this.start_color};stroke:#ffffff;stroke-width: 4;"
        id="end-handle"
        cy="60"
        r="${this.handleRadius}"
@@ -214,35 +222,39 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
    }
 
    _start_drag=(e:TouchEvent)=>{
-      let posX = e.changedTouches[0].clientX;
-      posX = this._drag(posX);
-      if(posX! > this.posEnd){
-         posX = this.posEnd - 2*this.handleRadius;
+      if(!this.disabled){
+         let posX = e.changedTouches[0].clientX;
+         posX = this._drag(posX);
+         if(posX! > this.posEnd){
+            posX = this.posEnd - 2*this.handleRadius;
+         }
+         let t = this.posMax-3* this.handleRadius;
+         if(posX >= t){
+            posX = t;
+         }
+         this.setStartPos(posX!);
+         this.setActiveStart(posX!);
+         
+         this._postChange();
       }
-      let t = this.posMax-3* this.handleRadius;
-      if(posX >= t){
-         posX = t;
-      }
-      this.setStartPos(posX!);
-      this.setActiveStart(posX!);
-      
-      this._postChange();
    }
 
    _end_drag=(e:TouchEvent)=>{
-      let posX = e.changedTouches[0].clientX;
-      posX = this._drag(posX);
-      if(posX!<this.posStart){
-         posX = this.posStart + 2*this.handleRadius;
+      if(!this.disabled){
+         let posX = e.changedTouches[0].clientX;
+         posX = this._drag(posX);
+         if(posX!<this.posStart){
+            posX = this.posStart + 2*this.handleRadius;
+         }
+         let t = this.posMin + 3* this.handleRadius;
+         if(posX <= t){
+            posX = t;
+         }
+         this.setEndPos(posX!);
+         this.setActiveEnd(posX!);
+         
+         this._postChange();
       }
-      let t = this.posMin + 3* this.handleRadius;
-      if(posX <= t){
-         posX = t;
-      }
-      this.setEndPos(posX!);
-      this.setActiveEnd(posX!);
-      
-      this._postChange();
    }
 
    _postChange(){
@@ -286,6 +298,10 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
    private posStart:number =0;
    private posEnd:number=0;
 
+   private start_color: string;
+   private end_color: string;
+   private base_color: string;
+
     constructor(type: BlocType<F,FormState>){
         super(type);
         let max = this.getAttribute("max");
@@ -302,6 +318,10 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
         
         let isint = this.getAttribute("isint");
         this.isint = isint?true:false;
+
+        this.start_color = this.theme.primaryColor;
+        this.end_color = this.theme.secondaryColor;
+        this.base_color = this.theme.input_bg_color;
     }
 
     private width:number=0;
@@ -328,7 +348,6 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
    
            let width =  this.shadowRoot?.querySelector("#svg8")?.clientWidth;
            let left = this.shadowRoot?.querySelector("#svg8")?.clientLeft;
-           console.log("here");
            
            this.posMin = left!;
            this.posMax = width!+ this.posMin;
