@@ -33,6 +33,13 @@ To run a local development server that serves the basic demo located in `demo/in
 
 ## Components
 
+### **Animated gradient BG**
+```ts
+<animated-grad-bg use="gradients: #ee7752, #e73c7e, #23a6d5, #23d5ab"></animated-grad-bg>
+```
+In the use attribute you can mention, the gradient colors you waned to be animated.
+See next section to see its demonstration.
+
 ### **Scaffold**
 ```ts
 <ut-scaffold>
@@ -41,8 +48,31 @@ To run a local development server that serves the basic demo located in `demo/in
     <div slot="body" style="height: 100%">
     This is body.
     </div>
+    <div slot="menu">
+      <ut-p>
+        Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum for use in a type specimen book 
+      </ut-p>
+    </div>
 </ut-scaffold>
 ```
+![scaffold demo](ui-screenshots/scaffold.gif?raw=true "Scaffold Demo")
+
+* Scaffold has a **appbar-bg** slot to insert a back ground content for appbar. In above example, an animated gradient background is inserted in teh slot.
+* In title slot one can mention the title.
+* body slot for body of the scaffold.
+* menu bar slot for menu options.
+* one can emit snack bar messages too, using blocs.
+```ts
+export class MyButton extends RaisedButton<ScaffoldBloc,ScaffoldState>{
+    onPress(): void {
+        this.bloc?.postMessageToSnackBar("Hi this is a message for you!")
+    }
+    constructor(){
+        super(ScaffoldBloc)
+    }
+}
+```
+
 
 
 ### **Tabs**
@@ -57,3 +87,14 @@ To run a local development server that serves the basic demo located in `demo/in
 ```
 If you want to detect hand gesture to change tabs, remove **disableswipe** attribute.\
 ![tabs demo](ui-screenshots/tabs.gif?raw=true "Tabs Demo")
+
+
+### Other components
+* Forms
+* Form inputs.
+* Range selector
+* Progress bars.
+* Toggle button.
+
+They can be best be seen working in the demo/index.html.
+Simple run `npm run start` to see the demo of the components of **use-them**.

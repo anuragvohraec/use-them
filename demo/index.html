@@ -92,36 +92,38 @@
               <div slot="body" style="height: 100%">
                   <ut-tab-controller>
                     <ut-tabs>
-                      <ut-tab index="0" icon="account-circle" ><ut-h1>Item 0</ut-h1></ut-tab>
+                      <ut-tab index="0" icon="account-circle" >
+                        <div>
+                            <my-form>
+                              <div  style="padding: 30px;">
+                                <my-toggle-button name="userChoice"></my-toggle-button>
+                              </div>
+                              <div style="padding: 30px;">
+                                <price-range name="priceRange" max="1000" min="100" isint="true"></price-range>
+                              </div>
+                              <div style="padding: 30px;">
+                                <user-password name="userInput" icon="search" placeholder="Search for user" type="text"></user-password>
+                                <div style="font-size: 34px; color: red;">
+                                  <form-message for="userInput"></form-message>
+                                </div>
+                              </div>
+                              
+
+                              <div style="padding: 30px;">
+                                <select-lang name="selectLang" placeholder="Select Lang"></select-lang>
+                              </div>
+
+                              <div style="padding: 30px;">
+                                <my-button use="background-color: #980dac"><ut-h3 use="color: white;">Show SnackBar</ut-h3></my-button>
+                              </div>
+                          </my-form>
+                        </div>  
+                      </ut-tab>
                       <ut-tab index="1" icon="account-balance"><ut-h1>Item 1</ut-h1></ut-tab>
                       <ut-tab index="2" icon="card-travel"><ut-h1>Item 2</ut-h1></ut-tab>
                     </ut-tabs>
                   </ut-tab-controller>
-                  <div>
-                    <my-form>
-                      <div  style="padding: 30px;">
-                        <my-toggle-button name="userChoice"></my-toggle-button>
-                      </div>
-                      <div style="padding: 30px;">
-                        <price-range name="priceRange" max="1000" min="100" isint="true"></price-range>
-                      </div>
-                      <div style="padding: 30px;">
-                        <user-password name="userInput" icon="search" placeholder="Search for user" type="text"></user-password>
-                        <div style="font-size: 34px; color: red;">
-                          <form-message for="userInput"></form-message>
-                        </div>
-                      </div>
-                      
-
-                      <div style="padding: 30px;">
-                        <select-lang name="selectLang" placeholder="Select Lang"></select-lang>
-                      </div>
-
-                      <div style="padding: 30px;">
-                        <my-button use="background-color: #980dac"><ut-h3 use="color: white;">Show SnackBar</ut-h3></my-button>
-                      </div>
-                  </my-form>
-                </div>
+                  
 
                   <video-compressor></video-compressor>
                   <video-compressor use="primaryColor: #107fdf; backgroundColor: #df10dc"></video-compressor>
