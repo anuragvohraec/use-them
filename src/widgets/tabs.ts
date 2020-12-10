@@ -104,7 +104,7 @@ customElements.define("ut-tab-header", TabHeader);
 class _TabsGestureDetector extends GestureDetector{
     private _routeBloc?: TabRouterBloc;
     constructor(){
-        super();
+        super(1,100);
     }
 
     connectedCallback(){
@@ -201,7 +201,9 @@ export class TabController extends BlocsProvider{
                 ${this.getHeaders()}
             </div>
             <div  class="body" style="flex: 1;">
+            <tabs-gesture-detector>
                 <slot></slot>
+                </tabs-gesture-detector>
             </div>
         </lay-them>
         `;

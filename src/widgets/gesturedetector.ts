@@ -99,7 +99,7 @@ class GestureDetectorBloc extends Bloc<GESTURE>{
      * 
      * @param drag_sensitivity number between 0 to 1, its ration of start to current distance.
      */
-    constructor(private drag_sensitivity:number = 0.5, private minDistanceInPx:number=150){
+    constructor(private drag_sensitivity:number, private minDistanceInPx:number){
         super(GESTURE.NO_ACTION)
         if(drag_sensitivity>1){
             drag_sensitivity=1
@@ -115,9 +115,9 @@ class GestureDetectorBloc extends Bloc<GESTURE>{
 }
 
 export class GestureDetector extends WidgetBuilder<GestureDetectorBloc,GESTURE>{
-    constructor(){
+    constructor(private drag_sensitivity:number = 0.5, private minDistanceInPx:number=150){
         super(GestureDetectorBloc,{
-            useThisBloc: new GestureDetectorBloc(),
+            useThisBloc: new GestureDetectorBloc(drag_sensitivity, minDistanceInPx),
             buildWhen:(o,n)=>{
                 if(n === GESTURE.NO_ACTION){
                     return false;
