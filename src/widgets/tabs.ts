@@ -145,7 +145,6 @@ class _TabsGestureDetector extends GestureDetector{
 customElements.define("tabs-gesture-detector", _TabsGestureDetector);
 
 export class TabController extends BlocsProvider{
-    private _number_of_tabs:number=0;
     
     private _headers?: TemplateResult;
 
@@ -157,7 +156,6 @@ export class TabController extends BlocsProvider{
         if(!this._headers){
             let tabs = this.querySelectorAll("ut-tabs > ut-tab");
             if(tabs.length>0){
-                this._number_of_tabs=tabs.length;
 
                 let listOfIcons: any={};
                 for(let i=0;i<tabs.length;i++){
@@ -185,6 +183,18 @@ export class TabController extends BlocsProvider{
         }
     }
 
+    getBody():TemplateResult{
+        let t = this.hasAttribute("disableswipe");
+        if(t){
+            return html`<slot></slot>`;
+        }else{
+            return html`
+            <tabs-gesture-detector>
+                <slot></slot>
+            </tabs-gesture-detector>`;
+        }
+    }
+
     builder(): TemplateResult {
         return html`
         <style>
@@ -201,9 +211,7 @@ export class TabController extends BlocsProvider{
                 ${this.getHeaders()}
             </div>
             <div  class="body" style="flex: 1;">
-            <tabs-gesture-detector>
-                <slot></slot>
-                </tabs-gesture-detector>
+                ${this.getBody()}
             </div>
         </lay-them>
         `;
