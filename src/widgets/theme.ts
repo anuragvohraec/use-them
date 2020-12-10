@@ -33,6 +33,9 @@ export class Theme{
     public H6_font_size:string ="1.2em";
 
     public color: string ="black";
+
+    public tab_inactive_color="#dbdbdb";
+    public tab_inactive_icon_color="#919191";
 }
 
 

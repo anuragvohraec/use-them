@@ -10,3 +10,4 @@ export * from './widgets/test.js';
 export * from './widgets/buttons.js';
 export * from './utils/utils.js';
 export * from './widgets/backgrounds.js';
+export * from './widgets/tabs.js';

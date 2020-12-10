@@ -20,7 +20,7 @@
     "bloc-them": "^3.0.1",
     "lay-them": "^3.0.4",
     "lit-html": "^1.1.2",
-    "route-them": "^2.0.2"
+    "route-them": "^2.0.5"
   },
   "devDependencies": {
     "@types/node": "13.11.1",
