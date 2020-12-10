@@ -2,14 +2,42 @@ import { BlocsProvider } from 'bloc-them';
 import { html, render, TemplateResult } from 'lit-html';
 import { APage, RouteState, RouteThem, RouteThemBloc } from 'route-them';
 import { WidgetBuilder } from '../utils/blocs';
+import { GestureDetector } from './gesturedetector';
 
 
-export class TabHeader extends WidgetBuilder<RouteThemBloc, RouteState>{
+class TabRouterBloc extends RouteThemBloc{
+    private _number_of_routes:number=0;
+
+    constructor(){
+        super();
+    }
+
+    define(routePath: string){
+        super.define(routePath);
+        this._number_of_routes++;
+    }
+
+    
+    public get number_of_routes() : number {
+        return this._number_of_routes
+    }
+    
+    public get current_index():number{
+        let t = this.state.url_path;
+        if(t === "/"){
+            return 0;
+        }else{
+            return parseInt(t.substring(1));
+        }
+    }
+}
+
+export class TabHeader extends WidgetBuilder<TabRouterBloc, RouteState>{
     private _icon!:string;
     private _indexpath!: string;
     
     constructor(){
-        super(RouteThemBloc);
+        super(TabRouterBloc);
     }
 
     
@@ -72,18 +100,65 @@ export class TabHeader extends WidgetBuilder<RouteThemBloc, RouteState>{
 }
 customElements.define("ut-tab-header", TabHeader);
 
+
+class _TabsGestureDetector extends GestureDetector{
+    private _routeBloc?: TabRouterBloc;
+    constructor(){
+        super();
+    }
+
+    connectedCallback(){
+        super.connectedCallback();
+        let t = BlocsProvider.of(TabRouterBloc, this);
+        if(!t){
+            throw `No TabRouterBloc found for gesture detector for tabs`;
+        }else{
+            this._routeBloc = t;
+        }
+    }
+
+    onSwipeLeft=()=>{
+        if(this._routeBloc){
+            let next_index :number;
+            if(this._routeBloc.current_index <= 0){
+                next_index = this._routeBloc.number_of_routes-1;
+            }else{
+                next_index = this._routeBloc.current_index-1;
+            }
+            this._routeBloc.goToPage(`/${next_index}`,{saveToBrowserHistory:false,title:""});
+        }
+    }
+    
+    onSwipeRight=()=>{
+        if(this._routeBloc){
+            let next_index :number;
+            if(this._routeBloc.current_index >= this._routeBloc.number_of_routes-1){
+                next_index = 0 ;
+            }else{
+                next_index = this._routeBloc.current_index+1;
+            }
+            this._routeBloc.goToPage(`/${next_index}`,{saveToBrowserHistory:false,title:""});
+        }
+    }
+}
+
+customElements.define("tabs-gesture-detector", _TabsGestureDetector);
+
 export class TabController extends BlocsProvider{
+    private _number_of_tabs:number=0;
     
     private _headers?: TemplateResult;
 
     constructor(){
-        super([new RouteThemBloc()])
+        super([new TabRouterBloc()])
     }
 
     private getHeaders():TemplateResult{
         if(!this._headers){
             let tabs = this.querySelectorAll("ut-tabs > ut-tab");
             if(tabs.length>0){
+                this._number_of_tabs=tabs.length;
+
                 let listOfIcons: any={};
                 for(let i=0;i<tabs.length;i++){
                     //listOfIcons.push();
@@ -137,10 +212,10 @@ customElements.define("ut-tab-controller", TabController);
 
 export class Tabs extends RouteThem{
     constructor(){
-        super("ut-tab");
+        super("ut-tab",TabRouterBloc);
     }
 
-    builder(){
+    builder(state: number): TemplateResult {
         return html`<div style="width: 100%; height: 100%;"><slot></slot></div>`;
     }
 }
@@ -148,13 +223,15 @@ customElements.define("ut-tabs", Tabs);
 
 
 export class Tab extends APage{
+    private index:number =-1;
     constructor(){
-        super();
+        super(TabRouterBloc);
         //lets set route attribute for the index mentioned.
         let t = this.getAttribute("index");
         if(!t){
             throw `No attribute index attribute given on the tab`;
         }else{
+            this.index = parseInt(t);
             let r = t==="0"?"/":`/${t}`;
             this.setAttribute("route",r);
         }
