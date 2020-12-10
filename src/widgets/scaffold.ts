@@ -61,7 +61,6 @@ export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
             .appbar {
                 min-height: 150px;
                 width: 100%;
-                box-shadow: 0px 2px 10px black;
             }
             .expanded{
                 width:100%; 
@@ -114,7 +113,7 @@ export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
             }
         })()};">
             <lay-them in="row" ca="stretch" ma="flex-start">
-                <div style="background-color: white; flex: 2 1 auto; max-width: 70%;">
+                <div style="background-color: white; flex: 2 1 auto; max-width: 70%; box-shadow: 0px 0px 30px black;">
                     <slot name="menu"></slot>
                 </div>
                 <div style="flex: 1 1 auto;" @click=${this.toggleMenuBar}></div>

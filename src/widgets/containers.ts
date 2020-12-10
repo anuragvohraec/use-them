@@ -8,7 +8,7 @@ export class Expanded extends WidgetBuilder<BogusBloc,number>{
         });
     }
     builder(state: number): TemplateResult {
-        return html`<div style="width:100%; height: 100%;"></div>`;
+        return html`<div style="width:100%; height: 100%;"><slot></slot></div>`;
     }
 }
 
