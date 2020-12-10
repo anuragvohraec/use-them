@@ -120,24 +120,24 @@ class _TabsGestureDetector extends GestureDetector{
     onSwipeLeft=()=>{
         if(this._routeBloc){
             let next_index :number;
-            if(this._routeBloc.current_index <= 0){
-                next_index = this._routeBloc.number_of_routes-1;
+            if(this._routeBloc.current_index >= this._routeBloc.number_of_routes-1){
+                next_index = 0 ;
             }else{
-                next_index = this._routeBloc.current_index-1;
+                next_index = this._routeBloc.current_index+1;
             }
-            this._routeBloc.goToPage(`/${next_index}`,{saveToBrowserHistory:false,title:""});
+            this._routeBloc.goToPage(`/${next_index===0?"":next_index}`,{saveToBrowserHistory:false,title:""});
         }
     }
     
     onSwipeRight=()=>{
         if(this._routeBloc){
             let next_index :number;
-            if(this._routeBloc.current_index >= this._routeBloc.number_of_routes-1){
-                next_index = 0 ;
+            if(this._routeBloc.current_index <= 0){
+                next_index = this._routeBloc.number_of_routes-1;
             }else{
-                next_index = this._routeBloc.current_index+1;
+                next_index = this._routeBloc.current_index-1;
             }
-            this._routeBloc.goToPage(`/${next_index}`,{saveToBrowserHistory:false,title:""});
+            this._routeBloc.goToPage(`/${next_index===0?"":next_index}`,{saveToBrowserHistory:false,title:""});
         }
     }
 }

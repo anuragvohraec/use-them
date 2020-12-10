@@ -3,12 +3,12 @@ import { html, TemplateResult } from 'lit-html';
 import {WidgetBuilder} from '../utils/blocs.js';
 
 enum GESTURE{
-    NO_ACTION,
-    TAP,
-    SWIPE_LEFT,
-    SWIPE_RIGHT,
-    SWIPE_UP,
-    SWIPE_DOWN
+    NO_ACTION,//0
+    TAP,//1
+    SWIPE_LEFT,//2
+    SWIPE_RIGHT,//3
+    SWIPE_UP,//4
+    SWIPE_DOWN//5
 }
 
 /**
@@ -57,7 +57,7 @@ class GestureDetectorBloc extends Bloc<GESTURE>{
             let h = (this._posEndX- this._posStartX)*this.drag_sensitivity;
             let v = (this._posEndY- this._posStartY)*this.drag_sensitivity;
             
-            if(h>=v){
+            if(Math.abs(h)>=Math.abs(v)){
                 //horizontal movement
                 if(h>0){
                     //right movement
@@ -79,14 +79,14 @@ class GestureDetectorBloc extends Bloc<GESTURE>{
                 if(v>0){
                     //up movement
                     if(Math.abs(v)>this.minDistanceInPx){
-                        this.emit(GESTURE.SWIPE_UP)
+                        this.emit(GESTURE.SWIPE_DOWN)
                     }else{
                         this.emit(GESTURE.NO_ACTION);
                     }
                 }else{
                     //left movement
                     if(Math.abs(v)>this.minDistanceInPx){
-                        this.emit(GESTURE.SWIPE_DOWN)
+                        this.emit(GESTURE.SWIPE_UP)
                     }else{
                         this.emit(GESTURE.NO_ACTION);
                     }
