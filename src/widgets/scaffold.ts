@@ -80,7 +80,7 @@ export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
             <lay-them for="base of scaffold">
                 <div class="appbar">
                     <lay-them in="stack">
-                        <div style="height: 150px; position: fixed; width: 100%">
+                        <div style="height: 150px; position: fixed; width: 100%; box-shadow: 0px 0px 10px black;">
                             <slot name="appbar-bg">
                                 <svg version="1.1" viewBox="0 0 100 100" preserveAspectRatio="none" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                                     <defs>
