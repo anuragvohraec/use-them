@@ -94,7 +94,7 @@ export class TabHeader extends WidgetBuilder<TabRouterBloc, RouteState>{
         </style>
         <div class="icon" @click=${()=>{
             this.bloc?.goToPage(this._indexpath,{saveToBrowserHistory:false,title:""})
-        }}><iron-icon icon="${this._icon}"></iron-icon></div>
+        }}><iron-icon icon="${this._icon}" style="fill: ${state.url_path === this.indexpath ? "black": this.theme.tab_inactive_icon_color}"></iron-icon></div>
         `;
     }
 }
