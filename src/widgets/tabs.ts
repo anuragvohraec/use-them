@@ -83,13 +83,13 @@ export class TabHeader extends WidgetBuilder<TabRouterBloc, RouteState>{
                 width: 100%;
                 height: 100%;
                 flex: 1;
-                min-width: 200px;
+                min-width: 50px;
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
-                --iron-icon-height: 80px;
-                --iron-icon-width: 80px;
+                --iron-icon-height: 30px;
+                --iron-icon-width: 30px;
             }
         </style>
         <div class="icon" @click=${()=>{
@@ -199,7 +199,7 @@ export class TabController extends BlocsProvider{
         return html`
         <style>
             .headers{
-                height: 150px;
+                height: 50px;
                 width: 100%;
             }
             .icon{

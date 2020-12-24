@@ -45,7 +45,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    width="100%"
-   height="100px"
+   height="50px"
    version="1.1"
    id="svg8">
   <defs
@@ -154,9 +154,9 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
        style="fill:${this.base_color};stroke-width:0.477727;stroke-linejoin:round;stroke-opacity:0.658819"
        id="base"
        width="100%"
-       height="15"
+       height="5"
        x="0"
-       y="50" />
+       y="20" />
     <!-- <rect
        style="fill:url(#linearGradient1199);fill-opacity:1;stroke-width:0.477727;stroke-linejoin:round;stroke-opacity:0.658819"
        id="active-range"
@@ -172,7 +172,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
     <circle
        style="fill:${this.end_color};stroke:#ffffff;stroke-width: 4;"
        id="start-handle"
-       cy="60"
+       cy="25"
        r="${this.handleRadius}"
        @touchstart=${this._drag_ON}
        @touchend=${this._drag_OFF}
@@ -181,7 +181,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
     <circle
        style="fill:${this.start_color};stroke:#ffffff;stroke-width: 4;"
        id="end-handle"
-       cy="60"
+       cy="25"
        r="${this.handleRadius}"
        @touchstart=${this._drag_ON}
        @touchend=${this._drag_OFF}
@@ -307,7 +307,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
         let max = this.getAttribute("max");
         let min = this.getAttribute("min");
 
-        this.handleRadius = 30;
+        this.handleRadius = 12;
 
         if(!(max && min)){
             throw `Not all attributes provided for a range selector: min and max`;
@@ -372,13 +372,13 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
 
     setActiveStart(posX:number){
       let s = this.posEnd-this.posStart;
-      let d=`m ${posX},50 h ${s} v 15 h -${s} z`;
+      let d=`m ${posX},20 h ${s} v 5 h -${s} z`;
       this.shadowRoot?.querySelector("#acrange")?.setAttribute("d",d);
     }
 
     setActiveEnd(posX:number){
        let s = this.posStart-this.posMin;
-      let d=`m ${s},50 h ${posX-s} v 15 h ${s-posX} z`;
+      let d=`m ${s},20 h ${posX-s} v 5 h ${s-posX} z`;
       this.shadowRoot?.querySelector("#acrange")?.setAttribute("d",d);
     }
 

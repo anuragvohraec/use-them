@@ -5,7 +5,7 @@ import {WidgetBuilder} from '../utils/blocs';
 /**
  * Keys must be all in lower case
  */
-interface LanguagePack{
+export interface LanguagePack{
     [key: string]: string
 }
 

@@ -46,7 +46,7 @@ export abstract class ProgressBarBuilder extends WidgetBuilder<ProgressBloc,numb
     builder(state: number): TemplateResult {
         return html`
 <svg 
-style="height: 40px;width: 100%;"
+style="height: 4px;width: 100%;"
 inkscape:version="1.0.1 (0767f8302a, 2020-10-17)" sodipodi:docname="progress-bar.svg" version="1.1" viewBox="0 0 800 50" xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" preserveAspectRatio="none">
 <linearGradient id="linearGradient850" x1="0" x2="500" y1="53.936" y2="50.846" gradientUnits="userSpaceOnUse">
         <stop stop-color=${this.theme.secondaryColor} offset="0"></stop>

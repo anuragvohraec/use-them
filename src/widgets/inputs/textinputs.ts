@@ -22,7 +22,7 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
             input{
                 background: transparent;
                 border: none;
-                font-size: 40px;
+                font-size: 1em;
                 caret-color: ${this.theme.input_cursor_color};
                 color: ${this.theme.input_text_color};
                 padding: ${this.theme.input_padding};
@@ -38,13 +38,13 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
                 color: ${this.theme.input_place_holder_color};
             }
             .iconCtrl{
-                --iron-icon-height: 80px;
-                --iron-icon-width: 80px;
+                --iron-icon-height: 30px;
+                --iron-icon-width: 30px;
                 display: flex;
                 flex-direction: row;
                 justify-content: center;
                 align-items: center;
-                padding-left: 20px;
+                padding-left: 5px;
             }
         </style>
         ${this.getDataList()}
@@ -52,7 +52,7 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
             <lay-them in="row">
                 ${this.getIcon()}
                 <div style="flex: 1">
-                    <input ?disabled=${this.disabled} @input=${this._delegateChange} list="${ifDefined(this.dataList)}" style="height: 130px;" inputmode="${this.getInputMode()}" value="${ifDefined(this.getValue())}" class="sli-bg" placeholder="${this.getPlaceHolder()}" type="${this.getInputType()}">
+                    <input ?disabled=${this.disabled} @input=${this._delegateChange} list="${ifDefined(this.dataList)}"  inputmode="${this.getInputMode()}" value="${ifDefined(this.getValue())}" class="sli-bg" placeholder="${this.getPlaceHolder()}" type="${this.getInputType()}">
                 </div>
             </lay-them>
         </div>

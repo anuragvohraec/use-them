@@ -41,9 +41,8 @@ export abstract class RaisedButton<B extends Bloc<S>, S> extends WidgetBuilder<B
                     flex-wrap: nowrap;
                     justify-content: center;
                     align-items: stretch;
-                    user-select: none;
-                    padding: 20px; 
-                    min-height: 80px;
+                    user-select: none; 
+                    min-height: 50px;
                     text-align: center; 
                     background-color: ${this.isDisabled()?this.theme.button_disable_color:this.bgColor};
                     border-radius:${this.theme.cornerRadius}

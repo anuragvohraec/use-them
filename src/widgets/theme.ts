@@ -9,11 +9,11 @@ export class Theme{
     public iconColor: string ="#ffffff";
 
     public backgroundColor: string = "#ededed";
-    public cornerRadius : string = "10px";
+    public cornerRadius : string = "4px";
 
     public input_bg_color="#00000054";
-    public input_height="80px";
-    public input_padding="40px 20px";
+    public input_height="50px";
+    public input_padding="5px 10px";
     public input_cursor_color:string= "#ffffff";
     public input_text_color="#ffffff";
     public input_place_holder_color="#d2d2d2";
@@ -25,12 +25,12 @@ export class Theme{
 
     public glass_black="#0000008c";
 
-    public P_font_size:string = "2em";
-    public H3_font_size:string = "2.5em";
-    public H2_font_size:string="3.5em";
-    public H1_font_size:string = "4.5em";
-    public H5_font_size:string ="1.5em";
-    public H6_font_size:string ="1.2em";
+    public P_font_size:string = "1em";
+    public H3_font_size:string = "1.3em";
+    public H2_font_size:string="1.6em";
+    public H1_font_size:string = "2em";
+    public H5_font_size:string ="0.7em";
+    public H6_font_size:string ="0.5em";
 
     public color: string ="black";
 

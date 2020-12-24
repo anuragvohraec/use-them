@@ -59,7 +59,7 @@ export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
         <!-- TODO menu bar-->
         <style>
             .appbar {
-                min-height: 150px;
+                min-height: 60px;
                 width: 100%;
             }
             .expanded{
@@ -70,7 +70,7 @@ export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
                 background-color: ${this.theme.glass_black};
             }
             .snack-bar{
-                background-color: ${this.theme.snack_bar_bg};position: fixed; bottom: 100px; padding:20px 50px; max-width: 90%; color: white;
+                background-color: ${this.theme.snack_bar_bg};position: fixed; bottom: 50px; padding:10px 20px; max-width: 90%; color: white;
             }
         </style>
 <div class="expanded">
@@ -79,7 +79,7 @@ export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
             <lay-them for="base of scaffold">
                 <div class="appbar">
                     <lay-them in="stack">
-                        <div style="height: 150px; position: fixed; width: 100%; box-shadow: 0px 0px 10px black;">
+                        <div style="height: 60px; position: fixed; width: 100%; box-shadow: 0px 0px 10px black;">
                             <slot name="appbar-bg">
                                 <svg version="1.1" viewBox="0 0 100 100" preserveAspectRatio="none" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                                     <defs>
@@ -126,7 +126,7 @@ export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
                 return "none";
             }
         })()};">
-            <div style="color:white; font-size: ${this.theme.H3_font_size};">${state.snackBarMessage}</div>
+            <div style="color:white; font-size: ${this.theme.P_font_size};">${state.snackBarMessage}</div>
         </div>
     </lay-them>
 </div>
@@ -150,8 +150,8 @@ class MenuButton extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
 
     builder(state: ScaffoldState): TemplateResult {
         return html`<svg
-        width="25mm"
-        height="25mm"
+        width="10mm"
+        height="10mm"
         viewBox="0 0 25 25"
         version="1.1"
         id="svg845"
