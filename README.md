@@ -100,5 +100,8 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+## "version": "1.0.0"
+1. Made it responsive
+
 ## "version": "0.0.1"
 1. First functioning release with following components: tabs, scaffold, toggle button, range selector, form inputs , Raise button, progress-bars, i18n, apptheme blocs.
