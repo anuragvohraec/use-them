@@ -18,6 +18,7 @@ export class Theme{
     public input_text_color="#ffffff";
     public input_place_holder_color="#d2d2d2";
     public input_icon_color="#ffffff";
+    public input_font_weight="normal";
 
     public button_disable_color="#0000008c";
 

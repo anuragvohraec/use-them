@@ -29,7 +29,7 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
                 -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
                 -moz-box-sizing: border-box;    /* Firefox, other Gecko */
                 box-sizing: border-box;
-                font-weight: bold;
+                font-weight: ${this.theme.input_font_weight};
             }
             input:focus{
                 outline-width: 0;
