@@ -84,7 +84,8 @@ export class CheckBox<F extends FormBloc> extends FormInputBuilder<string,F>{
                 transform: rotate(45deg);
                 }
                 </style>
-            <label class="container">${this.label}
+            <label class="container">
+                <ut-p>${this.label}</ut-p>
                 <input type="checkbox" value="${this.checkValue}" ?disabled=${this.disabled} @change=${this._delegateChange}>
                 <span class="checkmark"></span>
             </label>`;

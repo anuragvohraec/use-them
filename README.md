@@ -103,6 +103,7 @@ Simple run `npm run start` to see the demo of the components of **use-them**.
 ## "version": "2.0.0"
 1. Configurable active color for tabs.
 2. Input font weight can be controlled.
+3. Check box input added
 
 ## "version": "1.0.0"
 1. Made it responsive
