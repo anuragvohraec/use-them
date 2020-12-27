@@ -86,13 +86,15 @@ export class CheckBox<F extends FormBloc> extends FormInputBuilder<string,F>{
                 </style>
             <label class="container">
                 <slot name="label"><ut-p>${this.label}</ut-p></slot>
-                <input type="checkbox" value="${this.checkValue}" ?disabled=${this.disabled} @change=${this._delegateChange}>
+                <input type="checkbox" value="${this.checkValue}" ?disabled=${this.disabled} @click=${this._delegateChange}>
                 <span class="checkmark"></span>
             </label>`;
     }
 
     _delegateChange=(e: InputEvent)=>{
-        this.onChange!((e.target as HTMLInputElement).value);
+        let t = (e.target as HTMLInputElement).checked;
+        let finalValue = t?this.checkValue:undefined;
+        this.onChange!(finalValue!);
     }
 
 }
