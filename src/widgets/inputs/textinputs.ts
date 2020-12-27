@@ -51,8 +51,11 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
         <div class="sli-bg glass">
             <lay-them in="row">
                 ${this.getIcon()}
-                <div style="flex: 1">
-                    <input ?disabled=${this.disabled} @input=${this._delegateChange} list="${ifDefined(this.dataList)}"  inputmode="${this.getInputMode()}" value="${ifDefined(this.getValue())}" class="sli-bg" placeholder="${this.getPlaceHolder()}" type="${this.getInputType()}">
+                <div style="flex: 1;">
+                    <lay-them in="row" ca="center">
+                        <input id="sli" ?disabled=${this.disabled} @input=${this._delegateChange} list="${ifDefined(this.dataList)}"  inputmode="${this.getInputMode()}" value="${ifDefined(this.getValue())}" class="sli-bg" placeholder="${this.getPlaceHolder()}" type="${this.getInputType()}">
+                        ${this.getClearButton()}
+                    </lay-them>
                 </div>
             </lay-them>
         </div>
@@ -70,6 +73,9 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
     }
 
     getInputMode=()=>{
+        if(this.valueList){
+            return "none";
+        }
         let inputmode = this.getAttribute("inputmode");
         if(inputmode){
             return inputmode;
@@ -93,6 +99,16 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
         if(icon){
             return html`<div class="iconCtrl"><iron-icon icon="${icon}" style="fill: ${this.theme.input_icon_color};"></iron-icon></div>`;
         }
+    }
+
+    getClearButton = ()=>{
+        if(this.hasAttribute("clearable") || this.valueList){
+            return html`<div style="padding: 5px;" @click=${this.clearText}><iron-icon icon="clear" style="fill: ${this.theme.input_icon_color};"></iron-icon></div>`;
+        }
+    }
+
+    clearText= ()=>{
+        (this.shadowRoot?.querySelector("#sli") as HTMLInputElement).value="";
     }
 
     getValue =(): string|undefined=>{
