@@ -14,6 +14,9 @@ import { TemplateResult, html } from 'lit-html';
      areDisabled?:Set<string>
  }
 
+ /**
+  * if it returns a string that means validation has failed.
+  */
  export interface ValidatorFunction<V>{
      (currentValue: V):string|undefined;
  }

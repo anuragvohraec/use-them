@@ -100,6 +100,10 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+## "version": "2.0.0"
+1. Configurable active color for tabs.
+2. 
+
 ## "version": "1.0.0"
 1. Made it responsive
 
