@@ -20,7 +20,8 @@ export class Theme{
     public input_icon_color="#ffffff";
     public input_font_weight="normal";
     public input_checkbox_active_color=this.primaryColor;
-    public input_check_mark_color=this.input_bg_color;
+    public input_check_mark_color=this.input_bg_color
+    public input_checkbox_hover="#545454";
 
     public button_disable_color="#0000008c";
 

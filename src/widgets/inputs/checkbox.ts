@@ -51,7 +51,7 @@ export class CheckBox<F extends FormBloc> extends FormInputBuilder<string,F>{
 
                 /* On mouse-over, add a grey background color */
                 .container:hover input ~ .checkmark {
-                background-color: #ccc;
+                background-color: ${this.theme.input_checkbox_hover};
                 }
 
                 /* When the checkbox is checked, add a blue background */
@@ -85,7 +85,7 @@ export class CheckBox<F extends FormBloc> extends FormInputBuilder<string,F>{
                 }
                 </style>
             <label class="container">
-                <ut-p>${this.label}</ut-p>
+                <slot name="label"><ut-p>${this.label}</ut-p></slot>
                 <input type="checkbox" value="${this.checkValue}" ?disabled=${this.disabled} @change=${this._delegateChange}>
                 <span class="checkmark"></span>
             </label>`;
