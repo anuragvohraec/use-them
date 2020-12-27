@@ -12,3 +12,4 @@ export * from './utils/utils.js';
 export * from './widgets/backgrounds.js';
 export * from './widgets/tabs.js';
 export * from './widgets/gesturedetector.js';
+export * from './widgets/inputs/checkbox.js';

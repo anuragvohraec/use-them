@@ -4,6 +4,7 @@ import { RangeSelector, Range } from './inputs/rangeselector';
 import { RaisedButton } from './buttons';
 import { ScaffoldBloc, ScaffoldState } from './scaffold';
 import { SingleLineInput } from './inputs/textinputs';
+import { CheckBox } from './inputs/checkbox';
 
 
 export class MyFormBloc extends FormBloc{
@@ -108,3 +109,11 @@ export class SelectLang extends SingleLineInput<MyFormBloc>{
 }
 
 customElements.define("select-lang", SelectLang);
+
+export class MyCheckBox extends CheckBox<MyFormBloc>{
+    constructor(){
+        super(MyFormBloc,"CheckBoxValue","My Check Box:");
+    }
+}
+
+customElements.define("my-check-box", MyCheckBox);
