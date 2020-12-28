@@ -22,7 +22,7 @@ export class Theme{
 
     public input_checkbox_active_color=this.primaryColor;
     public input_check_mark_color=this.input_bg_color
-    public input_checkbox_hover="#545454";
+    public input_checkbox_hover=this.input_bg_color;
 
     public button_disable_color="#0000008c";
     public button_height="40px";

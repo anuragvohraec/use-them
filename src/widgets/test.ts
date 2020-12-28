@@ -140,7 +140,7 @@ class CrossButtonForPopUp extends WidgetBuilder<HideBloc,boolean>{
         }}>X</div>`;
     }
     constructor(){
-        super(HideBloc);
+        super(HideBloc)
     }
 }
 
