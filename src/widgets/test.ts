@@ -5,6 +5,9 @@ import { RaisedButton } from './buttons';
 import { ScaffoldBloc, ScaffoldState } from './scaffold';
 import { SingleLineInput } from './inputs/textinputs';
 import { CheckBox } from './inputs/checkbox';
+import { HideBloc } from './dialogues';
+import { WidgetBuilder } from '../utils/blocs';
+import { html, TemplateResult } from 'lit-html';
 
 
 export class MyFormBloc extends FormBloc{
@@ -117,3 +120,28 @@ export class MyCheckBox extends CheckBox<MyFormBloc>{
 }
 
 customElements.define("my-check-box", MyCheckBox);
+
+class MyDialogueButton extends RaisedButton<HideBloc,boolean>{
+    onPress(): void {
+        this.bloc?.toggle();
+    }
+
+    constructor(){
+        super(HideBloc,{useThisBloc: new HideBloc()},[40,100])
+    }
+}
+
+customElements.define("my-dialogue-button",MyDialogueButton);
+
+class CrossButtonForPopUp extends WidgetBuilder<HideBloc,boolean>{
+    builder(state: boolean): TemplateResult {
+        return html`<div style="color: white" @click=${()=>{
+            this.bloc?.toggle()
+        }}>X</div>`;
+    }
+    constructor(){
+        super(HideBloc);
+    }
+}
+
+customElements.define("cross-button-close-dialogue",CrossButtonForPopUp);

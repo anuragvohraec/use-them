@@ -6,10 +6,14 @@ export * from './widgets/text.js';
 export * from './widgets/containers.js';
 export * from './widgets/forms.js';
 export * from './widgets/inputs/togglebutton.js';
-export * from './widgets/test.js';
+
 export * from './widgets/buttons.js';
 export * from './utils/utils.js';
 export * from './widgets/backgrounds.js';
 export * from './widgets/tabs.js';
 export * from './widgets/gesturedetector.js';
 export * from './widgets/inputs/checkbox.js';
+export * from './widgets/dialogues.js';
+
+
+export * from './widgets/test.js';

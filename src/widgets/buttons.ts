@@ -57,15 +57,20 @@ export abstract class RaisedButton<B extends Bloc<S>, S> extends WidgetBuilder<B
                 }else{
                     return "ripple button";
                 }
-            })()}" style="" @click=${()=>{
-                if(!this.isDisabled()){
-                    this.buttonAction();
-                }
+            })()}" @click=${{
+                handleEvent: (e:Event)=>{
+                    if(!this.isDisabled()){
+                        this.buttonAction();
+                    }
+                },
+                capture: false
             }}><slot></slot></div>
         `;
     }
 
-    constructor(type: BlocType<B,S>,  configs?: BlocBuilderConfig<B, S>){
+    
+
+    constructor(type: BlocType<B,S>,  configs?: BlocBuilderConfig<B, S>, shades:number[]=[20,80]){
         super(type, configs);
         this.bgColor = "#ffffff";
         if(this.useAttribute){
@@ -74,8 +79,8 @@ export abstract class RaisedButton<B extends Bloc<S>, S> extends WidgetBuilder<B
                 this.bgColor = bgc;
             }
         }
-        this.onPressButtonColor=ColorUtil.shadeColor(this.bgColor,20);
-        this.light=ColorUtil.shadeColor(this.bgColor,80);
+        this.onPressButtonColor=ColorUtil.shadeColor(this.bgColor,shades[0]);
+        this.light=ColorUtil.shadeColor(this.bgColor,shades[1]);
     }
 
     abstract onPress():void;

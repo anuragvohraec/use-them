@@ -11,12 +11,12 @@ export class Theme{
     public backgroundColor: string = "#ededed";
     public cornerRadius : string = "4px";
 
-    public input_bg_color="#00000054";
-    public input_height="50px";
+    public input_bg_color="#e6e6e6";
+    public input_height="40px";
     public input_padding="5px 10px";
     public input_cursor_color:string= "#ffffff";
-    public input_text_color="#ffffff";
-    public input_place_holder_color="#d2d2d2";
+    public input_text_color="#000000";
+    public input_place_holder_color="#808080";
     public input_icon_color="#ffffff";
     public input_font_weight="normal";
 
@@ -25,24 +25,26 @@ export class Theme{
     public input_checkbox_hover="#545454";
 
     public button_disable_color="#0000008c";
-    public button_height="50px";
+    public button_height="40px";
 
     public snack_bar_bg="#000000b3";
 
     public glass_black="#0000008c";
 
+    public dialogue_bg=this.glass_black;
+
     public P_font_size:string = "1em";
-    public H3_font_size:string = "1.3em";
-    public H2_font_size:string="1.6em";
-    public H1_font_size:string = "2em";
-    public H5_font_size:string ="0.7em";
-    public H6_font_size:string ="0.5em";
+    public H3_font_size:string = "1.1em";
+    public H2_font_size:string="1.2em";
+    public H1_font_size:string = "1.5em";
+    public H5_font_size:string ="0.8em";
+    public H6_font_size:string ="0.6em";
 
     public color: string ="black";
 
     public tab_inactive_color="#dbdbdb";
     public tab_inactive_icon_color="#919191";
-    public tab_active_icon_color="#ff2052";
+    public tab_active_icon_color=this.primaryColor;
 }
 
 
