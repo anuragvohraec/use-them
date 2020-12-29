@@ -8,6 +8,7 @@ import { CheckBox } from './inputs/checkbox';
 import { HideBloc } from './dialogues';
 import { WidgetBuilder } from '../utils/blocs';
 import { html, TemplateResult } from 'lit-html';
+import { InkWell } from './inkwell';
 
 
 export class MyFormBloc extends FormBloc{
@@ -145,3 +146,14 @@ class CrossButtonForPopUp extends WidgetBuilder<HideBloc,boolean>{
 }
 
 customElements.define("cross-button-close-dialogue",CrossButtonForPopUp);
+
+class MyInkwell extends InkWell{
+    constructor(){
+        super();
+    }
+    onpressaction(e:Event){
+        console.log("called my action");
+    }
+}
+
+customElements.define("my-ink-well",MyInkwell);

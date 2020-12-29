@@ -17,7 +17,7 @@ export class Theme{
     public input_cursor_color:string= "#ffffff";
     public input_text_color="#000000";
     public input_place_holder_color="#808080";
-    public input_icon_color="#ffffff";
+    public input_icon_color="#a7a7a7";
     public input_font_weight="normal";
 
     public input_checkbox_active_color=this.primaryColor;
