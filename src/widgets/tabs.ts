@@ -35,6 +35,7 @@ class TabRouterBloc extends RouteThemBloc{
 export class TabHeader extends WidgetBuilder<TabRouterBloc, RouteState>{
     private _icon!:string;
     private _indexpath!: string;
+    public label!:string;
     
     constructor(){
         super(TabRouterBloc);
@@ -94,7 +95,12 @@ export class TabHeader extends WidgetBuilder<TabRouterBloc, RouteState>{
         </style>
         <div class="icon" @click=${()=>{
             this.bloc?.goToPage(this._indexpath,{saveToBrowserHistory:false,title:""})
-        }}><iron-icon icon="${this._icon}" style="fill: ${state.url_path === this.indexpath ? this.theme.tab_active_icon_color: this.theme.tab_inactive_icon_color}"></iron-icon></div>
+        }}>
+        <lay-them  ca="center" ma="center">
+            <iron-icon icon="${this._icon}" style="fill: ${state.url_path === this.indexpath ? this.theme.tab_active_icon_color: this.theme.tab_inactive_icon_color}"></iron-icon>
+            ${this.label?html`<ut-h5>${this.label}</ut-h5>`:``}
+        </lay-them>    
+    </div>
         `;
     }
 }
@@ -162,6 +168,7 @@ export class TabController extends BlocsProvider{
                     //listOfIcons.push();
                     let t =tabs[i];
                     let icon = t.getAttribute("icon");
+                    let label = t.getAttribute("label");
                     if(!icon){
                         throw "No icon defined for tab index: ${i}";
                     }else{
@@ -169,11 +176,14 @@ export class TabController extends BlocsProvider{
                         if(!route){
                             throw "No route attribute present";
                         }
-                        listOfIcons[icon]=(i===0?"/":`/${i}`);
+                        listOfIcons[icon]={
+                            path: (i===0?"/":`/${i}`),
+                            label
+                        };
                     }
                 }
                 return html`<lay-them in="row">
-                    ${Object.keys(listOfIcons).map(e=>html`<div class="icon"><ut-tab-header icon=${e} indexpath="${listOfIcons[e]}"></ut-tab-header></div>`)}
+                    ${Object.keys(listOfIcons).map(e=>html`<div class="icon"><ut-tab-header icon=${e} indexpath="${listOfIcons[e].path}" .label=${listOfIcons[e].label}></ut-tab-header></div>`)}
                 </lay-them>`;
             }else{
                 throw `No Tabs defined for tabs controller`;

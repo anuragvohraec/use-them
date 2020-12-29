@@ -102,6 +102,7 @@ Simple run `npm run start` to see the demo of the components of **use-them**.
 # Change release
 ## "version": "2.0.2"
 1. Inkwell
+2. Tabs label
 
 ## "version": "2.0.1"
 1. Adjustable button height
