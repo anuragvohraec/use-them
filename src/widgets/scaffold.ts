@@ -126,7 +126,7 @@ export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
                 return "none";
             }
         })()};">
-            <div style="color:white; font-size: ${this.theme.P_font_size};">${state.snackBarMessage}</div>
+            <div style="color:white;">${state.snackBarMessage}</div>
         </div>
     </lay-them>
 </div>
