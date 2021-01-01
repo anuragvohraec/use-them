@@ -100,6 +100,9 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version": "2.0.6"
+1. Upgraded route-them
+
 ### "version": "2.0.5"
 1. upgraded bloc-them and route them lib, as tabs seems to have bugs when nested
 

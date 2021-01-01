@@ -19,6 +19,8 @@
 
   <script type="module">
     import { html, render } from 'lit-html';
+    import {BlocsProvider} from 'bloc-them';
+    import {AppPageBloc} from 'route-them';
     import {ThemeProvider, Theme, ProgressBloc, ProgressBarBuilder, I18NBlocProvider, FormBloc} from '../dist/index.js';
     
 
@@ -87,6 +89,9 @@
         <my-app-theme><!--Provides Theme to all components below-->
 
           <i18n-provider><!--Provides i18n features to all components below-->
+            <app-pages-controller>
+              <app-pages-container>
+                  <app-page route="/">
 
             <ut-scaffold><!--Provides is a basic scaffold with menu button and menu layover-->
               <animated-grad-bg slot="appbar-bg" use="gradients: #ee7752, #e73c7e, #23a6d5, #23d5ab"></animated-grad-bg>
@@ -102,6 +107,10 @@
                             <div style="overflow: hidden;height: 50px;width: 50px;box-shadow: 0px 0px 5px black;border-radius: 50%;">
                               <my-ink-well use="ripple_color: #ff0000; shades: 0 100"><lay-them ma="center" ca="center"><ut-p>P</ut-p></lay-them></my-ink-well>
                             </div>
+                            <div @click=${function(){
+                              let routeBloc = BlocsProvider.of(AppPageBloc,this);
+                              routeBloc.goToPage("/page2");
+                            }}>Go back to page2</div>
                             <my-dialogue-button use="background-color: #0e1f3e;">
                               <ut-p use="color:white;">Show popup</ut-p>
                               <ut-dialogue>
@@ -206,6 +215,17 @@ Section 1.10.33 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC
                 </ut-p>
               </div>
             </ut-scaffold>
+
+                  </app-page>
+                  <app-page route="/page2">
+                      <div>Test Page</div>
+                      <div @click=${function(){
+                        let routeBloc = BlocsProvider.of(AppPageBloc,this);
+                        routeBloc.popOutOfCurrentPage();
+                      }}>Go back to app</div>
+                  </app-page>
+                </app-pages-container>
+            </app-pages-controller>
 
           </i18n-provider>
 
