@@ -85,6 +85,26 @@ import { TemplateResult, html } from 'lit-html';
     }
 
     /**
+     * Can be used by non FormInputBuilder elements to update state of form
+     * @param nameOfInput 
+     */
+    delegateChangeTo(nameOfInput:string,currentValue:any, formMessageBloc:FormMessageBloc){
+        const preOnChangeFunc = this._basicOnChange(nameOfInput);
+        const val = this.validatorFunctionGiver(nameOfInput);
+        const postOnChangeFunc = this.postOnChangeFunctionGiver(nameOfInput);
+        if(preOnChangeFunc){
+            preOnChangeFunc(currentValue);
+            if(val){
+                const validationResult = val(currentValue);
+                formMessageBloc.postMessage(nameOfInput,validationResult!);
+                if(postOnChangeFunc){
+                    postOnChangeFunc(currentValue, validationResult);
+                }
+            }
+        }
+    }
+
+    /**
      * returns a validator function for a given name of input
      * @param nameOfInput 
      */
@@ -99,12 +119,12 @@ import { TemplateResult, html } from 'lit-html';
  }
 
  export abstract class FormInputBuilder<V, F extends FormBloc> extends WidgetBuilder<F,FormState>{
+     /**
+      * Input made based on FormInputBuilder can use this to delegate change to Form.
+      */
      protected onChange?:OnChangeFunction<V>;
-     protected validator?:ValidatorFunction<V>;
      protected name?:string;
      protected messageBloc?: FormMessageBloc;
-     private postOnChange?:PostValidationOnChangeFunction<V>;
-
      
      public get disabled() : boolean {
          if(this.bloc){
@@ -127,26 +147,12 @@ import { TemplateResult, html } from 'lit-html';
 
      connectedCallback(){
          super.connectedCallback();
-         this.messageBloc=BlocsProvider.of(FormMessageBloc,this);
-         this.validator = this.bloc?.validatorFunctionGiver(this.name!);
-         this.postOnChange = this.bloc?.postOnChangeFunctionGiver(this.name!);
+         if(!this.messageBloc){
+            this.messageBloc=BlocsProvider.of(FormMessageBloc,this);
+         }
          
-         let t1 = this.bloc?._basicOnChange(this.name!);
-         if(t1){
-            this.onChange = (newValue:V)=>{
-                try{
-                    t1!(newValue);
-                    if(this.validator){
-                        let t2 = this.validator(newValue);
-                        this.messageBloc?.postMessage(this.name!,t2!);
-                        if(this.postOnChange){
-                            this.postOnChange(newValue, t2);
-                        }
-                    }
-                }catch(e){
-                    console.error(e);
-                }
-            }
+         this.onChange = (newValue:V)=>{
+            this.bloc?.delegateChangeTo(this.name!,newValue,this.messageBloc!);
          }
      }
  }
