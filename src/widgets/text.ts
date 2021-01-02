@@ -46,9 +46,15 @@ export abstract class _I18NText extends WidgetBuilder<I18NBloc,LanguagePack>{
     private _font_size:string = "1em";
 
     builder(state: LanguagePack): TemplateResult {
-        return html`<span style="font-size: ${this._font_size}; color: ${this.theme.color}">${_I18NText._getText(this.textContent,state)}</span>`;
+        return html`<span style="font-size: ${this._font_size}; color: ${this.color}">${_I18NText._getText(this.textContent,state)}</span>`;
     }
 
+    
+    public get color() : string {
+        let c = this.getAttribute("color");
+        return c||this.theme.color;
+    }
+    
     
     public set font_size(v : string) {
         this._font_size = v;

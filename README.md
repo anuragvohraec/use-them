@@ -100,6 +100,10 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version": "2.0.7"
+1. Separate snackbar for an overall messaging system for app, without dependency of scaffold. Scaffold itself has its own snackbar too. 
+However this new snack bar support many confirmation to change background color and text color. This snackbar also supports i18n.
+
 ### "version": "2.0.6"
 1. Upgraded route-them
 

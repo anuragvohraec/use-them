@@ -21,7 +21,7 @@
     import { html, render } from 'lit-html';
     import {BlocsProvider} from 'bloc-them';
     import {AppPageBloc} from 'route-them';
-    import {ThemeProvider, Theme, ProgressBloc, ProgressBarBuilder, I18NBlocProvider, FormBloc} from '../dist/index.js';
+    import {ThemeProvider, Theme, ProgressBloc, ProgressBarBuilder, I18NBlocProvider, FormBloc,SnackBarBloc} from '../dist/index.js';
     
 
     //theme 
@@ -44,7 +44,8 @@
         super({
           hello: "Hello",
           "say-thank-you":"Thank you",
-          tab_label1:"Tab1"
+          tab_label1:"Tab1",
+          snackbar_msg: "hello this is message for really long readers, lets see how many char can come without problem, i18n"
         })
       }
     }
@@ -69,6 +70,16 @@
       }
     }
 
+    class SnackBarprovider extends BlocsProvider{
+      constructor(){
+        super([new SnackBarBloc()])
+      }
+      builder(){
+        return html`<ut-ex><slot></slot></ut-ex>`;
+      }
+    }
+    customElements.define("snack-bar-provider",SnackBarprovider);
+
     class VideoCompressProgressBar extends ProgressBarBuilder{
       constructor(){
         super((()=>{
@@ -89,6 +100,11 @@
         <my-app-theme><!--Provides Theme to all components below-->
 
           <i18n-provider><!--Provides i18n features to all components below-->
+            <snack-bar-provider>
+              <div style="position: fixed;bottom: 50px;z-index: 10001;padding:30px;">
+                <!--<lay-them ma="center" ca="center"></lay-them>-->
+                <snack-bar></snack-bar>
+              </div>
             <app-pages-controller>
               <app-pages-container>
                   <app-page route="/">
@@ -106,6 +122,12 @@
                             </div>
                             <div style="overflow: hidden;height: 50px;width: 50px;box-shadow: 0px 0px 5px black;border-radius: 50%;">
                               <my-ink-well use="ripple_color: #ff0000; shades: 0 100"><lay-them ma="center" ca="center"><ut-p>P</ut-p></lay-them></my-ink-well>
+                            </div>
+                            <div style="margin: 10px;overflow: hidden;height: 50px;width: 200px;background-color: gold;box-shadow: 0px 0px 5px black;" @click=${function(){
+                              let bloc = BlocsProvider.of(SnackBarBloc,this);
+                              bloc.postMessage({color: "yellow",msg:"snackbar_msg"},10000)
+                            }}>
+                              <ink-well><lay-them ma="center" ca="center"><ut-p>Show Snackbar</ut-p></lay-them></ink-well>
                             </div>
                             <div @click=${function(){
                               let routeBloc = BlocsProvider.of(AppPageBloc,this);
@@ -226,7 +248,7 @@ Section 1.10.33 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC
                   </app-page>
                 </app-pages-container>
             </app-pages-controller>
-
+          </snack-bar-provider>
           </i18n-provider>
 
         </my-app-theme>

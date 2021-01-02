@@ -16,5 +16,6 @@ export * from './widgets/inputs/checkbox.js';
 export * from './widgets/dialogues.js';
 
 export * from './widgets/inkwell.js';
+export * from './widgets/snackbar-messaging.js';
 
 export * from './widgets/test.js';
