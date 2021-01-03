@@ -24,6 +24,8 @@ export class Theme{
     public input_check_mark_color=this.input_bg_color
     public input_checkbox_hover=this.input_bg_color;
 
+    public input_radio_button_active_color=this.primaryColor;
+
     public button_disable_color="#0000008c";
     public button_height="40px";
 

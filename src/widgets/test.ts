@@ -9,6 +9,7 @@ import { HideBloc } from './dialogues';
 import { WidgetBuilder } from '../utils/blocs';
 import { html, TemplateResult } from 'lit-html';
 import { InkWell } from './inkwell';
+import { RadioButtonsBuilder } from './inputs/radiobuttons';
 
 
 export class MyFormBloc extends FormBloc{
@@ -17,6 +18,10 @@ export class MyFormBloc extends FormBloc{
             case 'userChoice':
                 return (nv:boolean, val)=>{
                     console.log("user choice is : ",nv);
+                }
+            case "selectVal":
+                return (nv:string, valMsg)=>{
+                    console.log("Value for user is: ",nv);
                 }
         }
     }
@@ -51,6 +56,12 @@ export class MyFormBloc extends FormBloc{
                     let re = /[A-Za-z]/;
                     if(!re.test(newValue)){
                         return "Only alphabets allowed";
+                    }
+                }
+            case 'selectVal':
+                return (newValue:string)=>{
+                    if(!newValue){
+                      return "Select one of the options";  
                     }
                 }
             default:
@@ -157,3 +168,14 @@ class MyInkwell extends InkWell{
 }
 
 customElements.define("my-ink-well",MyInkwell);
+
+class MyRadioButtons extends RadioButtonsBuilder<MyFormBloc>{
+    constructor(){
+        super(MyFormBloc,{
+            "val1": "Value 1",
+            "val2": "Value 1",
+            "val3": "Value 3"
+        })
+    }
+}
+customElements.define("my-radio-buttons",MyRadioButtons);
