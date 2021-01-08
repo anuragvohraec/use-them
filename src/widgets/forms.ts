@@ -64,7 +64,7 @@ import { TemplateResult, html } from 'lit-html';
 
     enableAnInput(nameOfInput: string){
         if(this.state.areDisabled){
-            this.state.delete(nameOfInput);
+            this.state.areDisabled.delete(nameOfInput);
         }
         this.emit({...this.state});
     }

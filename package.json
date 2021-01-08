@@ -1,6 +1,6 @@
 {
   "name": "use-them",
-  "version": "2.0.9",
+  "version": "2.0.10",
   "description": "Webcomponent use-them following open-wc recommendations",
   "author": "use-them",
   "license": "MIT",
@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@polymer/iron-icons": "^3.0.1",
-    "bloc-them": "^3.0.4",
+    "bloc-them": "^3.0.6",
     "lay-them": "^3.0.4",
     "lit-html": "^1.1.2",
     "route-them": "^4.0.1"

@@ -100,8 +100,12 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version": "2.0.10"
+1. Bug fixed Form bloc. Was not deleting a disabled entry from internal set for disable and enable functionality of form bloc to work correctly.
+
 ### "version": "2.0.8"
 1. Added **delegateChangeTo** function to form bloc for creating easily delegate onChange from any form input. 
+
 ### "version": "2.0.7"
 1. Separate snackbar for an overall messaging system for app, without dependency of scaffold. Scaffold itself has its own snackbar too. 
 However this new snack bar support many confirmation to change background color and text color. This snackbar also supports i18n.
