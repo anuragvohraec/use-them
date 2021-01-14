@@ -100,6 +100,9 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+## "version": "2.0.12"
+1. Upgraded route-them lib
+
 ### "version": "2.0.10"
 1. Bug fixed Form bloc. Was not deleting a disabled entry from internal set for disable and enable functionality of form bloc to work correctly.
 

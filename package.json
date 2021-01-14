@@ -1,6 +1,6 @@
 {
   "name": "use-them",
-  "version": "2.0.11",
+  "version": "2.0.12",
   "description": "Webcomponent use-them following open-wc recommendations",
   "author": "use-them",
   "license": "MIT",
@@ -20,7 +20,7 @@
     "bloc-them": "^3.0.6",
     "lay-them": "^3.0.4",
     "lit-html": "^1.1.2",
-    "route-them": "^4.0.1"
+    "route-them": "^5.0.0"
   },
   "devDependencies": {
     "@types/node": "13.11.1",
