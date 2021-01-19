@@ -100,7 +100,10 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
-## "version": "3.0.0"
+### "version": "V3.0.1"
+1. Forgot to upgrade bloc-them and route-them indeed.
+
+### "version": "3.0.0"
 1. Upgraded bloc-them  and route-them libs
 
 ## "version": "2.0.12"
