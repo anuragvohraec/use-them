@@ -1,4 +1,4 @@
-import { Bloc, BlocsProvider, BlocBuilder } from 'bloc-them';
+import { Bloc, BlocsProvider} from 'bloc-them';
 import { TemplateResult , html} from 'lit-html';
 import {WidgetBuilder} from '../utils/blocs';
 
@@ -11,6 +11,8 @@ export interface LanguagePack{
 
 
 export class I18NBloc  extends Bloc<LanguagePack>{
+    protected _name: string="I18NBloc";
+
     constructor(initState: LanguagePack){
         super(initState);
     }
@@ -62,7 +64,7 @@ export abstract class _I18NText extends WidgetBuilder<I18NBloc,LanguagePack>{
     
     
     constructor(){
-        super(I18NBloc);  
+        super("I18NBloc");  
     }
 
     static _getText(textKey: string|null, state: LanguagePack): string|undefined{

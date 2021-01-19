@@ -6,6 +6,7 @@ import { GestureDetector } from './gesturedetector';
 
 
 class TabRouterBloc extends RouteThemBloc{
+    protected _name:string="TabRouterBloc";
     private _number_of_routes:number=0;
 
     constructor(){
@@ -38,7 +39,7 @@ export class TabHeader extends WidgetBuilder<TabRouterBloc, RouteState>{
     public label!:string;
     
     constructor(){
-        super(TabRouterBloc);
+        super("TabRouterBloc");
     }
 
     
@@ -115,7 +116,7 @@ class _TabsGestureDetector extends GestureDetector{
 
     connectedCallback(){
         super.connectedCallback();
-        let t = BlocsProvider.of(TabRouterBloc, this);
+        let t = BlocsProvider.of<TabRouterBloc,RouteState>("TabRouterBloc", this);
         if(!t){
             throw `No TabRouterBloc found for gesture detector for tabs`;
         }else{
@@ -232,7 +233,7 @@ customElements.define("ut-tab-controller", TabController);
 
 export class Tabs extends RouteThem{
     constructor(){
-        super("ut-tab",TabRouterBloc);
+        super("ut-tab","TabRouterBloc");
     }
 
     builder(state: number): TemplateResult {
@@ -245,7 +246,7 @@ customElements.define("ut-tabs", Tabs);
 export class Tab extends APage{
     private index:number =-1;
     constructor(){
-        super(TabRouterBloc);
+        super("TabRouterBloc");
         //lets set route attribute for the index mentioned.
         let t = this.getAttribute("index");
         if(!t){

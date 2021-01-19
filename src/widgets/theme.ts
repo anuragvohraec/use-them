@@ -51,6 +51,8 @@ export class Theme{
 
 
 export class ThemeBloc extends Bloc<Theme>{
+    protected _name: string="ThemeBloc";
+    
     constructor(initTheme: Theme){
         super(initTheme);
     }

@@ -13,6 +13,8 @@ import { RadioButtonsBuilder } from './inputs/radiobuttons';
 
 
 export class MyFormBloc extends FormBloc{
+    protected _name: string="MyFormBloc";
+
     postOnChangeFunctionGiver(nameOfInput: string): PostValidationOnChangeFunction<any> | undefined {
         switch(nameOfInput){
             case 'userChoice':
@@ -73,7 +75,7 @@ export class MyFormBloc extends FormBloc{
 
 export class MyToggleButton extends ToggleButton<MyFormBloc>{
     constructor(){
-        super(MyFormBloc);
+        super("MyFormBloc");
     }
 }
 
@@ -90,7 +92,7 @@ customElements.define("my-form", MyForm);
 
 export class PriceRange extends RangeSelector<MyFormBloc>{
     constructor(){
-        super(MyFormBloc)
+        super("MyFormBloc")
     }
 }
 
@@ -102,7 +104,7 @@ export class MyButton extends RaisedButton<ScaffoldBloc,ScaffoldState>{
         this.bloc?.postMessageToSnackBar("Hi this is a message for you!")
     }
     constructor(){
-        super(ScaffoldBloc)
+        super("ScaffoldBloc")
     }
 }
 
@@ -111,7 +113,7 @@ customElements.define("my-button", MyButton)
 
 export class UserPassword extends SingleLineInput<MyFormBloc>{
     constructor(){
-        super(MyFormBloc);
+        super("MyFormBloc");
     }
 }
 
@@ -119,7 +121,7 @@ customElements.define("user-password", UserPassword);
 
 export class SelectLang extends SingleLineInput<MyFormBloc>{
     constructor(){
-        super(MyFormBloc, ["English", "Hindi", "German"]);
+        super("MyFormBloc", ["English", "Hindi", "German"]);
     }
 }
 
@@ -127,7 +129,7 @@ customElements.define("select-lang", SelectLang);
 
 export class MyCheckBox extends CheckBox<MyFormBloc>{
     constructor(){
-        super(MyFormBloc,"CheckBoxValue","My Check Box:");
+        super("MyFormBloc","CheckBoxValue","My Check Box:");
     }
 }
 
@@ -139,7 +141,7 @@ class MyDialogueButton extends RaisedButton<HideBloc,boolean>{
     }
 
     constructor(){
-        super(HideBloc,{useThisBloc: new HideBloc()},[40,100])
+        super("HideBloc",{useThisBloc: new HideBloc()},[40,100])
     }
 }
 
@@ -152,7 +154,7 @@ class CrossButtonForPopUp extends WidgetBuilder<HideBloc,boolean>{
         }}>X</div>`;
     }
     constructor(){
-        super(HideBloc)
+        super("HideBloc")
     }
 }
 
@@ -171,7 +173,7 @@ customElements.define("my-ink-well",MyInkwell);
 
 class MyRadioButtons extends RadioButtonsBuilder<MyFormBloc>{
     constructor(){
-        super(MyFormBloc,{
+        super("MyFormBloc",{
             "val1": "Value 1",
             "val2": "Value 1",
             "val3": "Value 3"

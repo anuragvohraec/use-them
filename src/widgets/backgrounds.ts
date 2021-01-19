@@ -36,7 +36,7 @@ export class AnimatedGradientBackground extends WidgetBuilder<BogusBloc,number>{
         `;
     }
     constructor(){
-        super(BogusBloc,{
+        super("BogusBloc",{
             useThisBloc: new BogusBloc()
         })
         this.gradient_colors = `#${this.theme.primaryColor},#${this.theme.secondaryColor}`
@@ -56,7 +56,7 @@ export class ImageBackground extends WidgetBuilder<BogusBloc,number>{
         throw new Error("Method not implemented.");
     }
     constructor(){
-        super(BogusBloc,{
+        super("BogusBloc",{
             useThisBloc: new BogusBloc()
         })
     }

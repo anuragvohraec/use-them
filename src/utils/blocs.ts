@@ -1,14 +1,16 @@
-import { Bloc, BlocBuilder, BlocType, BlocBuilderConfig } from "bloc-them";
+import { Bloc, BlocBuilder,BlocBuilderConfig } from "bloc-them";
 import { Theme } from '../widgets/theme';
 
 
-export class ActionBloc<S> extends Bloc<S>{
+export abstract class ActionBloc<S> extends Bloc<S>{
     constructor(initState: S){
         super(initState);
     }
 }
 
 export class BogusBloc extends ActionBloc<number>{
+    protected _name: string="BogusBloc";
+
     constructor(){
         super(0);
     }
@@ -17,8 +19,8 @@ export class BogusBloc extends ActionBloc<number>{
 export abstract class WidgetBuilder<B extends Bloc<S>, S> extends BlocBuilder<B,S>{
     private _theme : Theme;
     
-    constructor(blocType: BlocType<B,S>, configs?: BlocBuilderConfig<B, S>){
-        super(blocType, configs);
+    constructor(blocName: string, configs?: BlocBuilderConfig<B, S>){
+        super(blocName, configs);
         let theme: Theme = (<any>document).useThemTheme; 
         this._theme={...theme,...this.useAttribute};
     }

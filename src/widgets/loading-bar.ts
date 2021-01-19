@@ -1,8 +1,10 @@
-import {Bloc, BlocType} from 'bloc-them';
+import {Bloc} from 'bloc-them';
 import { TemplateResult,html } from 'lit-html';
 import { WidgetBuilder } from '../utils/blocs';
 
 export class ProgressBloc extends Bloc<number>{
+    protected _name: string="ProgressBloc";
+
     private _completed:boolean;
     constructor(){
         super(0);
@@ -40,8 +42,8 @@ export class ProgressBloc extends Bloc<number>{
  * Will listen for progress for the progress bloc from the tree.
  */
 export class ProgressBarWidget<PB extends ProgressBloc> extends WidgetBuilder<PB,number>{
-    constructor(blocType: BlocType<PB, number>){
-        super(blocType);
+    constructor(progressBlocName: string){
+        super(progressBlocName);
     }
     builder(state: number): TemplateResult {
         return html`
@@ -68,8 +70,8 @@ inkscape:version="1.0.1 (0767f8302a, 2020-10-17)" sodipodi:docname="progress-bar
  */
 export abstract class ProgressBarBuilder extends WidgetBuilder<ProgressBloc,number>{
 
-    constructor(progressBloc : ProgressBloc){
-        super(ProgressBloc, {
+    constructor(progressBloc : ProgressBloc, progressBlocName:string){
+        super(progressBlocName, {
             useThisBloc: progressBloc
         });
     }

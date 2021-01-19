@@ -15,6 +15,7 @@ enum GESTURE{
  * Swipe Horizontal is given preference over Vertical swipe.
  */
 class GestureDetectorBloc extends Bloc<GESTURE>{
+    protected _name: string="GestureDetectorBloc";
 
     private isDragging: boolean=false;
 
@@ -116,7 +117,7 @@ class GestureDetectorBloc extends Bloc<GESTURE>{
 
 export class GestureDetector extends WidgetBuilder<GestureDetectorBloc,GESTURE>{
     constructor(private drag_sensitivity:number = 1, private minDistanceInPx:number=100){
-        super(GestureDetectorBloc,{
+        super("GestureDetectorBloc",{
             useThisBloc: new GestureDetectorBloc(drag_sensitivity, minDistanceInPx),
             buildWhen:(o,n)=>{
                 if(n === GESTURE.NO_ACTION){

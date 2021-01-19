@@ -9,6 +9,8 @@ interface SnackBarMessage{
 }
 
 export class SnackBarBloc extends Bloc<SnackBarMessage|undefined>{
+    protected _name: string="SnackBarBloc";
+
     private current_timeout?: NodeJS.Timeout;
     constructor(private default_color="white", private default_background_color="#000000b3"){
         super(undefined);
@@ -43,7 +45,7 @@ class Snackbar extends WidgetBuilder<SnackBarBloc,SnackBarMessage|undefined>{
     }
 
     constructor(){
-        super(SnackBarBloc);
+        super("SnackBarBloc");
     }
 }
 customElements.get("snack-bar")||customElements.define("snack-bar",Snackbar);

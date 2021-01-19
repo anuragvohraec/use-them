@@ -1,11 +1,11 @@
-import { BlocType } from 'bloc-them';
+
 import { html, TemplateResult } from 'lit-html';
 import { FormBloc, FormInputBuilder, FormState } from '../forms';
 
 
 export class CheckBox<F extends FormBloc> extends FormInputBuilder<string,F>{
-    constructor(type: BlocType<F,FormState>,private checkValue:string,private label:string){
-        super(type);
+    constructor(nameOfFormBloc:string,private checkValue:string,private label:string){
+        super(nameOfFormBloc);
     }
 
     connectedCallback(){

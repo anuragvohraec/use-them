@@ -10,6 +10,8 @@ export interface ScaffoldState {
 }
 
 export class ScaffoldBloc extends Bloc<ScaffoldState>{
+    protected _name: string="ScaffoldBloc";
+
     constructor() {
         super({
             showMenu: false,
@@ -45,7 +47,7 @@ export class ScaffoldBloc extends Bloc<ScaffoldState>{
 
 export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
     constructor() {
-        super(ScaffoldBloc, {
+        super("ScaffoldBloc", {
             useThisBloc: new ScaffoldBloc()
         });
     }
@@ -139,7 +141,7 @@ customElements.define("ut-scaffold", ScaffoldBuilder);
 
 class MenuButton extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
     constructor() {
-        super(ScaffoldBloc);
+        super("ScaffoldBloc");
     }
 
     toggleMenuBar=()=>{

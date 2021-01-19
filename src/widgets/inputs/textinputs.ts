@@ -1,6 +1,6 @@
 import { FormInputBuilder, FormBloc, FormState } from '../forms';
 import { TemplateResult, html } from 'lit-html';
-import { BlocType, BlocsProvider } from 'bloc-them';
+import {  BlocsProvider } from 'bloc-them';
 import '@polymer/iron-icons';
 import { I18NBloc } from '../text';
 import {ifDefined} from 'lit-html/directives/if-defined';
@@ -144,8 +144,8 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
 
     private _i18n? : I18NBloc;
 
-    constructor(type: BlocType<F,FormState>, private valueList?: string[]){
-        super(type);
-        this._i18n = BlocsProvider.of(I18NBloc, this);
+    constructor(formBlocName: string, private valueList?: string[]){
+        super(formBlocName);
+        this._i18n = BlocsProvider.of("I18NBloc", this);
     }
 }

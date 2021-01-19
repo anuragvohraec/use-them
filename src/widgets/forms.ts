@@ -2,7 +2,7 @@
  * Inputs must be unware of form existense.
  */
 
-import { Bloc, BlocType, BlocsProvider } from 'bloc-them'
+import { Bloc, BlocsProvider } from 'bloc-them'
 import { WidgetBuilder } from '../utils/blocs';
 import { TemplateResult, html } from 'lit-html';
 
@@ -38,6 +38,7 @@ import { TemplateResult, html } from 'lit-html';
  }
 
  export class FormMessageBloc extends Bloc<FormMessageState>{
+     protected _name: string="FormMessageBloc";
      constructor(){
          super({});
      }
@@ -135,8 +136,8 @@ import { TemplateResult, html } from 'lit-html';
      }
      
 
-     constructor( private type:BlocType<F,FormState>){
-         super(type);
+     constructor( private nameOfFormBloc:string){
+         super(nameOfFormBloc);
          let t1 = this.getAttribute("name");
          if(t1){
              this.name = t1;
@@ -148,7 +149,7 @@ import { TemplateResult, html } from 'lit-html';
      connectedCallback(){
          super.connectedCallback();
          if(!this.messageBloc){
-            this.messageBloc=BlocsProvider.of(FormMessageBloc,this);
+            this.messageBloc=BlocsProvider.of("FormMessageBloc",this);
          }
          
          this.onChange = (newValue:V)=>{
@@ -161,7 +162,7 @@ import { TemplateResult, html } from 'lit-html';
      private name?: string;
 
      constructor(){
-         super(FormMessageBloc);
+         super("FormMessageBloc");
          let forAtt = this.getAttribute("for");
          if(!forAtt){
              throw 'No for attribute present on a form message';

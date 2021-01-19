@@ -42,7 +42,7 @@
     class MyI18NProvider extends I18NBlocProvider{
       constructor(){
         super({
-          hello: "Hello",
+          hello: "Halo",
           "say-thank-you":"Thank you",
           tab_label1:"Tab1",
           snackbar_msg: "hello this is message for really long readers, lets see how many char can come without problem, i18n"
@@ -56,6 +56,7 @@
     class VideoCompressBloc extends ProgressBloc{
       constructor(){
         super();
+        this._name="VideoCompressBloc";
         this.count = 0;
       }
       start(){
@@ -124,13 +125,13 @@
                               <my-ink-well use="ripple_color: #ff0000; shades: 0 100"><lay-them ma="center" ca="center"><ut-p>P</ut-p></lay-them></my-ink-well>
                             </div>
                             <div style="margin: 10px;overflow: hidden;height: 50px;width: 200px;background-color: gold;box-shadow: 0px 0px 5px black;" @click=${function(){
-                              let bloc = BlocsProvider.of(SnackBarBloc,this);
+                              let bloc = BlocsProvider.of("SnackBarBloc",this);
                               bloc.postMessage({color: "yellow",msg:"snackbar_msg"},10000)
                             }}>
                               <ink-well><lay-them ma="center" ca="center"><ut-p>Show Snackbar</ut-p></lay-them></ink-well>
                             </div>
                             <div @click=${function(){
-                              let routeBloc = BlocsProvider.of(AppPageBloc,this);
+                              let routeBloc = BlocsProvider.of("AppPageBloc",this);
                               routeBloc.goToPage("/page2");
                             }}>Go back to page2</div>
                             <my-dialogue-button use="background-color: #0e1f3e;">
@@ -248,7 +249,7 @@ Section 1.10.33 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC
                   <app-page route="/page2">
                       <div>Test Page</div>
                       <div @click=${function(){
-                        let routeBloc = BlocsProvider.of(AppPageBloc,this);
+                        let routeBloc = BlocsProvider.of("AppPageBloc",this);
                         routeBloc.popOutOfCurrentPage();
                       }}>Go back to app</div>
                   </app-page>

@@ -1,6 +1,6 @@
 import { FormInputBuilder, FormBloc, FormState } from '../forms';
 import { TemplateResult, html } from 'lit-html';
-import { BlocType } from 'bloc-them';
+
 
 export interface Range{
     start: number;
@@ -302,8 +302,8 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
    private end_color: string;
    private base_color: string;
 
-    constructor(type: BlocType<F,FormState>){
-        super(type);
+    constructor(formBlocName: string){
+        super(formBlocName);
         let max = this.getAttribute("max");
         let min = this.getAttribute("min");
 

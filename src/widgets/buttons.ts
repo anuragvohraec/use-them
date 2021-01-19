@@ -1,5 +1,5 @@
 import { WidgetBuilder, ActionBloc } from '../utils/blocs';
-import { Bloc, BlocType, BlocBuilderConfig } from 'bloc-them';
+import { Bloc, BlocBuilderConfig } from 'bloc-them';
 import { TemplateResult, html } from 'lit-html';
 import { ColorUtil } from '../utils/utils';
 
@@ -70,8 +70,8 @@ export abstract class RaisedButton<B extends Bloc<S>, S> extends WidgetBuilder<B
 
     
 
-    constructor(type: BlocType<B,S>,  configs?: BlocBuilderConfig<B, S>, shades:number[]=[20,80]){
-        super(type, configs);
+    constructor(blocName: string,  configs?: BlocBuilderConfig<B, S>, shades:number[]=[20,80]){
+        super(blocName, configs);
         this.bgColor = "#ffffff";
         if(this.useAttribute){
             let bgc =this.useAttribute!["background-color"];

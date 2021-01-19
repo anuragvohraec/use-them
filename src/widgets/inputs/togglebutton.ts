@@ -1,5 +1,4 @@
 import { FormInputBuilder, FormState, FormBloc } from '../forms';
-import { BlocType } from 'bloc-them';
 import { TemplateResult, html } from 'lit-html';
 
 export class ToggleButton<F extends FormBloc> extends FormInputBuilder<boolean, F>{
@@ -70,7 +69,7 @@ export class ToggleButton<F extends FormBloc> extends FormInputBuilder<boolean, 
 </svg>
         `;
     }
-    constructor(type: BlocType<F,FormState>){
-        super(type);
+    constructor(formBlocName: string){
+        super(formBlocName);
     }
 }

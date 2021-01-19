@@ -7,6 +7,8 @@ import { WidgetBuilder } from '../utils/blocs';
  * default init state is true;
  */
 export class HideBloc extends Bloc<boolean>{
+    protected _name: string="HideBloc";
+
     constructor(initState:boolean=true){
         super(initState);
     }
@@ -18,7 +20,7 @@ export class HideBloc extends Bloc<boolean>{
 
 export class Dialogue extends WidgetBuilder<HideBloc,boolean>{
     constructor(){
-        super(HideBloc);
+        super("HideBloc");
     }
 
     builder(state: boolean): TemplateResult {

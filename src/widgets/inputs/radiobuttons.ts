@@ -1,7 +1,7 @@
-import { Bloc,BlocsProvider,BlocType } from "bloc-them";
+import { Bloc,BlocsProvider } from "bloc-them";
 import { html, TemplateResult } from "lit-html";
 import { WidgetBuilder } from '../../utils/blocs';
-import { FormBloc, FormMessageBloc, FormState } from "../forms";
+import { FormBloc, FormMessageBloc, FormState,FormMessageState } from "../forms";
 
 /**
  * key for this used as Value and value is used as Label for radioButtons
@@ -12,8 +12,8 @@ interface RadioButtonValueLabelMap{
 
 export class RadioButtonsBuilder<F extends FormBloc> extends WidgetBuilder<F,FormState>{
     private name:string;
-    constructor(blocType:BlocType<F,FormState>, private valueLabelMap: RadioButtonValueLabelMap){
-        super(blocType);
+    constructor(formBlocName:string, private valueLabelMap: RadioButtonValueLabelMap){
+        super(formBlocName);
         let n = this.getAttribute("name");
         if(!n){
             throw `Radio buttons do not have a name attribute!`;
@@ -27,7 +27,7 @@ export class RadioButtonsBuilder<F extends FormBloc> extends WidgetBuilder<F,For
         //@ts-ignore
         const t:HTMLElement = e.target;
         const v = t.getAttribute("value");
-        this.bloc?.delegateChangeTo(this.name,v,BlocsProvider.of(FormMessageBloc,t)!);
+        this.bloc?.delegateChangeTo(this.name,v,BlocsProvider.of<FormMessageBloc,FormMessageState>("FormMessageBloc",t)!);
     }
 
     

@@ -3,7 +3,7 @@ import { TemplateResult, html } from 'lit-html';
 
 export class Expanded extends WidgetBuilder<BogusBloc,number>{
     constructor(){
-        super(BogusBloc, {
+        super("BogusBloc", {
             useThisBloc: new BogusBloc()
         });
     }
