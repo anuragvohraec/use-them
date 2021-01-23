@@ -73,13 +73,13 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
     }
 
     getInputMode=()=>{
-        if(this.valueList){
-            return "none";
-        }
         let inputmode = this.getAttribute("inputmode");
         if(inputmode){
             return inputmode;
         }else{
+            if(this.valueList){
+                return "none";
+            }
             return "text";
         }
     }
