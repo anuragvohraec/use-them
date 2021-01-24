@@ -10,6 +10,8 @@ import { WidgetBuilder } from '../utils/blocs';
 import { html, TemplateResult } from 'lit-html';
 import { InkWell } from './inkwell';
 import { RadioButtonsBuilder } from './inputs/radiobuttons';
+import {SelectorBloc, SelectorWidget} from './inputs/selectors';
+import { BlocsProvider } from 'bloc-them';
 
 
 export class MyFormBloc extends FormBloc{
@@ -181,3 +183,42 @@ class MyRadioButtons extends RadioButtonsBuilder<MyFormBloc>{
     }
 }
 customElements.define("my-radio-buttons",MyRadioButtons);
+
+interface Employee{
+    name: string;
+    age: number;
+}
+class MySelectorBloc extends SelectorBloc<Employee>{
+    protected maxNumberOfSelect: number=1;
+    async loadItems(): Promise<Employee[]> {
+        return [{name: "n1",age:1},{name: "n2",age:2},{name: "n3",age:3}];
+    }
+    protected _name: string="MySelectorBloc";
+}
+
+class MySelectorWidget extends SelectorWidget<Employee>{
+    protected itemBuilder(item: Employee, index: number, isSelected: boolean): TemplateResult {
+        return html`<div>${item.name}</div><div>${item.age}</div>`;
+    }
+    protected itemToKey(item: Employee): string {
+        return item.name;
+    }
+
+    constructor(){
+        super("MySelectorBloc");
+    }
+}
+customElements.define("my-selector-list",MySelectorWidget);
+
+class MySelectorWidgetContainer extends BlocsProvider{
+    builder(): TemplateResult {
+       return html`<my-selector-list></my-selector-list>`;
+    }
+    constructor(){
+        super([
+            new MySelectorBloc()
+        ]);
+    }
+}
+
+customElements.define("my-selector",MySelectorWidgetContainer);
