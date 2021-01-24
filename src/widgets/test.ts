@@ -10,7 +10,7 @@ import { WidgetBuilder } from '../utils/blocs';
 import { html, TemplateResult } from 'lit-html';
 import { InkWell } from './inkwell';
 import { RadioButtonsBuilder } from './inputs/radiobuttons';
-import {SelectorBloc, SelectorWidget} from './inputs/selectors';
+import {SelectorBloc, SelectorWidget} from './selectors';
 import { BlocsProvider } from 'bloc-them';
 
 
