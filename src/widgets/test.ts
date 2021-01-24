@@ -189,7 +189,7 @@ interface Employee{
     age: number;
 }
 class MySelectorBloc extends SelectorBloc<Employee>{
-    protected maxNumberOfSelect: number=1;
+    protected maxNumberOfSelect: number=2;
     async loadItems(): Promise<Employee[]> {
         return [{name: "n1",age:1},{name: "n2",age:2},{name: "n3",age:3}];
     }

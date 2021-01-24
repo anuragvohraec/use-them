@@ -61,6 +61,32 @@ export abstract class SelectorBloc<I> extends Bloc<SelectorState<I>>{
     _isItemSelected(item:I):boolean{
         return this._selectedItems.has(item);
     }
+
+    get _isMaxItemSelected():boolean{
+        if(this.maxNumberOfSelect<=0){
+            return false;
+        }else if(this._selectedItems.size<this.maxNumberOfSelect){
+            return false;
+        }
+        return true;
+    }
+
+    _removeFirst(){
+        let c =0;
+        for(let s of this._selectedItems){
+            if(c<1){
+                this._toggleItemSelection(s);
+            }else{
+                break;
+            }
+            c++;
+        }
+    }
+
+    unselectAll(){
+        this._selectedItems.clear();
+        this.emit({...this.state,last_item_interactedWith:undefined})
+    }
 }
 
 
@@ -72,9 +98,13 @@ export abstract class SelectorWidget<I> extends WidgetBuilder<SelectorBloc<I>, S
     protected abstract itemBuilder(item:I, index:number, isSelected:boolean):TemplateResult;
 
     private _itemBuilder(item:I, index:number,isSelected:boolean):TemplateResult{
-        return html`<div @touchstart=${(e:TouchEvent)=>{
+        const maxItemSelected = this.bloc!._isMaxItemSelected;
+        return html`<div @click=${(e:Event)=>{
+            if(maxItemSelected){
+                this.bloc?._removeFirst();   
+            }
             this.bloc?._toggleItemSelection(item);
-        }} class=${this.bloc?._isItemSelected(item)?"selected":""}>
+        }} class=${isSelected?"selected":""}>
             ${this.itemBuilder(item,index, this.bloc!._isItemSelected(item))}
         </div>`;
     }
