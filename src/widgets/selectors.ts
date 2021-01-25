@@ -53,10 +53,15 @@ export abstract class SelectorBloc<I> extends Bloc<SelectorState<I>>{
      */
     abstract async loadItems():Promise<I[]>;
 
-    _toggleItemSelection(item:I){
+    _toggleItemSelection(item:I,context:HTMLElement,skip_onchange:boolean=false){
         this._isItemSelected(item)?this._selectedItems.delete(item):this._selectedItems.add(item);
         this.emit({...this.state, last_item_interactedWith: item});
+        if(!skip_onchange){
+            this.onchange(this._selectedItems,context);
+        } 
     }
+
+    abstract onchange(selectedItems : Set<I>, context:HTMLElement):void;
 
     _isItemSelected(item:I):boolean{
         return this._selectedItems.has(item);
@@ -71,11 +76,11 @@ export abstract class SelectorBloc<I> extends Bloc<SelectorState<I>>{
         return true;
     }
 
-    _removeFirst(){
+    _removeFirst(context:HTMLElement){
         let c =0;
         for(let s of this._selectedItems){
             if(c<1){
-                this._toggleItemSelection(s);
+                this._toggleItemSelection(s,context,true);
             }else{
                 break;
             }
@@ -101,9 +106,9 @@ export abstract class SelectorWidget<I> extends WidgetBuilder<SelectorBloc<I>, S
         const maxItemSelected = this.bloc!._isMaxItemSelected;
         return html`<div @click=${(e:Event)=>{
             if(maxItemSelected){
-                this.bloc?._removeFirst();   
+                this.bloc?._removeFirst(this);   
             }
-            this.bloc?._toggleItemSelection(item);
+            this.bloc?._toggleItemSelection(item,this);
         }} class=${isSelected?"selected":""}>
             ${this.itemBuilder(item,index, this.bloc!._isItemSelected(item))}
         </div>`;
