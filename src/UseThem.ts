@@ -19,5 +19,6 @@ export * from './widgets/inkwell.js';
 export * from './widgets/snackbar-messaging.js';
 export * from './widgets/inputs/radiobuttons.js';
 export * from './widgets/selectors.js';
+export * from './widgets/inputs/date-picker.js';
 
 export * from './widgets/test.js';
