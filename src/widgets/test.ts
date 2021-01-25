@@ -12,6 +12,7 @@ import { InkWell } from './inkwell';
 import { RadioButtonsBuilder } from './inputs/radiobuttons';
 import {SelectorBloc, SelectorWidget} from './selectors';
 import { BlocsProvider } from 'bloc-them';
+import { DatePicker } from './inputs/date-picker';
 
 
 export class MyFormBloc extends FormBloc{
@@ -226,3 +227,19 @@ class MySelectorWidgetContainer extends BlocsProvider{
 }
 
 customElements.define("my-selector",MySelectorWidgetContainer);
+
+
+class MyDatePicker extends DatePicker{
+    constructor(){
+        super({
+            formBlocName:"MyFormBloc",
+            init_date: Date.now(),
+            maxYear: 2025,
+            minYear: 1930,
+            nameForThisInForm:"date",
+            placeholder:"Select your date"
+        })
+    }
+}
+
+customElements.define("my-date-picker",MyDatePicker);

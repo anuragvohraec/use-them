@@ -100,6 +100,9 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version": "4.1.0"
+1. Added date picker
+
 ### "version": "V4.0.0"
 1. Added onchange listener to selector bloc
 
