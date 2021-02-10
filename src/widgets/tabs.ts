@@ -93,12 +93,17 @@ export class TabHeader extends WidgetBuilder<TabRouterBloc, RouteState>{
                 --iron-icon-height: 30px;
                 --iron-icon-width: 30px;
             }
+            .symbol{
+                color: ${state.url_path === this.indexpath ? this.theme.tab_active_icon_color: this.theme.tab_inactive_icon_color};
+                font-weight: bold;
+                font-size: 25px;
+            }
         </style>
         <div class="icon" @click=${()=>{
             this.bloc?.goToPage(this._indexpath,{saveToBrowserHistory:false,title:""})
         }}>
         <lay-them  ca="center" ma="center">
-            <iron-icon icon="${this._icon}" style="fill: ${state.url_path === this.indexpath ? this.theme.tab_active_icon_color: this.theme.tab_inactive_icon_color}"></iron-icon>
+            ${this.icon.startsWith("emoji:")?html`<div class="symbol">${this._icon.split(":")[1]}</div>`:html`<iron-icon icon="${this._icon}" style="fill: ${state.url_path === this.indexpath ? this.theme.tab_active_icon_color: this.theme.tab_inactive_icon_color}"></iron-icon>`}
             ${this.label?html`<ut-h5>${this.label}</ut-h5>`:``}
         </lay-them>    
     </div>
