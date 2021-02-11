@@ -187,7 +187,7 @@ export class TabController extends BlocsProvider{
                         };
                     }
                 }
-                return html`<lay-them in="row">
+                return html`<lay-them in="row" ma="start" ca="stretch">
                     ${Object.keys(listOfIcons).map(e=>html`<div class="icon"><ut-tab-header icon=${e} indexpath="${listOfIcons[e].path}" .label=${listOfIcons[e].label}></ut-tab-header></div>`)}
                 </lay-them>`;
             }else{
