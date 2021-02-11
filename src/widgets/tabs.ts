@@ -95,7 +95,6 @@ export class TabHeader extends WidgetBuilder<TabRouterBloc, RouteState>{
             }
             .symbol{
                 color: ${state.url_path === this.indexpath ? this.theme.tab_active_icon_color: this.theme.tab_inactive_icon_color};
-                font-weight: bold;
                 font-size: 25px;
             }
         </style>
