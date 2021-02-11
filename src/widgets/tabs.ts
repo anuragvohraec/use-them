@@ -220,12 +220,17 @@ export class TabController extends BlocsProvider{
             .icon{
                 flex: 1;
             }
+            .body{
+                flex: 1;
+                height: 100%;
+                overflow-y: scroll;
+            }
         </style>
         <lay-them  ma="start">
             <div class="headers">
                 ${this.getHeaders()}
             </div>
-            <div  class="body" style="flex: 1;">
+            <div  class="body">
                 ${this.getBody()}
             </div>
         </lay-them>
