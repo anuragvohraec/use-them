@@ -1,4 +1,4 @@
-import { WidgetBuilder, ActionBloc } from '../utils/blocs';
+import { WidgetBuilder, ActionBloc, NoBlocWidgetBuilder } from '../utils/blocs';
 import { Bloc, BlocBuilderConfig } from 'bloc-them';
 import { TemplateResult, html } from 'lit-html';
 import { ColorUtil } from '../utils/utils';
@@ -87,4 +87,40 @@ export abstract class RaisedButton<B extends Bloc<S>, S> extends WidgetBuilder<B
 
     buttonAction = ()=>{this.onPress()};
 
+}
+
+
+
+
+export class LabeledIconButton extends NoBlocWidgetBuilder{
+
+    private get icon() : string {
+        let t =this.getAttribute("icon");
+        if(!t){
+            throw "No icon provided";
+        }
+        return t;
+    }
+
+    
+    public get label() : string|null {
+        let t =this.getAttribute("label");
+        return t; 
+    }
+
+    builder(state: number): TemplateResult {
+        return html`
+        <ink-well>
+            <lay-them ca="center" ma="center">
+                <iron-icon icon="${this.icon}" style="fill: ${this.theme.primaryColor}"></iron-icon>
+                <ut-h5>${this.label}</ut-h5>
+            </lay-them>
+        </ink-well>
+        <slot></slot>
+        `;
+    }
+}
+
+if(!customElements.get("labeled-icon-button")){
+    customElements.define("labeled-icon-button",LabeledIconButton);
 }
