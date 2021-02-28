@@ -100,6 +100,9 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version": "4.2.2"
+1. Added circular-progress-indicator
+
 ### "version": "4.2.1"
 1. Added circular-icon-button and labeled-icon-button
 
