@@ -25,7 +25,28 @@ export abstract class WidgetBuilder<B extends Bloc<S>, S> extends BlocBuilder<B,
         this._theme={...theme,...this.useAttribute};
     }
 
+    public  static get observedAttributes() : string[]{
+        return ["use"];
+    }
+    
+    attributeChangedCallback(name:string, oldValue:string, newValue:string) {
+        if(name==="use"){
+            const t = WidgetBuilder.parseUseAttribute(newValue);
+            this._theme={...this._theme,...t};
+            if(this.bloc && newValue){
+                this._build(this.bloc!.state);
+            }
+        }
+    }
+
     public get theme() : Theme {
         return this._theme;
+    }
+}
+
+
+export abstract class NoBlocWidgetBuilder extends WidgetBuilder<BogusBloc,number>{
+    constructor(){
+        super("BogusBloc", {useThisBloc: new BogusBloc()})
     }
 }

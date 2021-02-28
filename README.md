@@ -100,6 +100,10 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version": "4.2.0"
+1. Backable screen: One you can go back to previous screen on pressing back.
+2. Run time update to use attribute on widgetbuilder will effect re-rendering
+
 ### "version": "4.1.0"
 1. Added date picker
 

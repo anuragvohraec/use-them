@@ -21,4 +21,6 @@ export * from './widgets/inputs/radiobuttons.js';
 export * from './widgets/selectors.js';
 export * from './widgets/inputs/date-picker.js';
 
+export * from './screens/backable-screen.js';
+
 export * from './widgets/test.js';

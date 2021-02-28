@@ -253,11 +253,13 @@ Section 1.10.33 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC
 
                   </app-page>
                   <app-page route="/page2">
-                      <div>Test Page</div>
-                      <div @click=${function(){
-                        let routeBloc = BlocsProvider.of("AppPageBloc",this);
-                        routeBloc.popOutOfCurrentPage();
-                      }}>Go back to app</div>
+                      <backable-screen title="Yo Backable screen" use="primaryColor: green;">
+                        <div>Test Page</div>
+                        <div @click=${function(){
+                          let routeBloc = BlocsProvider.of("AppPageBloc",this);
+                          routeBloc.popOutOfCurrentPage();
+                        }}>Go back to app</div>
+                      </backable-screen>
                   </app-page>
                 </app-pages-container>
             </app-pages-controller>
