@@ -124,3 +124,21 @@ export class LabeledIconButton extends NoBlocWidgetBuilder{
 if(!customElements.get("labeled-icon-button")){
     customElements.define("labeled-icon-button",LabeledIconButton);
 }
+
+export class CircularIconButton extends NoBlocWidgetBuilder{
+
+    builder(state: number): TemplateResult {
+        const radius = this.useAttribute?.["radius"]??"50px";
+        const icon = this.useAttribute?.["icon"];
+        if(!icon){
+            throw "No icon provided in use attribute for circular-icon-button";
+        }
+        return html`
+        <div style="overflow: hidden;height: ${radius};width: ${radius};background-color: #7b7b7b12;border-radius: 50%;">
+            <ink-well><lay-them ma="center" ca="center"><iron-icon icon="${icon}" style="fill: ${this.theme.primaryColor}"></iron-icon></lay-them></ink-well>
+        </div>`;
+    }
+}
+if(!customElements.get("circular-icon-button")){
+    customElements.define("circular-icon-button",CircularIconButton);
+}
