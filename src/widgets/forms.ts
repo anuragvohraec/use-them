@@ -186,9 +186,13 @@ import { TemplateResult, html } from 'lit-html';
      }
 
      constructor(formBloc: F){
-         super([
-             new FormMessageBloc(),
-             formBloc
-         ]);
+         super((()=>{
+             let n = formBloc.name;
+             let t: any = {
+                FormMessageBloc: new FormMessageBloc(),
+             }
+             t[n]=formBloc;
+             return t;
+         })());
      }
  }

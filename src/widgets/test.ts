@@ -220,9 +220,9 @@ class MySelectorWidgetContainer extends BlocsProvider{
        return html`<my-selector-list></my-selector-list>`;
     }
     constructor(){
-        super([
-            new MySelectorBloc()
-        ]);
+        super({
+            MySelectorBloc: new MySelectorBloc()
+        });
     }
 }
 

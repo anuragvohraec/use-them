@@ -65,7 +65,7 @@ export class ThemeBloc extends Bloc<Theme>{
 
 export abstract class ThemeProvider extends BlocsProvider{
     constructor(theme: Theme){
-        super([new ThemeBloc(theme)]);
+        super({ThemeBloc:new ThemeBloc(theme)});
         (<any>document).useThemTheme=theme;
     }
     builder(): TemplateResult {

@@ -40,7 +40,7 @@ export abstract class I18NBlocProvider extends BlocsProvider{
         return html`<div style="width:100%; height: 100%;"><slot></slot></div>`;
     }
     constructor(initState: LanguagePack){
-        super([new I18NBloc(initState)]);
+        super({I18NBloc: new I18NBloc(initState)});
     }
 }
 

@@ -1,6 +1,5 @@
 import { Bloc, BlocsProvider } from "bloc-them";
 import { html, TemplateResult } from 'lit-html';
-import { DEFAULT_MIN_VERSION } from 'tls';
 import { WidgetBuilder } from '../../utils/blocs';
 import { RaisedButton } from '../buttons';
 import { HideBloc } from '../dialogues';
@@ -104,8 +103,8 @@ class DatePickerBloc extends Bloc<DatePickerState>{
         t.setDate(this.state.date);
         t.setMonth(this.state.month);
         t.setFullYear(this.state.year);
-        let fm = BlocsProvider.of<FormMessageBloc,any>("FormMessageBloc",context);
-        let fb = BlocsProvider.of<FormBloc,any>(this.config.formBlocName,context);
+        let fm = BlocsProvider.of<FormMessageBloc>("FormMessageBloc",context);
+        let fb = BlocsProvider.of<FormBloc>(this.config.formBlocName,context);
         fb!.delegateChangeTo(this.config.nameForThisInForm,t.getTime(),fm!);
     }
 
@@ -263,7 +262,7 @@ customElements.define("date-picker-body",_DatePickerModalBody);
 
 class DatePickerOKButton extends RaisedButton<HideBloc,boolean>{
     onPress(): void {
-        const t= BlocsProvider.of<DatePickerBloc,any>("DatePickerBloc",this);
+        const t= BlocsProvider.of<DatePickerBloc>("DatePickerBloc",this);
         t?.postDateToForm(this);
         this.bloc?.toggle();
     }
@@ -335,7 +334,7 @@ class DatePickerInput extends WidgetBuilder<DatePickerBloc,DatePickerState>{
 
     builder(state: DatePickerState): TemplateResult {
        return html`<div style="width: 100%; height:100%;" @click=${()=>{
-           let t = BlocsProvider.of<HideBloc,any>("HideBloc",this);
+           let t = BlocsProvider.of<HideBloc>("HideBloc",this);
            t?.toggle();
            this.used=true;
        }}>${(()=>{
@@ -354,10 +353,10 @@ customElements.define("date-picker-input",DatePickerInput);
 
 export class DatePicker extends BlocsProvider{
     constructor(config:DatePickerConfig){
-        super([
-            new HideBloc(),
-            new DatePickerBloc(config)
-        ])
+        super({
+            HideBloc: new HideBloc(),
+            DatePickerBloc: new DatePickerBloc(config)
+        })
     }
     builder(): TemplateResult {
         return html`
@@ -373,11 +372,3 @@ export class DatePicker extends BlocsProvider{
         `;
     }
 }
-
-/**
- *     constructor(config:DatePickerConfig){
-        super("DatePickerBloc",{
-            useThisBloc: new DatePickerBloc(config)
-        });
-    }
- */

@@ -1,6 +1,6 @@
 import { BlocsProvider } from 'bloc-them';
 import { html, render, TemplateResult } from 'lit-html';
-import { APage, RouteState, RouteThem, RouteThemBloc } from 'route-them';
+import { APage, RouteState, RouteThem, RouteThemBloc } from '../widgets/route-them/RouteThem';
 import { WidgetBuilder } from '../utils/blocs';
 import { GestureDetector } from './gesturedetector';
 
@@ -120,7 +120,7 @@ class _TabsGestureDetector extends GestureDetector{
 
     connectedCallback(){
         super.connectedCallback();
-        let t = BlocsProvider.of<TabRouterBloc,RouteState>("TabRouterBloc", this);
+        let t = BlocsProvider.of<TabRouterBloc>("TabRouterBloc", this);
         if(!t){
             throw `No TabRouterBloc found for gesture detector for tabs`;
         }else{
@@ -160,7 +160,9 @@ export class TabController extends BlocsProvider{
     private _headers?: TemplateResult;
 
     constructor(){
-        super([new TabRouterBloc()])
+        super({
+            TabRouterBloc: new TabRouterBloc()
+        })
     }
 
     private getHeaders():TemplateResult{

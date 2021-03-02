@@ -20,8 +20,7 @@
   <script type="module">
     import { html, render } from 'lit-html';
     import {BlocsProvider} from 'bloc-them';
-    import {AppPageBloc} from 'route-them';
-    import {ThemeProvider, Theme, ProgressBloc, ProgressBarBuilder, I18NBlocProvider, FormBloc,SnackBarBloc} from '../dist/index.js';
+    import {ThemeProvider, Theme, ProgressBloc, ProgressBarBuilder, I18NBlocProvider, FormBloc,SnackBarBloc, AppPageBloc} from '../dist/index.js';
     
 
     //theme 
@@ -73,7 +72,9 @@
 
     class SnackBarprovider extends BlocsProvider{
       constructor(){
-        super([new SnackBarBloc()])
+        super({
+          SnackBarBloc: new SnackBarBloc()
+        })
       }
       builder(){
         return html`<ut-ex><slot></slot></ut-ex>`;

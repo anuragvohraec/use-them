@@ -1,6 +1,6 @@
 import { BlocsProvider } from 'bloc-them';
 import { TemplateResult,html } from 'lit-html';
-import { AppPageBloc, RouteState } from 'route-them';
+import { AppPageBloc, RouteState } from '../widgets/route-them/RouteThem';
 import { WidgetBuilder , NoBlocWidgetBuilder} from "../utils/blocs";
 
 class TitleBarWithBackButton extends WidgetBuilder<AppPageBloc,RouteState>{
@@ -24,7 +24,7 @@ class TitleBarWithBackButton extends WidgetBuilder<AppPageBloc,RouteState>{
             <div style="width:100%;height:100%;">
                 <lay-them in="row" ma="flex-start" ca="stretch">
                     <div @click=${()=>{
-                        let routeBloc = BlocsProvider.of<AppPageBloc,any>("AppPageBloc",this);
+                        let routeBloc = BlocsProvider.of<AppPageBloc>("AppPageBloc",this);
                         routeBloc!.popOutOfCurrentPage();
                     }}>
                         <lay-them ma="center" ca="center">

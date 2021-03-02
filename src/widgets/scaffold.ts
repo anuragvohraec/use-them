@@ -1,7 +1,6 @@
 import { Bloc } from 'bloc-them';
 import { TemplateResult, html } from 'lit-html';
 import { WidgetBuilder } from '../utils/blocs';
-import 'lay-them';
 
 export interface ScaffoldState {
     showMenu: boolean;

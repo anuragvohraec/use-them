@@ -21,3 +21,23 @@ export class ColorUtil{
         return "#"+RR+GG+BB+AA;
     }
 }
+
+
+export class Utils{
+    /**
+   * * build_path("https://my.com/proxy/db","/some1/db?a=12") > "https://my.com/proxy/db/some1/db?a=12"
+   * * build_path("https://my.com/proxy/db/","/some1/db?a=12") > "https://my.com/proxy/db/some1/db?a=12"
+   * @param args 
+   */
+  static build_path(...args:string[]):string{
+    return args.map((part, i) => {
+      if (i === 0) {
+        return part.trim().replace(/[\/]*$/g, '')
+      } else {
+        return part.trim().replace(/(^[\/]*|[\/]*$)/g, '')
+      }
+    }).filter(x=>x.length).join('/')
+  }
+  
+  }
+  
