@@ -239,18 +239,15 @@ class LoadingCell extends NoBlocWidgetBuilder{
     height: 100%;
     width: 100%;
     background-color: #ececec;
-    z-index: 44;
     overflow: hidden;
-    border-radius: 5px;
 }
 .activity{
-    position: absolute;
+    position: relative;
     left: -45%;
     height: 100%;
     width: 45%;
     background-image: linear-gradient(to left, #fbfbfb0d, #fbfbfb4d, #fbfbfb99, #fbfbfb4d, #fbfbfb0d);
     animation: loading 1s infinite;
-    z-index: 45;
 }
 
 @keyframes loading {
