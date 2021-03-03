@@ -100,7 +100,10 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
-# "version": "5.0.1"
+### "version": "5.0.5"
+1. added ut-horizontal-circular-slider and CircularCounterBloc. Always call CircularCounterBloc.setMaxCount before using the slider's left or right swipe.
+
+### "version": "5.0.1"
 1. added loading-cell : helpful for creating loading placeholder while content loads.
 
 ### "version": "5.0.0"

@@ -13,6 +13,7 @@ import { RadioButtonsBuilder } from './inputs/radiobuttons';
 import {SelectorBloc, SelectorWidget} from './selectors';
 import { BlocsProvider } from 'bloc-them';
 import { DatePicker } from './inputs/date-picker';
+import { CircularCounterBloc } from './gesturedetector';
 
 
 export class MyFormBloc extends FormBloc{
@@ -243,3 +244,23 @@ class MyDatePicker extends DatePicker{
 }
 
 customElements.define("my-date-picker",MyDatePicker);
+
+
+class TestMutiData extends WidgetBuilder<CircularCounterBloc,number>{
+    private data:string[]=["One","Two","Three","Four"];
+
+    connectedCallback(){
+        super.connectedCallback();
+        this.bloc?.setMaxCount(this.data.length);
+    }
+
+    builder(state: number): TemplateResult {
+        let t = this.data[state];
+        return html`<div style="width:200px;height:200px;"><lay-them ma="center" ca="center">${t}</lay-them></div>`
+    }
+
+    constructor(){
+        super("CircularCounterBloc")
+    }
+}
+customElements.define("test-horizontal-slider",TestMutiData);

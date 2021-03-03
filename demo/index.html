@@ -202,6 +202,11 @@
                             console.log("clicked");
                           }}></circular-icon-button>
                         </div>
+                        <div>
+                          <ut-horizontal-circular-slider>
+                            <test-horizontal-slider></test-horizontal-slider>
+                          </ut-horizontal-circular-slider>
+                        </div>
                       </ut-tab>
                     </ut-tabs>
                   </ut-tab-controller>
@@ -277,6 +282,11 @@ Section 1.10.33 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC
                           let routeBloc = BlocsProvider.of("AppPageBloc",this);
                           routeBloc.popOutOfCurrentPage();
                         }}>Go back to app</div>
+                        <div>
+                          <ut-horizontal-circular-slider>
+                            <test-horizontal-slider></test-horizontal-slider>
+                          </ut-horizontal-circular-slider>
+                        </div>
                       </backable-screen>
                   </app-page>
                 </app-pages-container>

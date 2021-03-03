@@ -1,4 +1,4 @@
-import { Bloc } from 'bloc-them';
+import { Bloc, BlocsProvider } from 'bloc-them';
 import { html, TemplateResult } from 'lit-html';
 import {WidgetBuilder} from '../utils/blocs.js';
 
@@ -172,4 +172,91 @@ export class GestureDetector extends WidgetBuilder<GestureDetectorBloc,GESTURE>{
     onSwipeLeft=()=>{}
     onSwipeRight=()=>{}
     onTap=()=>{}
+}
+
+
+
+export class CircularCounterBloc extends Bloc<number>{
+    protected _name: string="CircularCounterBloc";
+    private _current_index:number=0;
+    private _max_count:number=0;
+
+    constructor(initState:number=0){
+        super(initState);
+    }
+
+    setMaxCount(new_max:number){
+        this._max_count=new_max;
+    }
+    
+    public get current_index() : number {
+        if(this._max_count===0){
+            throw "setMaxCount has not been called on : CircularCounterBloc";
+        }
+        return this._current_index;
+    }
+    
+    public set current_index(v : number) {
+        this._current_index = v;
+        this.emit(this._current_index);
+    }
+
+    increment(){
+        if(this.current_index >= this._max_count-1){
+            this.current_index=0;
+        }else{
+            this.current_index++;
+        }
+    }
+
+    decrement(){
+        if(this.current_index <= 0){
+            this.current_index = this._max_count-1;
+        }else{
+            this.current_index--;
+        }
+    }
+
+}
+
+
+class SliderGestureDetector extends GestureDetector{
+    private _circularCounterBloc? : CircularCounterBloc;
+    
+    public get circularCounterBloc() : CircularCounterBloc {
+        if(!this._circularCounterBloc){
+            this._circularCounterBloc = BlocsProvider.of<CircularCounterBloc>("CircularCounterBloc",this);
+        }
+        return this._circularCounterBloc!;
+    }
+    
+
+    constructor(){
+        super(1,100);
+    }
+
+    onSwipeLeft=()=>{
+        this.circularCounterBloc.increment();
+    }
+    
+    onSwipeRight=()=>{
+        this.circularCounterBloc.decrement();
+    }
+}
+if(!customElements.get("ut-horizontal-circular-slider-gesture-detector")){
+    customElements.define("ut-horizontal-circular-slider-gesture-detector",SliderGestureDetector);
+}
+
+class UtHorizontalCircularSlider extends BlocsProvider{
+    constructor(initCount:number=0){
+        super({
+            CircularCounterBloc: new CircularCounterBloc(initCount)
+        });
+    }
+    builder(): TemplateResult {
+        return html`<ut-horizontal-circular-slider-gesture-detector><slot></slot></ut-horizontal-circular-slider-gesture-detector>`;
+    }
+}
+if(!customElements.get("ut-horizontal-circular-slider")){
+    customElements.define("ut-horizontal-circular-slider",UtHorizontalCircularSlider);
 }
