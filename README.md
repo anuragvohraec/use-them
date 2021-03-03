@@ -100,6 +100,9 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+# "version": "5.0.1"
+1. added loading-cell : helpful for creating loading placeholder while content loads.
+
 ### "version": "5.0.0"
 1. Upgraded to 5.0.0 of bloc-them lib
 2. Added lay-them and bloc-them lib code inside this lib and removed there external dependency. Maintaining separate repository for each one of them was difficult. Now can maintain codes from one place.

@@ -228,3 +228,46 @@ export class CircularProgressIndicator extends NoBlocWidgetBuilder{
 if(!customElements.get("circular-progress-indicator")){
     customElements.define("circular-progress-indicator",CircularProgressIndicator);
 }
+
+
+class LoadingCell extends NoBlocWidgetBuilder{
+    builder(state: number): TemplateResult {
+        return html`
+    <style>
+.load-wraper{
+    position: relative;
+    height: 100%;
+    width: 100%;
+    background-color: #ececec;
+    z-index: 44;
+    overflow: hidden;
+    border-radius: 5px;
+}
+.activity{
+    position: absolute;
+    left: -45%;
+    height: 100%;
+    width: 45%;
+    background-image: linear-gradient(to left, #fbfbfb0d, #fbfbfb4d, #fbfbfb99, #fbfbfb4d, #fbfbfb0d);
+    animation: loading 1s infinite;
+    z-index: 45;
+}
+
+@keyframes loading {
+    0%{
+        left: -45%;
+    }
+    100%{
+        left: 100%;
+    }
+}
+    </style>
+    <div class="load-wraper">
+        <div class="activity"></div>
+    </div>`;
+    }
+
+}
+if(!customElements.get("loading-cell")){
+    customElements.define("loading-cell",LoadingCell);
+}
