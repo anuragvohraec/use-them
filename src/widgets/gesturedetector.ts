@@ -133,22 +133,25 @@ export class GestureDetector extends WidgetBuilder<GestureDetectorBloc,GESTURE>{
     private _onTouchStart = {
         handleEvent: (e:TouchEvent)=>{
             this.bloc?.onStart(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
+            e.stopPropagation();
         },
-        passive: true
+        capture: false
     }
 
     private _onTouchEnd = {
         handleEvent: (e:TouchEvent)=>{
             this.bloc?.onEnd(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
+            e.stopPropagation();
         },
-        passive: true
+        capture: false
     }
 
     private _onTouchMove = {
         handleEvent: (e:TouchEvent)=>{
             this.bloc?.onMove(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
+            e.stopPropagation();
         },
-        passive: true
+        capture: false
     }
 
     builder(state: GESTURE): TemplateResult {
