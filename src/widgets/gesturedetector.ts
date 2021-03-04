@@ -2,19 +2,20 @@ import { Bloc, BlocsProvider } from 'bloc-them';
 import { html, TemplateResult } from 'lit-html';
 import {WidgetBuilder} from '../utils/blocs.js';
 
-enum GESTURE{
+export enum GESTURE{
     NO_ACTION,//0
     TAP,//1
     SWIPE_LEFT,//2
     SWIPE_RIGHT,//3
     SWIPE_UP,//4
-    SWIPE_DOWN//5
+    SWIPE_DOWN,//5
+    DOUBLE_TAP
 }
 
 /**
  * Swipe Horizontal is given preference over Vertical swipe.
  */
-class GestureDetectorBloc extends Bloc<GESTURE>{
+export class GestureDetectorBloc extends Bloc<GESTURE>{
     protected _name: string="GestureDetectorBloc";
 
     private isDragging: boolean=false;
@@ -34,6 +35,7 @@ class GestureDetectorBloc extends Bloc<GESTURE>{
 
     private _posCurrX:number =-1;
     private _posCurrY:number =-1;
+    private _clickTimer:any;
     
     onStart(posX:number, posY:number){
         this._posStartX = posX;
@@ -51,7 +53,16 @@ class GestureDetectorBloc extends Bloc<GESTURE>{
         this._posEndY= posY;
 
         if(!this.isDragging){
-            this.emit(GESTURE.TAP);
+            if(!this._clickTimer){
+                this._clickTimer = setTimeout(()=>{
+                    this._clickTimer=undefined;
+                    this.emit(GESTURE.TAP);
+                },this.doubleTapTimer);
+            }else{
+                clearTimeout(this._clickTimer);
+                this._clickTimer=undefined;
+                this.emit(GESTURE.DOUBLE_TAP);
+            }
         }else{
             this.isDragging=false;
             //need to resolve to other gestures in here
@@ -100,7 +111,7 @@ class GestureDetectorBloc extends Bloc<GESTURE>{
      * 
      * @param drag_sensitivity number between 0 to 1, its ration of start to current distance.
      */
-    constructor(private drag_sensitivity:number, private minDistanceInPx:number){
+    constructor(private drag_sensitivity:number, private minDistanceInPx:number, private doubleTapTimer:number){
         super(GESTURE.NO_ACTION)
         if(drag_sensitivity>1){
             drag_sensitivity=1
@@ -115,10 +126,54 @@ class GestureDetectorBloc extends Bloc<GESTURE>{
 
 }
 
-export class GestureDetector extends WidgetBuilder<GestureDetectorBloc,GESTURE>{
-    constructor(private drag_sensitivity:number = 1, private minDistanceInPx:number=100){
+export abstract class GestureDetectorBuilder extends WidgetBuilder<GestureDetectorBloc,GESTURE>{
+    constructor(private drag_sensitivity:number = 1, private minDistanceInPx:number=100, private doubleTapTimer:number=300){
         super("GestureDetectorBloc",{
-            useThisBloc: new GestureDetectorBloc(drag_sensitivity, minDistanceInPx),
+            useThisBloc: new GestureDetectorBloc(drag_sensitivity, minDistanceInPx, doubleTapTimer),
+            buildWhen:(o,n)=>{
+                if(n === GESTURE.NO_ACTION){
+                    return false;
+                }else{
+                    return true;
+                }
+            }
+        })
+    }
+
+    handle_touch_start=(e:TouchEvent)=>{
+        e.stopPropagation();
+        this.bloc?.onStart(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
+    };
+
+    handle_touch_end=(e:TouchEvent)=>{
+        e.stopPropagation();
+        this.bloc?.onEnd(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
+    }
+
+    handle_touch_move=(e:TouchEvent)=>{
+        e.stopPropagation();
+        this.bloc?.onMove(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
+    }
+
+    connectedCallback(){
+        super.connectedCallback();
+        this.addEventListener("touchstart",this.handle_touch_start,false);
+        this.addEventListener("touchend",this.handle_touch_end,false);
+        this.addEventListener("touchmove",this.handle_touch_move,false);
+    }
+
+    disconnectedCallback(){
+        super.disconnectedCallback();
+        this.removeEventListener("touchstart",this.handle_touch_start,false);
+        this.removeEventListener("touchend",this.handle_touch_end,false);
+        this.removeEventListener("touchmove",this.handle_touch_move,false);
+    }
+}
+
+export class GestureDetector extends WidgetBuilder<GestureDetectorBloc,GESTURE>{
+    constructor(private drag_sensitivity:number = 1, private minDistanceInPx:number=100, private doubleTapTimer:number=300){
+        super("GestureDetectorBloc",{
+            useThisBloc: new GestureDetectorBloc(drag_sensitivity, minDistanceInPx, doubleTapTimer),
             buildWhen:(o,n)=>{
                 if(n === GESTURE.NO_ACTION){
                     return false;
@@ -162,6 +217,7 @@ export class GestureDetector extends WidgetBuilder<GestureDetectorBloc,GESTURE>{
             case GESTURE.SWIPE_RIGHT: this.onSwipeRight();break;
             case GESTURE.SWIPE_UP: this.onSwipeUp();break;
             case GESTURE.SWIPE_DOWN: this.onSwipeDown();break;
+            case GESTURE.DOUBLE_TAP: this.onDoubleTap();break;
             default: break;
         }
         return html`<div style="width:100%; height: 100%;" 
@@ -175,6 +231,7 @@ export class GestureDetector extends WidgetBuilder<GestureDetectorBloc,GESTURE>{
     onSwipeLeft=()=>{}
     onSwipeRight=()=>{}
     onTap=()=>{}
+    onDoubleTap=()=>{}
 }
 
 

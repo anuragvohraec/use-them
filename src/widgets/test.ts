@@ -13,7 +13,7 @@ import { RadioButtonsBuilder } from './inputs/radiobuttons';
 import {SelectorBloc, SelectorWidget} from './selectors';
 import { BlocsProvider } from 'bloc-them';
 import { DatePicker } from './inputs/date-picker';
-import { CircularCounterBloc } from './gesturedetector';
+import { CircularCounterBloc , GESTURE, GestureDetectorBloc, GestureDetector, GestureDetectorBuilder} from './gesturedetector';
 
 
 export class MyFormBloc extends FormBloc{
@@ -264,3 +264,25 @@ class TestMutiData extends WidgetBuilder<CircularCounterBloc,number>{
     }
 }
 customElements.define("test-horizontal-slider",TestMutiData);
+
+
+class TestGestureDetector extends GestureDetectorBuilder{
+    builder(state: GESTURE): TemplateResult {
+        let t:string="";
+        switch (state) {
+            case GESTURE.NO_ACTION: t="NO_ACTION";  break;
+            case GESTURE.TAP: t="TAP"; break;
+            case GESTURE.SWIPE_LEFT: t="SWIPE_LEFT"; break;
+            case GESTURE.SWIPE_RIGHT: t="SWIPE_RIGHT"; break;
+            case GESTURE.SWIPE_UP: t="SWIPE_UP"; break;
+            case GESTURE.SWIPE_DOWN: t="SWIPE_DOWN";break;
+            case GESTURE.DOUBLE_TAP: t="DOUBLE_TAP";break;
+        }
+        return html`<div style="background-color:grey; width:200px; height: 200px;">${t}</div>`;
+    }
+
+    constructor(){
+        super(1,50);
+    }
+}
+customElements.define("test-gesture-detector",TestGestureDetector);

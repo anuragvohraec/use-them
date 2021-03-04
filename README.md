@@ -100,6 +100,9 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version": "5.0.6"
+1. Added double-tap for GestureDetector. Also added GestureDetectorBuilder widget.
+
 ### "version": "5.0.5"
 1. added ut-horizontal-circular-slider and CircularCounterBloc. Always call CircularCounterBloc.setMaxCount before using the slider's left or right swipe.
 
