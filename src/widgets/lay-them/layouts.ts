@@ -13,6 +13,7 @@ export class LayThem extends BlocBuilder<LayThemBloc, any> {
   private main_axis_alignment: string;
   private cross_axis_alignment: string;
   private overflow:string;
+  private _wrap:string;
 
   constructor(){
     super("LayThemBloc", {
@@ -54,6 +55,13 @@ export class LayThem extends BlocBuilder<LayThemBloc, any> {
     if(ov){
       this.overflow=ov;
     }
+
+    let wrap = this.getAttribute("wrap");
+    if(wrap){
+      this._wrap=wrap.toLowerCase();
+    }else{
+      this._wrap="nowrap";
+    }
   }
 
   builder(state: any): TemplateResult {
@@ -77,7 +85,7 @@ export class LayThem extends BlocBuilder<LayThemBloc, any> {
           })()};
           justify-content: ${this.main_axis_alignment};
           align-items: ${this.cross_axis_alignment};
-          flex-wrap: nowrap;
+          flex-wrap: ${this._wrap};
           height: 100%;
           position: ${(()=>{
             if(this.lay_them_in == "stack"){

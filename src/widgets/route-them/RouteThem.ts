@@ -140,7 +140,7 @@ export class RouteThem extends BlocBuilder<_BogusBloc,number>{
     if(routeBloc?.savesToHistory){
       const hash = window.location.hash;
       if(hash){
-        routeBloc?._goToPageDoNotSaveHistory("/"+hash,history.state.data);
+        routeBloc?._goToPageDoNotSaveHistory("/"+hash,history?.state?.data);
       }
     }
   }

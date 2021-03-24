@@ -1,4 +1,4 @@
-import { WidgetBuilder, ActionBloc, NoBlocWidgetBuilder } from '../utils/blocs';
+import { WidgetBuilder, ActionBloc, NoBlocWidgetBuilder, BogusBloc } from '../utils/blocs';
 import { Bloc, BlocBuilderConfig } from 'bloc-them';
 import { TemplateResult, html } from 'lit-html';
 import { ColorUtil } from '../utils/utils';
@@ -141,4 +141,12 @@ export class CircularIconButton extends NoBlocWidgetBuilder{
 }
 if(!customElements.get("circular-icon-button")){
     customElements.define("circular-icon-button",CircularIconButton);
+}
+
+export abstract class NoBlocRaisedButton extends RaisedButton<BogusBloc,number>{
+    constructor(){
+        super("BogusBloc",{
+            useThisBloc: new BogusBloc()
+        })
+    }
 }
