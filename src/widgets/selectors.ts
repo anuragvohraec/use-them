@@ -184,7 +184,7 @@ export abstract class SelectorWidgetGrid<I> extends WidgetBuilder<SelectorBloc<I
                         background-color: ${this.selectedColor()};
                     }
                 </style>
-                <lay-them in="row" ma="space-between" wrap="wrap">
+                <lay-them in="row" ma="flex-start" wrap="wrap">
                     ${repeat(state.listOfItems,(item:I)=>{
                         return `${this.bloc?._isItemSelected(item)}_${this.itemToKey(item)}`;
                     },(item:I,index:number)=>{
