@@ -144,3 +144,52 @@ export abstract class SelectorWidget<I> extends WidgetBuilder<SelectorBloc<I>, S
         }
     }
 }
+
+
+export abstract class SelectorWidgetUnstructured<I> extends WidgetBuilder<SelectorBloc<I>, SelectorState<I>>{
+    constructor(selectorBlocName:string){
+        super(selectorBlocName);
+    }
+
+    protected abstract itemBuilder(item:I, index:number, isSelected:boolean):TemplateResult;
+
+    private _itemBuilder(item:I, index:number,isSelected:boolean):TemplateResult{
+        const maxItemSelected = this.bloc!._isMaxItemSelected;
+        return html`<div @click=${(e:Event)=>{
+            if(maxItemSelected){
+                this.bloc?._removeFirst(this);   
+            }
+            this.bloc?._toggleItemSelection(item,this);
+        }} class=${isSelected?"selected":""}>
+            ${this.itemBuilder(item,index, this.bloc!._isItemSelected(item))}
+        </div>`;
+    }
+
+    protected abstract itemToKey(item:I):string;
+
+    private selectedColor(){
+        const t = this.useAttribute?.["selection-color"]||this.theme.selector_item_selection_color;
+        return t;
+    }
+
+    builder(state: SelectorState<I>): TemplateResult {
+        switch (state.status) {
+            case SelectorStatus.LOADING:{
+                return html`<lay-them ma="center" ca="center"><div><circular-progress-indicator></circular-progress-indicator></div></lay-them>`;
+            };
+            case SelectorStatus.LOADED: {
+                return html`
+                <style>
+                    .selected{
+                        background-color: ${this.selectedColor()};
+                    }
+                </style>
+                ${repeat(state.listOfItems,(item:I)=>{
+                    return `${this.bloc?._isItemSelected(item)}_${this.itemToKey(item)}`;
+                },(item:I,index:number)=>{
+                    return this._itemBuilder(item,index,this.bloc!._isItemSelected(item));
+                })}`;
+            }
+        }
+    }
+}
