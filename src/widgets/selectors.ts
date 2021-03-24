@@ -146,7 +146,7 @@ export abstract class SelectorWidget<I> extends WidgetBuilder<SelectorBloc<I>, S
 }
 
 
-export abstract class SelectorWidgetUnstructured<I> extends WidgetBuilder<SelectorBloc<I>, SelectorState<I>>{
+export abstract class SelectorWidgetGrid<I> extends WidgetBuilder<SelectorBloc<I>, SelectorState<I>>{
     constructor(selectorBlocName:string){
         super(selectorBlocName);
     }
@@ -184,11 +184,13 @@ export abstract class SelectorWidgetUnstructured<I> extends WidgetBuilder<Select
                         background-color: ${this.selectedColor()};
                     }
                 </style>
-                ${repeat(state.listOfItems,(item:I)=>{
-                    return `${this.bloc?._isItemSelected(item)}_${this.itemToKey(item)}`;
-                },(item:I,index:number)=>{
-                    return this._itemBuilder(item,index,this.bloc!._isItemSelected(item));
-                })}`;
+                <lay-them in="row" ma="space-between" wrap="wrap">
+                    ${repeat(state.listOfItems,(item:I)=>{
+                        return `${this.bloc?._isItemSelected(item)}_${this.itemToKey(item)}`;
+                    },(item:I,index:number)=>{
+                        return this._itemBuilder(item,index,this.bloc!._isItemSelected(item));
+                    })}
+                </lay-them>`;
             }
         }
     }
