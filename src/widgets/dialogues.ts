@@ -19,8 +19,8 @@ export class HideBloc extends Bloc<boolean>{
 }
 
 export class Dialogue extends WidgetBuilder<HideBloc,boolean>{
-    constructor(){
-        super("HideBloc");
+    constructor(blocname?:string){
+        super(blocname??"HideBloc");
     }
 
     builder(state: boolean): TemplateResult {

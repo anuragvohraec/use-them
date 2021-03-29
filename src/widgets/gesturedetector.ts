@@ -1,6 +1,6 @@
 import { Bloc, BlocsProvider } from 'bloc-them';
 import { html, TemplateResult } from 'lit-html';
-import {WidgetBuilder} from '../utils/blocs.js';
+import {NoBlocNoStateWidget, NoBlocWidgetBuilder, WidgetBuilder} from '../utils/blocs.js';
 
 export enum GESTURE{
     NO_ACTION,//0
@@ -319,4 +319,102 @@ class UtHorizontalCircularSlider extends BlocsProvider{
 }
 if(!customElements.get("ut-horizontal-circular-slider")){
     customElements.define("ut-horizontal-circular-slider",UtHorizontalCircularSlider);
+}
+
+export abstract class VerticalScrollLimitDetector extends BlocsProvider{
+
+    private _scroller?:HTMLDivElement|null;
+
+    disconnectedCallback(){
+        this._scroller?.removeEventListener("scroll",this._doListenScroll);
+    }
+
+    connectedCallback(){
+        super.connectedCallback();
+    }
+
+    _doListenScroll = {
+        handleEvent: (e:Event)=>{
+            //@ts-ignore
+            let element:HTMLElement = e.target;
+            if (element.offsetHeight + element.scrollTop === element.scrollHeight){
+                this.bottomLimitReached();
+            }else if(element.scrollTop===0){
+                this.topLimitReached();
+            }
+            e.stopPropagation();
+        },
+        capture: false
+    }
+    abstract bottomLimitReached():void;
+    abstract topLimitReached():void;
+
+    _discardTouch={
+        handleEvent:(e:Event)=>{
+            e.stopPropagation();
+        },
+        capture:false
+    }
+
+    builder(): TemplateResult {
+    return html`<style>
+        .con{
+            overflow-y:scroll;
+            height:100%;
+            width:100%;
+            scroll-behavior:smooth;
+        }
+    </style><div class="con" @scroll=${this._doListenScroll} @touchstart=${this._discardTouch}
+        @touchend=${this._discardTouch}
+        @touchmove=${this._discardTouch}><slot></slot></div>`;
+    }
+}
+
+export abstract class HorizontalScrollLimitDetector extends BlocsProvider{
+    private _scroller?:HTMLDivElement|null;
+
+    disconnectedCallback(){
+        this._scroller?.removeEventListener("scroll",this._doListenScroll);
+    }
+
+    connectedCallback(){
+        super.connectedCallback();
+    }
+
+    _doListenScroll = {
+        handleEvent: (e:Event)=>{
+            //@ts-ignore
+            let element:HTMLElement = e.target;
+            if (element.offsetWidth + element.scrollLeft === element.scrollWidth){
+                this.rightLimitReached();
+            }else if(element.scrollLeft===0){
+                this.leftLimitReached();
+            }
+            e.stopPropagation();
+        },
+        capture: false
+    }
+    abstract rightLimitReached():void;
+    abstract leftLimitReached():void;
+
+    _discardTouch={
+        handleEvent:(e:Event)=>{
+            e.stopPropagation();
+        },
+        capture:false
+    }
+
+    builder(): TemplateResult {
+    return html`<style>
+        .con{
+            overflow-x:scroll;
+            height:100%;
+            width:100%;
+            display:flex;
+            scroll-behavior:smooth;
+        }
+    </style><div class="con" @scroll=${this._doListenScroll} @touchstart=${this._discardTouch}
+        @touchend=${this._discardTouch}
+        @touchmove=${this._discardTouch}><slot></slot></div>`;
+    }
 }

@@ -13,7 +13,7 @@ import { RadioButtonsBuilder } from './inputs/radiobuttons';
 import {SelectorBloc, SelectorWidget} from './selectors';
 import { BlocsProvider } from 'bloc-them';
 import { DatePicker } from './inputs/date-picker';
-import { CircularCounterBloc , GESTURE, GestureDetectorBloc, GestureDetector, GestureDetectorBuilder} from './gesturedetector';
+import { CircularCounterBloc , GESTURE, GestureDetectorBloc, GestureDetector, GestureDetectorBuilder, VerticalScrollLimitDetector, HorizontalScrollLimitDetector} from './gesturedetector';
 
 
 export class MyFormBloc extends FormBloc{
@@ -286,3 +286,31 @@ class TestGestureDetector extends GestureDetectorBuilder{
     }
 }
 customElements.define("test-gesture-detector",TestGestureDetector);
+
+class VTestDetector extends VerticalScrollLimitDetector{
+    constructor(){
+        super({})
+    }
+
+    bottomLimitReached(): void {
+        console.log("Its bottom");
+    }
+    topLimitReached(): void {
+        console.log("Its top");
+    }
+}
+customElements.define("test-v-scroll-detector",VTestDetector);
+
+class HTestDetector extends HorizontalScrollLimitDetector{
+    constructor(){
+        super({})
+    }
+
+    rightLimitReached(): void {
+        console.log("Right Limit reached");
+    }
+    leftLimitReached(): void {
+        console.log("left Limit reached");
+    }
+}
+customElements.define("test-h-scroll-detector",HTestDetector);

@@ -1,4 +1,4 @@
-import { Bloc, BlocBuilder,BlocBuilderConfig } from "bloc-them";
+import { Bloc, BlocBuilder,BlocBuilderConfig, BlocsProvider } from "bloc-them";
 import { Theme } from '../widgets/theme';
 
 
@@ -48,5 +48,11 @@ export abstract class WidgetBuilder<B extends Bloc<S>, S> extends BlocBuilder<B,
 export abstract class NoBlocWidgetBuilder extends WidgetBuilder<BogusBloc,number>{
     constructor(){
         super("BogusBloc", {useThisBloc: new BogusBloc()})
+    }
+}
+
+export abstract class NoBlocNoStateWidget extends BlocsProvider{
+    constructor(){
+        super({});
     }
 }

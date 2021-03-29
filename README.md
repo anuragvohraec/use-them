@@ -100,6 +100,10 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version" : "5.0.11"
+1. HorizontalScrollLimitDetector and VerticalScrollLimitDetector, to detect scroll end and beginning .
+2. Generalized usage of Dialogue (ut-dialogue)
+
 ### "version": "5.0.8"
 1. SelectorWidgetUnstructured
 
