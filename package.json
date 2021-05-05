@@ -16,7 +16,6 @@
     "prepublish": "tsc"
   },
   "dependencies": {
-    "@polymer/iron-icons": "^3.0.1",
     "bloc-them": "^5.0.0",
     "lit-html": "^1.1.2"
   },
