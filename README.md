@@ -7,6 +7,11 @@ A set of Webcomponents to create apps. Seamlessly works with **bloc-them**
 npm i use-them
 ```
 
+## Build
+```
+npx rollup -c rollup.config.js
+```
+
 ## Usage
 ```html
 <script type="module">

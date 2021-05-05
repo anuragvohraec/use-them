@@ -1,7 +1,7 @@
 import { Bloc } from "bloc-them";
 import { html, TemplateResult } from 'lit-html';
 import { WidgetBuilder } from '../utils/blocs';
-import {repeat} from 'lit-html/directives/repeat.js';
+import {repeat} from 'lit-html/directives/repeat';
 
 enum SelectorStatus{
     LOADING,
