@@ -112,7 +112,7 @@ export class LabeledIconButton extends NoBlocWidgetBuilder{
         return html`
         <ink-well>
             <lay-them ca="center" ma="center">
-                <iron-icon icon="${this.icon}" style="fill: ${this.theme.primaryColor}"></iron-icon>
+                <ut-icon icon="${this.icon}" style="fill: ${this.theme.primaryColor}"></ut-icon>
                 <ut-h5>${this.label}</ut-h5>
             </lay-them>
         </ink-well>
@@ -135,7 +135,7 @@ export class CircularIconButton extends NoBlocWidgetBuilder{
         }
         return html`
         <div style="overflow: hidden;height: ${radius};width: ${radius};background-color: #7b7b7b12;border-radius: 50%;">
-            <ink-well><lay-them ma="center" ca="center"><iron-icon icon="${icon}" style="fill: ${this.theme.primaryColor}"></iron-icon></lay-them></ink-well>
+            <ink-well><lay-them ma="center" ca="center"><ut-icon icon="${icon}" style="fill: ${this.theme.primaryColor}"></ut-icon></lay-them></ink-well>
         </div>`;
     }
 }

@@ -9,9 +9,10 @@ export default {
     paths:{
         "lit-html": "./js/lit-html/lit-html.js",
         "lit-html/directives/unsafe-html":"./js/lit-html/directives/unsafe-html.js",
+        "lit-html/directives/unsafe-svg":"./js/lit-html/directives/unsafe-svg.js",
         "lit-html/directives/repeat": "./js/lit-html/directives/repeat.js",
         "lit-html/directives/if-defined": "./js/lit-html/directives/if-defined.js",
-        "bloc-them":"./bloc-them.js"
+        "bloc-them":"./js/bloc-them/bloc-them.js"
     },
   },
   plugins: [typescript(),uglify()],

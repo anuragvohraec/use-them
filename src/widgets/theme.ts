@@ -49,6 +49,10 @@ export class Theme{
     public tab_active_icon_color=this.primaryColor;
 
     public selector_item_selection_color=this.primaryColor;
+
+    public icon_active=this.primaryColor;
+    public icon_inactive="#919191";
+    public icon_size="20px";
 }
 
 

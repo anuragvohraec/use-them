@@ -1,7 +1,6 @@
 import { FormInputBuilder, FormBloc, FormState } from '../forms';
 import { TemplateResult, html } from 'lit-html';
 import {  BlocsProvider } from 'bloc-them';
-import '@polymer/iron-icons';
 import { I18NBloc } from '../text';
 import {ifDefined} from 'lit-html/directives/if-defined';
 
@@ -38,8 +37,6 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
                 color: ${this.theme.input_place_holder_color};
             }
             .iconCtrl{
-                --iron-icon-height: 30px;
-                --iron-icon-width: 30px;
                 display: flex;
                 flex-direction: row;
                 justify-content: center;
@@ -97,13 +94,13 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
     getIcon= ()=>{
         let icon = this.getAttribute("icon");
         if(icon){
-            return html`<div class="iconCtrl"><iron-icon icon="${icon}" style="fill: ${this.theme.input_icon_color};"></iron-icon></div>`;
+            return html`<div class="iconCtrl"><ut-icon icon="${icon}" style="fill: ${this.theme.input_icon_color};"></ut-icon></div>`;
         }
     }
 
     getClearButton = ()=>{
         if(this.hasAttribute("clearable") || this.valueList){
-            return html`<div style="padding: 5px;" @click=${this.clearText}><iron-icon icon="clear" style="fill: ${this.theme.input_icon_color};"></iron-icon></div>`;
+            return html`<div style="padding: 5px;" @click=${this.clearText}><ut-icon icon="clear" style="fill: ${this.theme.input_icon_color};"></ut-icon></div>`;
         }
     }
 
