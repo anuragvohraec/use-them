@@ -1,6 +1,6 @@
 // rollup.config.js
 import typescript from '@rollup/plugin-typescript';
-import { uglify } from "rollup-plugin-uglify";
+import { terser } from "rollup-plugin-terser";
 
 export default {
   input: './index.ts',
@@ -15,6 +15,6 @@ export default {
         "bloc-them":"./js/bloc-them/bloc-them.js"
     },
   },
-  plugins: [typescript(),uglify()],
+  plugins: [typescript(),terser()],
   external:["lit-html","bloc-them"]
 };
