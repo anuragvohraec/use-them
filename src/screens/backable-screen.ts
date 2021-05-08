@@ -28,7 +28,7 @@ class TitleBarWithBackButton extends WidgetBuilder<AppPageBloc,RouteState>{
                         routeBloc!.popOutOfCurrentPage();
                     }}>
                         <lay-them ma="center" ca="center">
-                            <div style="padding: 0px 10px;"><ut-icon icon="chevron-left" use="fill: white;"></ut-icon></div>
+                            <div style="padding: 0px 10px;"><ut-icon icon="chevron-left" use="icon_inactive: #fff;"></ut-icon></div>
                         </lay-them>
                     </div>
                     <div style="flex:1;">
