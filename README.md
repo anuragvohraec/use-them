@@ -105,6 +105,9 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version" : "6.0.1"
+1. Exposed text input in index.ts
+
 ### "version" : "6.0.0"
 1. Removed iron icons and added `ut-icon` tag instead. Will help minimize build size and only allow packing of icons which are required by the app.
 2. Added rollup support. Now the use-them libs can be used externally too as a script module.
