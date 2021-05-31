@@ -105,6 +105,9 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version" : "6.0.3"
+1. Route-them: Now certain pages can be modified to confirmation message before pop up. To achieve this when you call `routeThemBloc.goToPage(url,data)`, the data must have `confirmation_message:string` type property. This message will be used to get confirmation before popup.
+
 ### "version" : "6.0.1"
 1. Exposed text input in index.ts
 

@@ -41,7 +41,18 @@ export class RouteThemBloc extends Bloc<RouteState>{
         if(!oldState){
           oldState=this.initState;
         }
-        this.emit({...oldState});
+
+        if(this.state?.data?.confirmation_message){
+          let c = confirm(this.state?.data?.confirmation_message);
+          if(c){
+            this.emit({...oldState});
+          }else{
+            let url_path = this.state.url_path;
+            history.pushState(this.state,this._convertUrlToPath(url_path),Utils.build_path(window.location.origin,this._init_path!,url_path));
+          }
+        }else{
+          this.emit({...oldState});
+        }
       };
 
       window.onpopstate = p;
@@ -55,6 +66,10 @@ export class RouteThemBloc extends Bloc<RouteState>{
   popOutOfCurrentPage(){
     history.back();
   }
+
+  _convertUrlToPath(url_path:string){
+    return url_path.split('/').join('-').toUpperCase().substring(1);
+  }
   
   goToPage(url_path: string, data?: any){
     let r = this._compass.find(url_path);
@@ -66,7 +81,7 @@ export class RouteThemBloc extends Bloc<RouteState>{
       };
       this.emit(newRouteState);
       if(this.save_history){
-        let t = url_path.split('/').join('-').toUpperCase().substring(1);
+        let t = this._convertUrlToPath(url_path);
         history.pushState(newRouteState,t,Utils.build_path(window.location.origin,this._init_path!,url_path));
       }
     }else{

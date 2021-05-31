@@ -17,7 +17,7 @@ export class BogusBloc extends ActionBloc<number>{
 }
 
 export abstract class WidgetBuilder<B extends Bloc<S>, S> extends BlocBuilder<B,S>{
-    private _theme : Theme;
+    protected _theme : Theme;
     
     constructor(blocName: string, configs?: BlocBuilderConfig<B, S>){
         super(blocName, configs);
