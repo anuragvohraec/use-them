@@ -267,3 +267,41 @@ class LoadingCell extends NoBlocWidgetBuilder{
 if(!customElements.get("loading-cell")){
     customElements.define("loading-cell",LoadingCell);
 }
+
+class IndeterminateLoadingBar extends NoBlocWidgetBuilder{
+    builder(state: number): TemplateResult {
+        return html`<style>
+.progress-line, .progress-line:before {
+  height: 3px;
+  width: 100%;
+  margin: 0;
+}
+.progress-line {
+  background-color: ${this.theme.primaryColor};
+  display: -webkit-flex;
+  display: flex;
+}
+.progress-line:before {
+  background-color: ${this.theme.secondaryColor};
+  content: '';
+  -webkit-animation: running-progress 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation: running-progress 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+@-webkit-keyframes running-progress {
+  0% { margin-left: 0px; margin-right: 100%; }
+  50% { margin-left: 25%; margin-right: 0%; }
+  100% { margin-left: 100%; margin-right: 0; }
+}
+@keyframes running-progress {
+  0% { margin-left: 0px; margin-right: 100%; }
+  50% { margin-left: 25%; margin-right: 0%; }
+  100% { margin-left: 100%; margin-right: 0; }
+}
+        </style>
+<div class="progress-line"></div>
+        `;
+    }
+}
+if(!customElements.get("ut-indeterminate-loading-bar")){
+    customElements.define("ut-indeterminate-loading-bar",IndeterminateLoadingBar);
+}
