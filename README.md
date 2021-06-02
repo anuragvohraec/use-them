@@ -105,6 +105,9 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version" : "6.0.5"
+1. Added hookups to RouteThemBloc on pop and Goto calls. One need to extends `RouteThemNavigationHookBloc` class and provide it as bloc before apppage bloc.
+
 ### "version" : "6.0.4"
 1. Added `ut-indeterminate-loading-bar`.
 
