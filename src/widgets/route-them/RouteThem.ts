@@ -10,6 +10,25 @@ export interface RouteState{
   data?: any;
 }
 
+export abstract class RouteThemNavigationHookBloc extends Bloc<number>{
+  protected _name: string="RouteThemNavigationHookBloc";
+  constructor(){
+    super(0);
+  }
+  /**
+   * Called when a page pops up.
+   * @param save_history 
+   * @param context 
+   */
+  abstract onPopHook(save_history:boolean,context:HTMLElement, state: RouteState):void;
+  /**
+   * Called when go to page is called
+   * @param save_history 
+   * @param context 
+   */
+  abstract onGoToPageHook(save_history:boolean,context:HTMLElement, state: RouteState):void;
+}
+
 // export interface RouterConfig{
 //   bloc_name:string;
 //   save_history:boolean;
@@ -21,10 +40,22 @@ export interface PopStateFunction{
 }
 
 export class RouteThemBloc extends Bloc<RouteState>{
+
   protected _name: string="RouteThemBloc";
   public static INIT_STATE:RouteState = {url_path:"/", pathDirection: { path_params: {}, matched_pattern: "/", parent_matches: [] }}
   private _compass: Compass = new Compass();
   private _init_path?: string;
+
+  private _navHooks?: RouteThemNavigationHookBloc | undefined;
+  private _navHooksBlocSearchedOnce=false;
+
+  public get navHooks(): RouteThemNavigationHookBloc | undefined {
+    if(!this._navHooksBlocSearchedOnce && !this._navHooks && this.hostElement){
+      this._navHooks = BlocsProvider.of<RouteThemNavigationHookBloc>("RouteThemNavigationHookBloc",this.hostElement);
+      this._navHooksBlocSearchedOnce=true;
+    }
+    return this._navHooks;
+  }
 
   constructor(private save_history:boolean=false, protected initState: RouteState = RouteThemBloc.INIT_STATE){
     super(initState);
@@ -44,15 +75,15 @@ export class RouteThemBloc extends Bloc<RouteState>{
 
         if(this.state?.data?.confirmation_message){
           let c = confirm(this.state?.data?.confirmation_message);
-          if(c){
-            this.emit({...oldState});
-          }else{
+          if(!c){
             let url_path = this.state.url_path;
             history.pushState(this.state,this._convertUrlToPath(url_path),Utils.build_path(window.location.origin,this._init_path!,url_path));
+            return;
           }
-        }else{
-          this.emit({...oldState});
         }
+        let stateForEmit = {...oldState};
+        this.emit(stateForEmit);
+        return this.navHooks?.onPopHook(this.save_history,this.hostElement, stateForEmit);
       };
 
       window.onpopstate = p;
@@ -84,6 +115,7 @@ export class RouteThemBloc extends Bloc<RouteState>{
         let t = this._convertUrlToPath(url_path);
         history.pushState(newRouteState,t,Utils.build_path(window.location.origin,this._init_path!,url_path));
       }
+      this.navHooks?.onGoToPageHook(this.save_history,this.hostElement,newRouteState);
     }else{
       console.log(`No route exists for path: ${url_path}`);
     }
