@@ -1,5 +1,6 @@
 export * from './widgets/lay-them/layouts.js';
 export * from './widgets/route-them/RouteThem.js';
+export * from './widgets/route-them/compass.js';
 
 export * from './widgets/theme.js';
 export * from './widgets/loading-bar.js';
