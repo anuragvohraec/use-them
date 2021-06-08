@@ -106,7 +106,7 @@ export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
                 </div>
             </lay-them>
         </div>
-        <div class="expanded glass" style="display: ${(()=>{
+        <div class="expanded glass" style="z-index: 10000;display: ${(()=>{
             if(state.showMenu){
                 return "block";
             }else{
