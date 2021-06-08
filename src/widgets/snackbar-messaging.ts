@@ -16,7 +16,7 @@ export class SnackBarBloc extends Bloc<SnackBarMessage|undefined>{
         super(undefined);
     }
 
-    postMessage(newMessage:SnackBarMessage, timeout_ms:number=3000){
+    postMessage(newMessage:SnackBarMessage, timeout_ms:number=4000){
         if(newMessage){
             this.emit({msg:newMessage.msg, color:newMessage.color||this.default_color,  background_color:newMessage.background_color||this.default_background_color});
             if(this.current_timeout){
