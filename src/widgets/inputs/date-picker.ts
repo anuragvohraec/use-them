@@ -339,7 +339,7 @@ class DatePickerInput extends WidgetBuilder<DatePickerBloc,DatePickerState>{
            this.used=true;
        }}>${(()=>{
            if(!this.used) {
-               return html`<lay-them in="row" ma="space-between" ca="center"><div style="color: #808080; padding: 0px 10px;">${this.bloc?.placeholder}</div><div style="padding: 0px 10px;"><ut-icon icon="today" style="fill: #a7a7a7;"></ut-icon></div></lay-them><slot></slot>`;
+               return html`<lay-them in="row" ma="space-between" ca="center"><div style="color: #808080; padding: 0px 10px;">${this.bloc?.placeholder}</div><div style="padding: 0px 10px;"><ut-icon icon="today" use="icon_inactive: #a7a7a7;"></ut-icon></div></lay-them><slot></slot>`;
            }else{
                return html`<lay-them in="row" ma="space-between" ca="center"><div style="padding: 0px 10px;">${this.convert_sate_to_date_string(state)}</div><div style="padding: 0px 10px;"><ut-icon icon="today" ></ut-icon></div></lay-them><slot></slot>`;
            }

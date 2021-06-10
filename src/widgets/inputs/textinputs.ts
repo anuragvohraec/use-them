@@ -94,13 +94,13 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
     getIcon= ()=>{
         let icon = this.getAttribute("icon");
         if(icon){
-            return html`<div class="iconCtrl"><ut-icon icon="${icon}" style="fill: ${this.theme.input_icon_color};"></ut-icon></div>`;
+            return html`<div class="iconCtrl"><ut-icon icon="${icon}" use="icon_inactive: ${this.theme.input_icon_color};"></ut-icon></div>`;
         }
     }
 
     getClearButton = ()=>{
         if(this.hasAttribute("clearable") || this.valueList){
-            return html`<div style="padding: 5px;" @click=${this.clearText}><ut-icon icon="clear" style="fill: ${this.theme.input_icon_color};"></ut-icon></div>`;
+            return html`<div style="padding: 5px;" @click=${this.clearText}><ut-icon icon="clear" use="icon_inactive: ${this.theme.input_icon_color};"></ut-icon></div>`;
         }
     }
 
