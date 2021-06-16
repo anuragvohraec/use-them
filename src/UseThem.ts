@@ -26,6 +26,7 @@ export * from './widgets/selectors.js';
 export * from './widgets/inputs/date-picker.js';
 export * from './widgets/icons.js';
 export * from './widgets/inputs/textinputs.js';
+export * from './widgets/confirmation-dialogue.js';
 
 export * from './screens/backable-screen.js';
 

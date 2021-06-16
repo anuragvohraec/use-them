@@ -105,6 +105,9 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version" : "6.0.9"
+1. Added ConfirmationDialogue class to easily create confirmation dialogues.
+
 ### "version" : "6.0.7"
 1. Updated z-index of menu bar
 
