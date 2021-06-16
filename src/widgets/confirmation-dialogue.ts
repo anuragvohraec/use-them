@@ -77,10 +77,10 @@ export abstract class ConfirmationDialogue extends WidgetBuilder<HideBloc,boolea
                                 </div>`:html``}
                                 <lay-them in="row" ma="flex-start" ca="stretch" overflow="hidden">
                                     <div style="flex:1;" class="button" @click=${this.yesAction}>
-                                        <ink-well><lay-them ma="center" ca="center" slot="yes"><ut-icon icon="done"></ut-icon></lay-them></ink-well>
+                                        <ink-well><lay-them ma="center" ca="center"><ut-icon icon="done"></ut-icon></lay-them></ink-well>
                                     </div>
                                     <div style="flex:1;" class="button" @click=${this.noAction}>
-                                        <ink-well><lay-them ma="center" ca="center" slot="no"><ut-icon icon="clear"></ut-icon></lay-them></ink-well>
+                                        <ink-well><lay-them ma="center" ca="center"><ut-icon icon="clear"></ut-icon></lay-them></ink-well>
                                     </div>
                                 </lay-them>
                             </lay-them>

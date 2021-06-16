@@ -105,6 +105,8 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version" : "6.0.10"
+1. Bug fix: ConfirmationDialogue and BackableScreen's z-index
 ### "version" : "6.0.9"
 1. Added ConfirmationDialogue class to easily create confirmation dialogues.
 
