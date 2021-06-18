@@ -247,7 +247,7 @@ export enum FilePickerType{
 }
 
 interface PickerConfig{
-    capture?:boolean;
+    capture?:"user"|"environment";
     type: FilePickerType;
     accept?: string;
 }
@@ -295,7 +295,7 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
         super(config.bloc_name,config.bloc_config);
         this.picker_config ={
             accept:"*/*",
-            capture:false,
+            capture:"environment",
             type: FilePickerType.FILE
         };
         if(config.picker_config){
