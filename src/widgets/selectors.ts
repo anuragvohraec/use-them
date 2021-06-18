@@ -51,7 +51,7 @@ export abstract class SelectorBloc<I> extends Bloc<SelectorState<I>>{
     /**
      * 
      */
-    abstract async loadItems():Promise<I[]>;
+    abstract loadItems():Promise<I[]>;
 
     _toggleItemSelection(item:I,context:HTMLElement,skip_onchange:boolean=false){
         this._isItemSelected(item)?this._selectedItems.delete(item):this._selectedItems.add(item);

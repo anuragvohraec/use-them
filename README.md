@@ -105,6 +105,12 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version" : "7.0.0"
+1. Updated the way FormInputBuilder were created.
+2. Added TextAreaInput for getting multi line text input from user.
+3. While delegating change, message bloc is not mandatory.
+4. 
+
 ### "version" : "6.1.0"
 1. Added file picker
 2. Location fo title of scaffold
