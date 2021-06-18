@@ -196,7 +196,7 @@ class MyRadioButtons extends RadioButtonsBuilder<MyFormBloc>{
     constructor(){
         super("MyFormBloc",{
             "val1": "Value 1",
-            "val2": "Value 1",
+            "val2": "Value 2",
             "val3": "Value 3"
         })
     }
