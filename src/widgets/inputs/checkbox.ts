@@ -1,11 +1,11 @@
 
 import { html, TemplateResult } from 'lit-html';
-import { FormBloc, FormInputBuilder, FormState } from '../forms';
+import { FormBloc, FormInputBuilder, FormState, InputBuilderConfig } from '../forms';
 
 
 export class CheckBox<F extends FormBloc> extends FormInputBuilder<string,F>{
-    constructor(nameOfFormBloc:string,private checkValue:string,private label:string){
-        super(nameOfFormBloc);
+    constructor(config:InputBuilderConfig, private checkValue:string){
+        super(config);
     }
 
     connectedCallback(){
@@ -85,16 +85,16 @@ export class CheckBox<F extends FormBloc> extends FormInputBuilder<string,F>{
                 }
                 </style>
             <label class="container">
-                <slot name="label"><ut-p>${this.label}</ut-p></slot>
-                <input type="checkbox" value="${this.checkValue}" ?disabled=${this.disabled} @click=${this._delegateChange}>
+                <slot name="label"><ut-p>${this.config.placeholder}</ut-p></slot>
+                <input type="checkbox" value="${this.checkValue}" ?disabled=${this.disabled} @click=${this.haveChanged}>
                 <span class="checkmark"></span>
             </label>`;
     }
 
-    _delegateChange=(e: InputEvent)=>{
+    haveChanged=(e: InputEvent)=>{
         let t = (e.target as HTMLInputElement).checked;
         let finalValue = t?this.checkValue:undefined;
-        this.onChange!(finalValue!);
+        this.hasChanged!(finalValue!);
     }
 
 }

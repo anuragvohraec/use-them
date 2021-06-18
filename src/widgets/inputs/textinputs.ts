@@ -1,9 +1,8 @@
-import { FormInputBuilder, FormBloc, FormState } from '../forms';
+import { FormInputBuilder, FormBloc, FormState, InputBuilderConfig } from '../forms';
 import { TemplateResult, html } from 'lit-html';
 import {  BlocsProvider } from 'bloc-them';
 import { I18NBloc } from '../text';
 import {ifDefined} from 'lit-html/directives/if-defined';
-
 
 export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string,F>{
     builder(state: FormState): TemplateResult {
@@ -50,7 +49,7 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
                 ${this.getIcon()}
                 <div style="flex: 1;">
                     <lay-them in="row" ca="center">
-                        <input id="sli" ?disabled=${this.disabled} @input=${this._delegateChange} list="${ifDefined(this.dataList)}"  inputmode="${this.getInputMode()}" value="${ifDefined(this.getValue())}" class="sli-bg" placeholder="${this.getPlaceHolder()}" type="${this.getInputType()}">
+                        <input id="sli" ?disabled=${this.disabled} @input=${this.haveChanged} list="${ifDefined(this.dataList)}"  inputmode="${ifDefined(this.config.inputmode)}" value="${ifDefined(this.getValue())}" class="sli-bg" placeholder="${ifDefined(this.config.placeholder)}" type="${ifDefined(this.config.type)}">
                         ${this.getClearButton()}
                     </lay-them>
                 </div>
@@ -65,20 +64,8 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
         }
     }
     
-    _delegateChange=(e: InputEvent)=>{
-        this.onChange!((e.target as HTMLInputElement).value);
-    }
-
-    getInputMode=()=>{
-        let inputmode = this.getAttribute("inputmode");
-        if(inputmode){
-            return inputmode;
-        }else{
-            if(this.valueList){
-                return "none";
-            }
-            return "text";
-        }
+    haveChanged=(e: InputEvent)=>{
+        this.hasChanged((e.target as HTMLInputElement).value);
     }
 
     getDataList=()=>{
@@ -91,21 +78,21 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
         }
     }
 
-    getIcon= ()=>{
-        let icon = this.getAttribute("icon");
-        if(icon){
-            return html`<div class="iconCtrl"><ut-icon icon="${icon}" use="icon_inactive: ${this.theme.input_icon_color};"></ut-icon></div>`;
+    getClearButton = ()=>{
+        if(this.config.clearable || this.valueList){
+            return html`<div style="padding: 5px;" @click=${this.clearText}><ut-icon icon="clear" use="icon_inactive: ${this.theme.input_icon_color};"></ut-icon></div>`;
         }
     }
 
-    getClearButton = ()=>{
-        if(this.hasAttribute("clearable") || this.valueList){
-            return html`<div style="padding: 5px;" @click=${this.clearText}><ut-icon icon="clear" use="icon_inactive: ${this.theme.input_icon_color};"></ut-icon></div>`;
+    getIcon= ()=>{
+        if(this.config.icon){
+            return html`<div class="iconCtrl"><ut-icon icon="${this.config.icon}" use="icon_inactive: ${this.theme.input_icon_color};"></ut-icon></div>`;
         }
     }
 
     clearText= ()=>{
         (this.shadowRoot?.querySelector("#sli") as HTMLInputElement).value="";
+        this.hasChanged();
     }
 
     getValue =(): string|undefined=>{
@@ -115,34 +102,22 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
         }
     }
 
-    getPlaceHolder= (): string=>{
-        let placeholder = this.getAttribute("placeholder");
-        if(placeholder){
-            if(this._i18n){
-                let t = this._i18n.getText(placeholder);
-                return t?t:"";
-            }else{
-                return placeholder;
-            }
-        }else{
-            return "";
-        }
-    }
-
-    getInputType=():"hidden" | "text" | "search" | "tel" | "url" | "email" | "password" | "datetime" | "date" | "month" | "week" | "time" | "datetime-local" | "number" | "range" | "color" | "checkbox" | "radio" | "file" | "submit" | "image" | "reset" | "button" =>{
-        let type=this.getAttribute("type");
-        if(type){
-            //@ts-ignore
-            return type;
-        }else{
-            return "text";
-        }
-    }
-
-    private _i18n? : I18NBloc;
-
-    constructor(formBlocName: string, private valueList?: string[]){
-        super(formBlocName);
-        this._i18n = BlocsProvider.of("I18NBloc", this);
+    constructor(config: InputBuilderConfig, private valueList?: string[]){
+        super(config);
     }
 }
+
+
+export class TextAreaInput<F extends FormBloc> extends FormInputBuilder<string,F>{
+    constructor(config: InputBuilderConfig){
+        super(config);
+    }
+    haveChanged=(e:Event)=>{
+        let ctx = e.currentTarget as HTMLInputElement;
+        this.hasChanged(ctx.value);
+    }
+
+    builder(state: FormState): TemplateResult {
+        return html`<textarea placeholder="${ifDefined(this.getAttribute("placeholder")!)}" @keyup=${this.haveChanged} style="resize: none;width: 100%;height:100%;box-sizing: border-box; min-height: 100px; background-color: ${this.theme.input_bg_color}" type="text"></textarea>`;
+    }
+ }

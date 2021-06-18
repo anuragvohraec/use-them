@@ -1,4 +1,4 @@
-import { FormInputBuilder, FormBloc, FormState } from '../forms';
+import { FormInputBuilder, FormBloc, FormState, InputBuilderConfig } from '../forms';
 import { TemplateResult, html } from 'lit-html';
 
 
@@ -265,7 +265,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
          st = Math.floor(st);
       }
       this.value = {start: st, end:en};
-      this.onChange!(this.value);
+      this.hasChanged!(this.value);
    }
 
 
@@ -302,8 +302,8 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
    private end_color: string;
    private base_color: string;
 
-    constructor(formBlocName: string){
-        super(formBlocName);
+    constructor(config: InputBuilderConfig){
+        super(config);
         let max = this.getAttribute("max");
         let min = this.getAttribute("min");
 
@@ -331,11 +331,11 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
        this.start = this.bloc?.state.priceRange.start;
          this.end = this.bloc?.state.priceRange.end;
            if(!(this.start ==0 ||(this.start && this.start>=0) && this.end ==0 || (this.end && this.end>=0))){
-              throw `No start and end provided for range selector in form initialization for : ${this.name}`
+              throw `No start and end provided for range selector in form initialization for : ${this.config.name}`
            }
    
            if(this.start! > this.end!){
-              throw `For a range selector start cannot be less then end value, please check initialization of rang selector: ${this.name}`;
+              throw `For a range selector start cannot be less then end value, please check initialization of rang selector: ${this.config.name}`;
            }
    
            if(this.start!<this.min){

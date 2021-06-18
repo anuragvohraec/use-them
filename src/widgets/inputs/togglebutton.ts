@@ -1,4 +1,4 @@
-import { FormInputBuilder, FormState, FormBloc } from '../forms';
+import { FormInputBuilder, FormState, FormBloc, InputBuilderConfig } from '../forms';
 import { TemplateResult, html } from 'lit-html';
 
 export class ToggleButton<F extends FormBloc> extends FormInputBuilder<boolean, F>{
@@ -25,7 +25,7 @@ export class ToggleButton<F extends FormBloc> extends FormInputBuilder<boolean, 
           this._ON_animate(); 
         }
         this.value= !this.value;
-        this.onChange!(this.value);
+        this.hasChanged!(this.value);
       }
     }
 
@@ -69,7 +69,7 @@ export class ToggleButton<F extends FormBloc> extends FormInputBuilder<boolean, 
 </svg>
         `;
     }
-    constructor(formBlocName: string){
-        super(formBlocName);
+    constructor(config:InputBuilderConfig){
+        super(config);
     }
 }

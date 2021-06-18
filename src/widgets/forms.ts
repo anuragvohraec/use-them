@@ -22,7 +22,7 @@ import { TemplateResult, html } from 'lit-html';
  }
 
  export interface OnChangeFunction<V>{
-     (currentValue:V):void;
+     (currentValue?:V):void;
  }
 
  /**
@@ -80,8 +80,13 @@ import { TemplateResult, html } from 'lit-html';
 
     _basicOnChange(nameOfInput:string):OnChangeFunction<any>|undefined{
         return (newValue: any)=>{
-            this.state[nameOfInput]=newValue;
-            this.emit({...this.state});
+            if(!newValue){
+                let t = {...this.state};
+                delete  t[nameOfInput];
+            }else{
+                this.state[nameOfInput]=newValue;
+                this.emit({...this.state});
+            }
         }
     }
 
@@ -89,7 +94,7 @@ import { TemplateResult, html } from 'lit-html';
      * Can be used by non FormInputBuilder elements to update state of form
      * @param nameOfInput 
      */
-    delegateChangeTo(nameOfInput:string,currentValue:any, formMessageBloc:FormMessageBloc){
+    delegateChangeTo(nameOfInput:string,currentValue:any, formMessageBloc?:FormMessageBloc){
         const preOnChangeFunc = this._basicOnChange(nameOfInput);
         const val = this.validatorFunctionGiver(nameOfInput);
         const postOnChangeFunc = this.postOnChangeFunctionGiver(nameOfInput);
@@ -97,7 +102,10 @@ import { TemplateResult, html } from 'lit-html';
             preOnChangeFunc(currentValue);
             if(val){
                 const validationResult = val(currentValue);
-                formMessageBloc.postMessage(nameOfInput,validationResult!);
+                if(!formMessageBloc){
+                    formMessageBloc = BlocsProvider.search("FormMessageBloc",this.hostElement);
+                }
+                formMessageBloc!.postMessage(nameOfInput,validationResult!);
                 if(postOnChangeFunc){
                     postOnChangeFunc(currentValue, validationResult);
                 }
@@ -119,42 +127,43 @@ import { TemplateResult, html } from 'lit-html';
     abstract postOnChangeFunctionGiver(nameOfInput: string):PostValidationOnChangeFunction<any>|undefined
  }
 
+ export interface InputBuilderConfig{
+    bloc_name:string;
+    name:string;
+    type?:"hidden" | "text" | "search" | "tel" | "url" | "email" | "password" | "datetime" | "date" | "month" | "week" | "time" | "datetime-local" | "number" | "range" | "color" | "checkbox" | "radio" | "file" | "submit" | "image" | "reset" | "button",
+    placeholder?:string;
+    icon?:string;
+    clearable?:boolean;
+    inputmode?:"none"|"decimal"|"numeric"|"tel"|"search"|"email"|"url"
+}
+
+
  export abstract class FormInputBuilder<V, F extends FormBloc> extends WidgetBuilder<F,FormState>{
      /**
       * Input made based on FormInputBuilder can use this to delegate change to Form.
       */
-     protected onChange?:OnChangeFunction<V>;
-     protected name?:string;
-     protected messageBloc?: FormMessageBloc;
-     
+     protected hasChanged!:OnChangeFunction<V>;
+
      public get disabled() : boolean {
          if(this.bloc){
-            return this.bloc.isDisabled(this.name!);
+            return this.bloc.isDisabled(this.config.name);
          }else{
              return true;
          }
      }
      
 
-     constructor( private nameOfFormBloc:string){
-         super(nameOfFormBloc);
-         let t1 = this.getAttribute("name");
-         if(t1){
-             this.name = t1;
-         }else{
-             throw `Every form Input Widget must be given a name attribute.`
-         }
+     constructor( protected config: InputBuilderConfig){
+         super(config.bloc_name);
      }
 
      connectedCallback(){
          super.connectedCallback();
-         if(!this.messageBloc){
-            this.messageBloc=BlocsProvider.of("FormMessageBloc",this);
-         }
-         
-         this.onChange = (newValue:V)=>{
-            this.bloc?.delegateChangeTo(this.name!,newValue,this.messageBloc!);
-         }
+         setTimeout(()=>{
+             this.hasChanged = (newValue?:V)=>{
+                this.bloc?.delegateChangeTo(this.config.name,newValue);
+             }
+         })
      }
  }
 

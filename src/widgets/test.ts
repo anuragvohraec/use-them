@@ -81,7 +81,10 @@ export class MyFormBloc extends FormBloc{
 
 export class MyToggleButton extends ToggleButton<MyFormBloc>{
     constructor(){
-        super("MyFormBloc");
+        super({
+            bloc_name:"MyFormBloc",
+            name:"userChoice",
+        });
     }
 }
 
@@ -98,7 +101,10 @@ customElements.define("my-form", MyForm);
 
 export class PriceRange extends RangeSelector<MyFormBloc>{
     constructor(){
-        super("MyFormBloc")
+        super({
+            bloc_name:"MyFormBloc",
+            name:"priceRange"
+        })
     }
 }
 
@@ -119,15 +125,24 @@ customElements.define("my-button", MyButton)
 
 export class UserPassword extends SingleLineInput<MyFormBloc>{
     constructor(){
-        super("MyFormBloc");
+        super({
+            bloc_name:"MyFormBloc",
+            name:"userInput",
+            icon:"search",
+            placeholder:"Search for user",
+            type:"text"
+        });
     }
 }
-
 customElements.define("user-password", UserPassword);
 
 export class SelectLang extends SingleLineInput<MyFormBloc>{
     constructor(){
-        super("MyFormBloc", ["English", "Hindi", "German"]);
+        super({
+            bloc_name:"MyFormBloc",
+            name:"selectLang",
+            placeholder:"Select Lang"
+        }, ["English", "Hindi", "German"]);
     }
 }
 
@@ -135,10 +150,10 @@ customElements.define("select-lang", SelectLang);
 
 export class MyCheckBox extends CheckBox<MyFormBloc>{
     constructor(){
-        super("MyFormBloc","CheckBoxValue","My Check Box:");
+        super({
+            bloc_name:"MyFormBloc",placeholder:"My Check Box:", name:"myCheckBox"},"CheckBoxValue");
     }
 }
-
 customElements.define("my-check-box", MyCheckBox);
 
 class MyDialogueButton extends RaisedButton<HideBloc,boolean>{
