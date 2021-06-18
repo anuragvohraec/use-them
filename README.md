@@ -109,7 +109,7 @@ Simple run `npm run start` to see the demo of the components of **use-them**.
 1. Updated the way FormInputBuilder were created.
 2. Added TextAreaInput for getting multi line text input from user.
 3. While delegating change, message bloc is not mandatory.
-4. 
+4. Raised button color change at run time. `<my-dialogue-button use="primaryColor: #0e1f3e;"></my-dialogue-button>` will change it color at run time.
 
 ### "version" : "6.1.0"
 1. Added file picker
