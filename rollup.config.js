@@ -1,8 +1,9 @@
 // rollup.config.js
 import typescript from '@rollup/plugin-typescript';
 import { terser } from "rollup-plugin-terser";
+import resolve from '@rollup/plugin-node-resolve';
 
-export default {
+export default [{
   input: './index.ts',
   output: {
     dir: 'dist',
@@ -17,4 +18,13 @@ export default {
   },
   plugins: [typescript(),terser()],
   external:["lit-html","bloc-them"]
-};
+},
+{
+  input: './image-utils.ts',
+  output: {
+    dir: 'dist'
+  },
+  plugins: [typescript(),resolve({
+    browser:true
+  }),terser({ format: { comments: false } })]
+}];

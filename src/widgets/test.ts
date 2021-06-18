@@ -14,6 +14,8 @@ import {SelectorBloc, SelectorWidget} from './selectors';
 import { BlocsProvider } from 'bloc-them';
 import { DatePicker } from './inputs/date-picker';
 import { CircularCounterBloc , GESTURE, GestureDetectorBloc, GestureDetector, GestureDetectorBuilder, VerticalScrollLimitDetector, HorizontalScrollLimitDetector} from './gesturedetector';
+import { FilePickerBloc,FilePickerScreen } from '../screens/file-selector';
+import { PickedFileInfoForOutPut } from '../interfaces';
 
 
 export class MyFormBloc extends FormBloc{
@@ -314,3 +316,24 @@ class HTestDetector extends HorizontalScrollLimitDetector{
     }
 }
 customElements.define("test-h-scroll-detector",HTestDetector);
+
+/////////////// FILE PICKER CODE: START
+
+class TestFilePickerBloc extends FilePickerBloc{
+    upOnFileSelection(filePicked: PickedFileInfoForOutPut[]): void {
+        console.log("Picked file: ", filePicked);
+    }
+    protected _name: string="TestFilePickerBloc";
+}
+
+class TestFilePicker extends FilePickerScreen{
+    constructor(){
+        super("TestFilePickerBloc", {
+            blocs_map:{
+                TestFilePickerBloc: new TestFilePickerBloc()
+            }
+        })
+    }
+}
+customElements.define("test-file-picker",TestFilePicker);
+/////////////// FILE PICKER CODE: END
