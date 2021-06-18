@@ -94,13 +94,17 @@ export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
                                 </svg>
                             </slot>
                         </div>
-                        <div>
-                            <slot name="title"></slot>
+                        <div style="width: 100%;height: 60px;">
+                            <lay-them in="row" ma="flex-start" ca="stretch">
+                                <div style="width: 50px;">
+                                    <lay-them ma="center" ca="center"><ut-scaffold-menu-button></ut-scaffold-menu-button></lay-them>
+                                </div>        
+                                <div style="flex:1;">
+                                    <slot name="title"></slot>
+                                </div>
+                            </lay-them>
                         </div>
-                        <div style="position: absolute; left : 10px;">
-                            <ut-scaffold-menu-button></ut-scaffold-menu-button>
-                        </div>
-                </lay-them>
+                    </lay-them>
                 </div>
                 <div class="body" style="flex: 1 1 auto; overflow-y: auto;">
                     <slot name="body"></slot>
