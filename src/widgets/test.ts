@@ -328,9 +328,13 @@ class TestFilePickerBloc extends FilePickerBloc{
 
 class TestFilePicker extends FilePickerScreen{
     constructor(){
-        super("TestFilePickerBloc", {
-            blocs_map:{
-                TestFilePickerBloc: new TestFilePickerBloc()
+        super({
+            bloc_name:"TestFilePickerBloc",
+            max_file: 3,
+            bloc_config: {
+                blocs_map:{
+                    TestFilePickerBloc: new TestFilePickerBloc()
+                }
             }
         })
     }

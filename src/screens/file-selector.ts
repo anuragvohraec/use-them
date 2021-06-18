@@ -1,4 +1,4 @@
-import { Bloc, BlocsProvider } from "bloc-them";
+import { Bloc, BlocBuilderConfig, BlocsProvider } from "bloc-them";
 import { html, TemplateResult } from "lit-html";
 import { IncomingRequest, InfoAboutAFile,PickedFileInfoForOutPut } from "../interfaces";
 import { BogusBloc, WidgetBuilder } from "../utils/blocs";
@@ -106,22 +106,8 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
 
     abstract upOnFileSelection(filePicked:PickedFileInfoForOutPut[]):void;
 
-    async postFileMessage(context: HTMLElement,title:string){
+    async postFileMessage(context: HTMLElement,picker_type:FilePickerType){
         let output_type:string="image/webp";
-        let type:string = "img";
-
-        if(title === "Upload Video"){
-            output_type = "video/webm";
-            type="vid";
-        } 
-        
-        if(title === "Upload Audio"){
-            type="aud";
-        }
-
-        if(title === "Upload File"){
-            type ="fil";
-        }
         
         const snackBarBloc = this.getBloc<SnackBarBloc>("SnackBarBloc");
         if(!snackBarBloc){
@@ -142,8 +128,8 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
             for(let f of this.current_selected_files){
                 let compressed_file:Blob;
                 let file_hash:Blob;
-                switch(type){
-                    case "img":{
+                switch(picker_type){
+                    case FilePickerType.IMAGE:{
                         compressed_file=await this.convertImage({
                             id:"dummy",
                             file:f,
@@ -154,17 +140,17 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
                         file_hash=await this.createImageHash(f);
                         break;
                     }
-                    case "vid":{
+                    case FilePickerType.VIDEO:{
                         compressed_file=f;
                         file_hash=await this.createVideoHash(await Utils.getVideoCover(f));
                         break;
                     }
-                    case "aud":{
+                    case FilePickerType.AUDIO:{
                         compressed_file=f;
                         noImageHashRequired=true;
                         break;
                     }
-                    case "fil":{
+                    case FilePickerType.FILE:{
                         compressed_file=f;
                         noImageHashRequired=true;
                         break;
@@ -253,6 +239,25 @@ if(!customElements.get("ut-picked-file-widget")){
     customElements.define("ut-picked-file-widget",PickedFileWidget);
 }
 
+export enum FilePickerType{
+    IMAGE,
+    VIDEO,
+    AUDIO,
+    FILE
+}
+
+interface PickerConfig{
+    capture:boolean;
+    type: FilePickerType;
+    accept: string;
+}
+
+export interface FilePickerConfig{
+    bloc_name:string,
+    max_file:number,
+    bloc_config?: BlocBuilderConfig<FilePickerBloc,PickedFileInfo[]>;
+    picker_config?:PickerConfig;
+}
 
 /**
  * Usage example:
@@ -277,16 +282,30 @@ if(!customElements.get("ut-picked-file-widget")){
  * ```
  */
 export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,PickedFileInfo[]>{
+    public picker_config: PickerConfig;
+
     fileChanged=(e:InputEvent)=>{
         //@ts-ignore
         const t: HTMLInputElement = e.target;
         this.bloc?.fileSelected(t);
     }
 
+    constructor(protected config:FilePickerConfig){
+        super(config.bloc_name,config.bloc_config);
+        this.picker_config ={
+            accept:"*/*",
+            capture:false,
+            type: FilePickerType.FILE
+        };
+        if(config.picker_config){
+            this.picker_config={...this.picker_config,...config.picker_config};
+        }
+    }
+
     connectedCallback(){
         super.connectedCallback();
         if(this.bloc){
-            this.bloc.max_file_picker=parseInt(this.useAttribute?.["max_files"]??"1");
+            this.bloc.max_file_picker=this.config.max_file;
         }
     }
 
@@ -296,17 +315,17 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
     }
 
     
-    public get doUseCapture() : boolean {
-        return this.getAttribute("capture")?true:false;
-    }
+    // public get doUseCapture() : boolean {
+    //     return this.getAttribute("capture")?true:false;
+    // }
     
-    public get titleOfPage(): string{
-        return this.getAttribute("title")??"upload";
-    }
+    // public get titleOfPage(): string{
+    //     return this.getAttribute("title")??"upload";
+    // }
 
-    public get accept():string{
-        return this.getAttribute("accept")??"*/*";
-    }
+    // public get accept():string{
+    //     return this.getAttribute("accept")??"*/*";
+    // }
 
     builder(state: PickedFileInfo[]): TemplateResult {
         return html`
@@ -333,7 +352,7 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                 width: 90vw;
             }
         </style>
-        <backable-screen title=${this.titleOfPage}>
+        <backable-screen title=${this.title??"attach"}>
             <lay-them in="column" ca="stretch" ma="flex-start">
                 <div style="flex:1; max-height: calc(100vh - 150px);overflow-y: auto;padding: 10px;">
                     ${state.length===0?html`<lay-them ma="center" ca="center"><ut-p>no_file_selected</ut-p></lay-them>`:html`
@@ -363,11 +382,11 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                                 <label for="file-upload">
                                     <circular-icon-button use="icon:attach-file"></circular-icon-button>
                                 </label>
-                                <input id="file-upload" type="file" @change=${this.fileChanged} multiple accept=${this.accept}  ?capture=${this.doUseCapture}>
+                                <input id="file-upload" type="file" @change=${this.fileChanged} multiple accept=${this.picker_config.accept}  ?capture=${this.picker_config.capture}>
                             </div>
                             <div>
                                 <circular-icon-button use="icon:done;" @click=${(e:Event)=>{  
-                                    this.bloc?.postFileMessage(e.target as HTMLElement,this.titleOfPage);
+                                    this.bloc?.postFileMessage(e.target as HTMLElement,this.picker_config.type);
                                 }}></circular-icon-button>
                             </div>
                             <div>
