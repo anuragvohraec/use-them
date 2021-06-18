@@ -253,6 +253,10 @@ interface PickerConfig{
 }
 
 /**
+ * bloc_name: file picker bloc name \
+ * bloc_config: Usual Bloc config for the bloc name \
+ * max_file: maximum number of files allowed to picked by this file picker.
+ * 
  * **picker_config.accept** values:
  * 
  * For images: "image/\*" \
