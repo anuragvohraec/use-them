@@ -340,4 +340,23 @@ class TestFilePicker extends FilePickerScreen{
     }
 }
 customElements.define("test-file-picker",TestFilePicker);
+
+// class TestFilePicker extends FilePickerScreen{
+//     constructor(){
+//         super({
+//             bloc_name:"TestFilePickerBloc",
+//             max_file: 3,
+//             bloc_config: {
+//                 blocs_map:{
+//                     TestFilePickerBloc: new TestFilePickerBloc()
+//                 }
+//             },
+//             picker_config:{
+//                 type: FilePickerType.IMAGE,
+//                 accept:"image/*"
+//             }
+//         })
+//     }
+// }
+// customElements.define("test-file-picker",TestFilePicker);
 /////////////// FILE PICKER CODE: END
