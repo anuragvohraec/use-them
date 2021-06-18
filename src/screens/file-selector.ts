@@ -247,9 +247,9 @@ export enum FilePickerType{
 }
 
 interface PickerConfig{
-    capture:boolean;
+    capture?:boolean;
     type: FilePickerType;
-    accept: string;
+    accept?: string;
 }
 
 /**
@@ -374,7 +374,7 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                                 <label for="file-upload">
                                     <circular-icon-button use="icon:attach-file"></circular-icon-button>
                                 </label>
-                                <input id="file-upload" type="file" @change=${this.fileChanged} multiple accept=${this.picker_config.accept}  ?capture=${this.picker_config.capture}>
+                                <input id="file-upload" type="file" @change=${this.fileChanged} multiple accept=${this.picker_config.accept??"*/*"}  ?capture=${this.picker_config.capture}>
                             </div>
                             <div>
                                 <circular-icon-button use="icon:done;" @click=${(e:Event)=>{  
