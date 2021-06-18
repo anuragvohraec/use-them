@@ -328,6 +328,10 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
     // }
 
     builder(state: PickedFileInfo[]): TemplateResult {
+        let title="attach";
+        if(this.title && this.title.trim().length>0){
+            title=this.title;
+        }
         return html`
         <style>
             .options{
@@ -352,7 +356,7 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                 width: 90vw;
             }
         </style>
-        <backable-screen title=${this.title??"attach"}>
+        <backable-screen title=${title}>
             <lay-them in="column" ca="stretch" ma="flex-start">
                 <div style="flex:1; max-height: calc(100vh - 150px);overflow-y: auto;padding: 10px;">
                     ${state.length===0?html`<lay-them ma="center" ca="center"><ut-p>no_file_selected</ut-p></lay-them>`:html`
