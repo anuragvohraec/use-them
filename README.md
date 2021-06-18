@@ -105,8 +105,10 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
-### "version" : "6.0.12"
+### "version" : "6.1.0"
 1. Added file picker
+2. Location fo title of scaffold
+3. Snack bar visibility
 
 ### "version" : "6.0.11"
 1. Fixed shadow of backable screen title

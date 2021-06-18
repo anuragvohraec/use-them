@@ -1,6 +1,7 @@
-import { Bloc } from "bloc-them";
+import { Bloc, BlocsProvider } from "bloc-them";
 import { html, TemplateResult } from 'lit-html';
 import { WidgetBuilder } from '../utils/blocs';
+import { I18NBloc } from "./text";
 
 interface SnackBarMessage{
     msg: string;
@@ -30,7 +31,24 @@ export class SnackBarBloc extends Bloc<SnackBarMessage|undefined>{
 } 
 
 class Snackbar extends WidgetBuilder<SnackBarBloc,SnackBarMessage|undefined>{
+    private i18nBloc?: I18NBloc;
+
+    connectedCallback(){
+        super.connectedCallback();
+        setTimeout(()=>{
+            if(!this.i18nBloc){
+                this.i18nBloc = BlocsProvider.search("I18NBloc",this);
+            }
+        })
+    }
     builder(state: SnackBarMessage|undefined): TemplateResult {
+        let msg = state?.msg;
+        if(this.i18nBloc && state?.msg){
+            let t = this.i18nBloc.getText(state?.msg);
+            if(t){
+                msg=t;
+            }
+        }
         return !state? html``:html`
         <style>
             .snack-bar{
@@ -40,7 +58,7 @@ class Snackbar extends WidgetBuilder<SnackBarBloc,SnackBarMessage|undefined>{
                 border-radius: ${this.theme.cornerRadius};
             }
         </style>
-        <div class="snack-bar"><ut-p color="${state.color!}">${state.msg}</ut-p></div>
+        <div class="snack-bar"><div style="color:${state.color}">${msg}</div></div>
         `;
     }
 
