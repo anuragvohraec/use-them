@@ -252,6 +252,15 @@ interface PickerConfig{
     accept: string;
 }
 
+/**
+ * **picker_config.accept** values:
+ * 
+ * For images: "image/\*" \
+ * For video: "video/mp4,video/x-m4v,video/\*" \
+ * For audio: "audio/\*"
+ * 
+ * If you want to use camera, then **picker_config.capture=true**
+ */
 export interface FilePickerConfig{
     bloc_name:string,
     max_file:number,
@@ -264,20 +273,8 @@ export interface FilePickerConfig{
  * 
  * ```html
  * 
-<app-page route="/#/image-picker" behaves="reload">
-    <file-picker use="max_files: 5;" title="Upload Image" accept="image/*"></file-picker>
-</app-page>
-<app-page route="/#/camera-pic" behaves="reload">
-    <file-picker use="max_files: 5;" capture="true" title="Capture Image" accept="image/*"></file-picker>
-</app-page>
-<app-page route="/#/camera-vid" behaves="reload">
-    <file-picker use="max_files: 1;" title="Upload Video" accept="video/mp4,video/x-m4v,video/*"></file-picker>
-</app-page>
-<app-page route="/#/camera-aud" behaves="reload">
-    <file-picker use="max_files: 1;" title="Upload Audio" accept="audio/*"></file-picker>
-</app-page>
 <app-page route="/#/file-picker" behaves="reload">
-    <file-picker use="max_files: 3;" title="Upload File"></file-picker>
+    <file-picker title="Upload File"></file-picker>
 </app-page>
  * ```
  */
@@ -313,19 +310,6 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
         this.bloc?.revokeAllObjectURL();
         super.disconnectedCallback(); 
     }
-
-    
-    // public get doUseCapture() : boolean {
-    //     return this.getAttribute("capture")?true:false;
-    // }
-    
-    // public get titleOfPage(): string{
-    //     return this.getAttribute("title")??"upload";
-    // }
-
-    // public get accept():string{
-    //     return this.getAttribute("accept")??"*/*";
-    // }
 
     builder(state: PickedFileInfo[]): TemplateResult {
         let title="attach";

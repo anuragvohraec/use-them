@@ -1,3 +1,43 @@
+## File Picker
+```js
+
+class TestFilePickerBloc extends FilePickerBloc{
+    upOnFileSelection(filePicked: PickedFileInfoForOutPut[]): void {
+        console.log("Picked file: ", filePicked);
+    }
+    protected _name: string="TestFilePickerBloc";
+}
+
+class TestFilePicker extends FilePickerScreen{
+    constructor(){
+        super({
+            bloc_name:"TestFilePickerBloc",
+            max_file: 3,
+            bloc_config: {
+                blocs_map:{
+                    TestFilePickerBloc: new TestFilePickerBloc()
+                }
+            }
+        })
+    }
+}
+customElements.define("test-file-picker",TestFilePicker);
+```
+
+```html
+<app-page route="/#/file-picker" behaves="reload">
+    <test-file-picker></test-file-picker>
+</app-page>
+```
+
+Then whenever we need file picker we will need to navigate to that page
+```html
+<div @click=${function(){
+    let routeBloc = BlocsProvider.of("AppPageBloc",this);
+    routeBloc.goToPage("/#/file-picker");
+}}>Go to File picker page</div>
+```
+
 ## Scaffold usage
 ```html
 <ut-scaffold>

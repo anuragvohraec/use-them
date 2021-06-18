@@ -105,6 +105,9 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version" : "6.0.12"
+1. Added file picker
+
 ### "version" : "6.0.11"
 1. Fixed shadow of backable screen title
 2. Upgraded bloc-them lib
