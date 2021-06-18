@@ -361,30 +361,17 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                         <lay-them in="row" ma="space-around">
                             <div>
                                 <label for="file-upload">
-                                    ${(()=>{
-                                        switch(this.titleOfPage){
-                                            case "Upload Image":
-                                                return html`<circular-icon-button use="icon:file-upload"></circular-icon-button>`;
-                                            case "Capture Image":
-                                                return html`<circular-icon-button use="icon:camera-enhance"></circular-icon-button>`;
-                                            case "Upload Video":
-                                                return html`<circular-icon-button use="icon:camera-enhance"></circular-icon-button>`;
-                                            case "Upload Audio":
-                                                return html`<circular-icon-button use="icon:settings-voice"></circular-icon-button>`;
-                                            default:
-                                                return html`<circular-icon-button use="icon:file-upload"></circular-icon-button>`;
-                                        }
-                                    })()}
+                                    <circular-icon-button use="icon:attach-file"></circular-icon-button>
                                 </label>
                                 <input id="file-upload" type="file" @change=${this.fileChanged} multiple accept=${this.accept}  ?capture=${this.doUseCapture}>
                             </div>
                             <div>
-                                <circular-icon-button use="icon:send;" @click=${(e:Event)=>{  
+                                <circular-icon-button use="icon:done;" @click=${(e:Event)=>{  
                                     this.bloc?.postFileMessage(e.target as HTMLElement,this.titleOfPage);
                                 }}></circular-icon-button>
                             </div>
                             <div>
-                                <circular-icon-button use="icon:close;" @click=${(e:Event)=>{
+                                <circular-icon-button use="icon:clear;" @click=${(e:Event)=>{
                                     this.bloc?.closeFilePicker(e.target as HTMLElement);
                                 }}></circular-icon-button>
                             </div>
