@@ -5,9 +5,9 @@ import { ColorUtil } from '../utils/utils';
 
 
 export abstract class RaisedButton<B extends Bloc<S>, S> extends WidgetBuilder<B,S>{
-    private bgColor: string;
-    private onPressButtonColor:string;
-    private light: string;
+    private bgColor!: string;
+    private onPressButtonColor!:string;
+    private light!: string;
     
     isDisabled(){
         let t = this.hasAttribute("disabled");
@@ -68,19 +68,19 @@ export abstract class RaisedButton<B extends Bloc<S>, S> extends WidgetBuilder<B
         `;
     }
 
+    connectedCallback(){
+        super.connectedCallback();
+        setTimeout(()=>{
+            this.bgColor = this.theme.primaryColor;
+            this.onPressButtonColor=ColorUtil.shadeColor(this.bgColor,this.shades[0]);
+            this.light=ColorUtil.shadeColor(this.bgColor,this.shades[1]);
+            this._build(this.state!);
+        })
+    }
     
 
-    constructor(blocName: string,  configs?: BlocBuilderConfig<B, S>, shades:number[]=[20,80]){
+    constructor(blocName: string,  configs?: BlocBuilderConfig<B, S>,private shades:number[]=[20,80],){
         super(blocName, configs);
-        this.bgColor = "#ffffff";
-        if(this.useAttribute){
-            let bgc =this.useAttribute!["background-color"];
-            if(bgc){
-                this.bgColor = bgc;
-            }
-        }
-        this.onPressButtonColor=ColorUtil.shadeColor(this.bgColor,shades[0]);
-        this.light=ColorUtil.shadeColor(this.bgColor,shades[1]);
     }
 
     abstract onPress():void;

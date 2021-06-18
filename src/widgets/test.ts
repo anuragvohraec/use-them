@@ -3,7 +3,7 @@ import { ToggleButton } from './inputs/togglebutton';
 import { RangeSelector, Range } from './inputs/rangeselector';
 import { RaisedButton } from './buttons';
 import { ScaffoldBloc, ScaffoldState } from './scaffold';
-import { SingleLineInput } from './inputs/textinputs';
+import { SingleLineInput, TextAreaInput } from './inputs/textinputs';
 import { CheckBox } from './inputs/checkbox';
 import { HideBloc } from './dialogues';
 import { WidgetBuilder } from '../utils/blocs';
@@ -16,6 +16,7 @@ import { DatePicker } from './inputs/date-picker';
 import { CircularCounterBloc , GESTURE, GestureDetectorBloc, GestureDetector, GestureDetectorBuilder, VerticalScrollLimitDetector, HorizontalScrollLimitDetector} from './gesturedetector';
 import { FilePickerBloc,FilePickerScreen } from '../screens/file-selector';
 import { PickedFileInfoForOutPut } from '../interfaces';
+import { ConfirmationDialogue } from './confirmation-dialogue';
 
 
 export class MyFormBloc extends FormBloc{
@@ -375,3 +376,52 @@ customElements.define("test-file-picker",TestFilePicker);
 // }
 // customElements.define("test-file-picker",TestFilePicker);
 /////////////// FILE PICKER CODE: END
+
+
+//////////////// Text Area code: START
+class MyTextArea extends TextAreaInput<MyFormBloc>{
+    constructor(){
+        super({
+            name:"desc",
+            bloc_name:"MyFormBloc",
+            placeholder:"Description"
+        })
+    }
+}
+customElements.define("test-my-text-area",MyTextArea);
+//////////////// Text Area code: END
+
+///////////////// Confirmation Dialogue code: START
+class ShowUserConfirmationButton extends RaisedButton<HideBloc,boolean>{
+    onPress(): void {
+       this.bloc?.toggle();
+    }
+
+    constructor(){
+        super("HideBloc",{
+            blocs_map: {
+                HideBloc: new HideBloc()
+            }
+        })
+    }
+}
+customElements.define("test-conf-button",ShowUserConfirmationButton);
+
+class GetUSerConfirmation extends ConfirmationDialogue{
+    constructor(){
+        super("HideBloc",{
+            msg: "Hello this is confirmation message",
+            title: "Title of this",
+            user_comments_msg: "Give ur inputs...."
+        })
+    }
+    yesAction: Function=(e:Event)=>{
+        console.log(this.user_msg);
+        this.bloc?.toggle();
+    }
+    noAction: Function=(e:Event)=>{
+        this.bloc?.toggle();
+    }
+}
+customElements.define("test-conf-dia",GetUSerConfirmation);
+///////////////// Confirmation Dialogue code: End

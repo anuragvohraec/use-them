@@ -118,6 +118,6 @@ export class TextAreaInput<F extends FormBloc> extends FormInputBuilder<string,F
     }
 
     builder(state: FormState): TemplateResult {
-        return html`<textarea placeholder="${ifDefined(this.getAttribute("placeholder")!)}" @keyup=${this.haveChanged} style="resize: none;width: 100%;height:100%;box-sizing: border-box; min-height: 100px; background-color: ${this.theme.input_bg_color}" type="text"></textarea>`;
+        return html`<textarea placeholder="${ifDefined(this.config.placeholder)}" @keyup=${this.haveChanged} style="outline: none;resize: none;width: 100%;height:100%;box-sizing: border-box; min-height: 100px; background-color: ${this.theme.input_bg_color};border-radius: ${this.theme.cornerRadius};border: none;" type="text"></textarea>`;
     }
  }

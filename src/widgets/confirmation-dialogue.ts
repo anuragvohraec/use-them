@@ -64,6 +64,10 @@ export abstract class ConfirmationDialogue extends WidgetBuilder<HideBloc,boolea
                 .button{
                     height: 40px;
                 }
+                .textAreaBG{
+                    background-color: ${this.theme.input_bg_color};border-radius: ${this.theme.cornerRadius};
+                    resize: none;width: 100%;height:100%;box-sizing: border-box; min-height: 100px;border:none;outline: none;
+                }
             </style>
             <ut-dialogue>
                 <div style="width: 100%; height: 100%;">
@@ -73,7 +77,7 @@ export abstract class ConfirmationDialogue extends WidgetBuilder<HideBloc,boolea
                                 <div style="padding: 10px;color:white;font-size:${this.theme.H2_font_size};background-color:${this.theme.primaryColor};">${this.confirmationInfo?.title}</div>
                                 <div style="padding: 10px;">${unsafeHTML(this.confirmationInfo?.msg)}</div>
                                 ${this.confirmationInfo.user_comments_msg? html`<div style="padding: 10px;">
-                                    <textarea placeholder=${this.confirmationInfo.user_comments_msg} @keyup=${this.user_msg_changed} style="resize: none;width: 100%;height:100%;border: 1px solid #dcdcdc;box-sizing: border-box; min-height: 100px;" type="text"></textarea>
+                                    <textarea class="textAreaBG" placeholder=${this.confirmationInfo.user_comments_msg} @keyup=${this.user_msg_changed} type="text"></textarea>
                                 </div>`:html``}
                                 <lay-them in="row" ma="flex-start" ca="stretch" overflow="hidden">
                                     <div style="flex:1;" class="button" @click=${this.yesAction}>
