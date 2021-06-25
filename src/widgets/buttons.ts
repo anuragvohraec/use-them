@@ -91,7 +91,12 @@ export abstract class RaisedButton<B extends Bloc<S>, S> extends WidgetBuilder<B
 
 
 
-
+/**
+ * ## Attributes:
+ * * icon
+ * * label
+ * * use : for color
+ */
 export class LabeledIconButton extends NoBlocWidgetBuilder{
 
     private get icon() : string {

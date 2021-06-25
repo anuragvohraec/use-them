@@ -6,7 +6,7 @@ import { ScaffoldBloc, ScaffoldState } from './scaffold';
 import { SingleLineInput, TextAreaInput } from './inputs/textinputs';
 import { CheckBox } from './inputs/checkbox';
 import { HideBloc } from './dialogues';
-import { WidgetBuilder } from '../utils/blocs';
+import { BogusBloc, WidgetBuilder } from '../utils/blocs';
 import { html, TemplateResult } from 'lit-html';
 import { InkWell } from './inkwell';
 import { RadioButtonsBuilder } from './inputs/radiobuttons';
@@ -17,6 +17,7 @@ import { CircularCounterBloc , GESTURE, GestureDetectorBloc, GestureDetector, Ge
 import { FilePickerBloc,FilePickerScreen } from '../screens/file-selector';
 import { PickedFileInfoForOutPut } from '../interfaces';
 import { ConfirmationDialogue } from './confirmation-dialogue';
+import { QrCodeListenerBloc, QrCodeScannerConfig, QrResult } from './qr-code-scanner';
 
 
 export class MyFormBloc extends FormBloc{
@@ -429,3 +430,38 @@ class GetUSerConfirmation extends ConfirmationDialogue{
 }
 customElements.define("test-conf-dia",GetUSerConfirmation);
 ///////////////// Confirmation Dialogue code: End
+
+
+class TestQrCodeListenerBloc extends QrCodeListenerBloc{
+    user_selected_qr_codes(result: QrResult[]) {
+        console.log("user scanned: ",result.map(e=>e.rawValue));
+    }
+    protected _name: string="TestQrCodeListenerBloc";
+
+    constructor(){
+        super([]);
+    }
+}
+
+class TesQrCodeIconButtonDisplayer extends WidgetBuilder<BogusBloc,number>{
+    private qrConfig: QrCodeScannerConfig={
+        notify_bloc_name:"TestQrCodeListenerBloc"
+    }
+
+    constructor(){
+        super("BogusBloc",{
+            blocs_map: {
+                BogusBloc: new BogusBloc(),
+                TestQrCodeListenerBloc: new TestQrCodeListenerBloc(),
+                QrCodeHideBloc: new HideBloc()
+            } 
+        })
+    }
+    builder(state: number): TemplateResult {
+        return html`<labeled-icon-button icon="qrcode" label="scan" @click=${()=>{
+            BlocsProvider.search<HideBloc>("QrCodeHideBloc",this)?.toggle();
+        }}></labeled-icon-button>
+        <ut-qr-code-widget .qrConfig=${this.qrConfig}></ut-qr-code-widget>`;
+    }
+}
+customElements.define("test-qr-code-button",TesQrCodeIconButtonDisplayer);
