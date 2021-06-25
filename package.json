@@ -13,9 +13,7 @@
   "scripts": {
     "build": "npx rollup -c rollup.config.js",
     "dev": "cd dist/ && ws --port=3000",
-    "start": "concurrently --kill-others --names tsc,web-dev-server \"npm run tsc:watch\" \"web-dev-server --app-index demo/index.html --node-resolve --open --watch\"",
-    "tsc:watch": "tsc --watch",
-    "prepublish": "tsc"
+    "watch": "npx rollup -c rollup.config.js -w"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^11.2.1",

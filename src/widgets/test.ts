@@ -416,8 +416,12 @@ class GetUSerConfirmation extends ConfirmationDialogue{
         })
     }
     yesAction: Function=(e:Event)=>{
+        this.show_in_progress();
         console.log(this.user_msg);
-        this.bloc?.toggle();
+        setTimeout(()=>{
+            this.show_buttons();
+            this.bloc?.toggle();
+        },4000);
     }
     noAction: Function=(e:Event)=>{
         this.bloc?.toggle();

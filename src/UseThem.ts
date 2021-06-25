@@ -33,4 +33,4 @@ export * from './screens/file-selector.js';
 
 export * from './widgets/qr-code-scanner.js';
 
-//export * from './widgets/test.js';
+export * from './widgets/test.js';

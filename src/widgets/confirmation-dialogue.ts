@@ -1,7 +1,22 @@
+import { BlocsProvider } from "bloc-them";
 import { html, TemplateResult } from "lit-html";
 import {unsafeHTML} from 'lit-html/directives/unsafe-html';
 import { WidgetBuilder } from "../utils/blocs";
 import { HideBloc } from "./dialogues";
+
+class InProgressIndicator extends WidgetBuilder<HideBloc,boolean>{
+    constructor(){
+        super("ProgressBloc")
+    }
+    builder(state: boolean): TemplateResult {
+        if(state){
+            return html`<div><slot></slot></div>`;
+        }else{
+            return html`<lay-them ma="center" ca="center" overflow="hidden"><circular-progress-indicator></circular-progress-indicator></lay-them>`
+        }
+    }
+}
+customElements.define("ut-confirmation-dialogue-progress-indicator",InProgressIndicator);
 
 export interface ConfirmationDialogueInfo{
     /**
@@ -31,7 +46,19 @@ export abstract class ConfirmationDialogue extends WidgetBuilder<HideBloc,boolea
      * @param confirmationInfo 
      */
     constructor(blocName:string, protected confirmationInfo:ConfirmationDialogueInfo){
-        super(blocName);
+        super(blocName,{
+            blocs_map:{
+                ProgressBloc: new HideBloc()
+            }
+        });
+    }
+
+    show_in_progress=()=>{
+        (BlocsProvider.search<HideBloc>("ProgressBloc",this))?.emit(false);
+    }
+
+    show_buttons=()=>{
+        (BlocsProvider.search<HideBloc>("ProgressBloc",this))?.emit(true);
     }
 
     /**
@@ -79,14 +106,16 @@ export abstract class ConfirmationDialogue extends WidgetBuilder<HideBloc,boolea
                                 ${this.confirmationInfo.user_comments_msg? html`<div style="padding: 10px;">
                                     <textarea class="textAreaBG" placeholder=${this.confirmationInfo.user_comments_msg} @keyup=${this.user_msg_changed} type="text"></textarea>
                                 </div>`:html``}
-                                <lay-them in="row" ma="flex-start" ca="stretch" overflow="hidden">
-                                    <div style="flex:1;" class="button" @click=${this.yesAction}>
-                                        <ink-well><lay-them ma="center" ca="center"><ut-icon icon="done"></ut-icon></lay-them></ink-well>
-                                    </div>
-                                    <div style="flex:1;" class="button" @click=${this.noAction}>
-                                        <ink-well><lay-them ma="center" ca="center"><ut-icon icon="clear"></ut-icon></lay-them></ink-well>
-                                    </div>
-                                </lay-them>
+                                <ut-confirmation-dialogue-progress-indicator>
+                                    <lay-them in="row" ma="flex-start" ca="stretch" overflow="hidden">
+                                        <div style="flex:1;" class="button" @click=${this.yesAction}>
+                                            <ink-well><lay-them ma="center" ca="center"><ut-icon icon="done"></ut-icon></lay-them></ink-well>
+                                        </div>
+                                        <div style="flex:1;" class="button" @click=${this.noAction}>
+                                            <ink-well><lay-them ma="center" ca="center"><ut-icon icon="clear"></ut-icon></lay-them></ink-well>
+                                        </div>
+                                    </lay-them>
+                                </ut-confirmation-dialogue-progress-indicator>
                             </lay-them>
                         </div>
                     </lay-them>
