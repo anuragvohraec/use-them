@@ -5,7 +5,7 @@ import { HideBloc } from "./dialogues";
 
 
 export abstract class QrCodeListenerBloc extends Bloc<QrResult[]>{
-    abstract user_selected_qr_codes(result :QrResult[]):any;
+    abstract user_selected_qr_codes(result? :QrResult[]):any;
 }
 
 enum Status{
@@ -101,7 +101,7 @@ class QrCodeScannerBloc extends Bloc<QrScannerState>{
 
     postQrCode=()=>{
         let b = BlocsProvider.search<QrCodeListenerBloc>((this.hostElement as QrCodeCameraStream)?.qrConfig?.notify_bloc_name??"QrCodeListenerBloc",this.hostElement);
-        if(b && this.state.codes && this.state.codes.length>0){
+        if(b){
             b.user_selected_qr_codes(this.state.codes);
         }
         this.close();
@@ -145,9 +145,35 @@ class QrCodeCameraStream extends WidgetBuilder<QrCodeScannerBloc,QrScannerState>
 
     builder(state: QrScannerState): TemplateResult {
         if(state.status === Status.NO_DEVICE_MEDIA){
-            return html`<ut-p use="color:white">no_camera_found</ut-p>`;
+            return html`
+            <style>
+                .cont{
+                    padding: 10px;
+                    height: 100px;
+                    min-width: 200px;
+                }
+            </style>
+            <div class="cont">
+                <lay-them in="column" ma="space-around" ca="stretch">
+                    <div style="text-align: center;"><ut-p use="color:white">no_camera_found</ut-p></div>
+                    <div @click=${this.bloc?.close}><labeled-icon-button icon="clear" label="close" use="primaryColor:white;color:white;"></labeled-icon-button></div> 
+                </lay-them>
+            </div>`;
         }else if(state.status === Status.INIT){
-            return html`<ut-p use="color:white">camera_permission</ut-p>`;
+            return html`
+            <style>
+                .cont{
+                    padding: 10px;
+                    height: 100px;
+                    min-width: 200px;
+                }
+            </style>
+            <div class="cont">
+                <lay-them in="column" ma="space-around" ca="stretch">
+                    <div style="text-align: center;"><ut-p use="color:white">camera_permission</ut-p></div>
+                    <div @click=${this.bloc?.close}><labeled-icon-button icon="clear" label="close" use="primaryColor:white;color:white;"></labeled-icon-button></div> 
+                </lay-them>
+            </div>`;
         }else if(state.status === Status.SCANNER_NOT_SUPPORTED){
             return html`<ut-p use="color:white">qr_scanner_not_supported</ut-p>`;
         }else{
@@ -156,6 +182,8 @@ class QrCodeCameraStream extends WidgetBuilder<QrCodeScannerBloc,QrScannerState>
                     .tool{
                         z-index: 12;
                         position: absolute;
+                        min-width: 50px;
+                        min-height:50px;
                     }
                     .count{
                         top: 10px;
