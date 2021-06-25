@@ -110,7 +110,7 @@ Simple run `npm run start` to see the demo of the components of **use-them**.
 2. `ut-dialogue` now if has blank attribute then it will render blank when is hidden.
 3. Text input bug fixes, form value state change were not reflecting there values.
 4. some beautification of some elements.
-5. //TODO confirmation dialogue in progress feature
+5. ConfirmationDialogue widget now has two additional methods `show_in_progress` and `show_buttons`, which can be used to do show circular progress indicator before closing teh dialogue.
 
 ### "version" : "7.0.0"
 1. Updated the way FormInputBuilder were created.
