@@ -105,6 +105,13 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version" : "7.0.1"
+1. QRCode/barCode scanner
+2. `ut-dialogue` now if has blank attribute then it will render blank when is hidden.
+3. Text input bug fixes, form value state change were not reflecting there values.
+4. some beautification of some elements.
+5. //TODO confirmation dialogue in progress feature
+
 ### "version" : "7.0.0"
 1. Updated the way FormInputBuilder were created.
 2. Added TextAreaInput for getting multi line text input from user.

@@ -35,7 +35,7 @@ export abstract class RaisedButton<B extends Bloc<S>, S> extends WidgetBuilder<B
                     transition: background 0s;
                 }
                 .button{
-                    box-shadow: 0px 4px 12px 0px #0000009e;
+                    box-shadow: 1px 1px 3px 0px #0000006e;
                     display: flex;
                     flex-direction: column;
                     flex-wrap: nowrap;

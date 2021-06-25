@@ -18,12 +18,18 @@ export class HideBloc extends Bloc<boolean>{
     }
 }
 
+/**
+ * Using a "blank" attribute would make an empty element
+ */
 export class Dialogue extends WidgetBuilder<HideBloc,boolean>{
     constructor(blocname?:string){
         super(blocname??"HideBloc");
     }
 
     builder(state: boolean): TemplateResult {
+        if(state && this.hasAttribute("blank")){
+            return html``;
+        }
         const display = state?"none":"block";
         return html`<style>
         .fullscreenGlass{
@@ -32,7 +38,7 @@ export class Dialogue extends WidgetBuilder<HideBloc,boolean>{
             height: 100%;
             background-color: ${this.theme.dialogue_bg};
             display: ${display};
-            z-index: 1;
+            z-index: 10;
             top: 0;
             left: 0;
         }

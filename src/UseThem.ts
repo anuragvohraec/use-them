@@ -31,4 +31,6 @@ export * from './widgets/confirmation-dialogue.js';
 export * from './screens/backable-screen.js';
 export * from './screens/file-selector.js';
 
+export * from './widgets/qr-code-scanner.js';
+
 //export * from './widgets/test.js';
