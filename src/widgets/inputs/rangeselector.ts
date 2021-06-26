@@ -328,8 +328,8 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
 
     connectedCallback(){
        super.connectedCallback();
-       this.start = this.bloc?.state.priceRange.start;
-         this.end = this.bloc?.state.priceRange.end;
+       this.start = this.bloc?.state[this.config.name].start;
+         this.end = this.bloc?.state[this.config.name].end;
            if(!(this.start ==0 ||(this.start && this.start>=0) && this.end ==0 || (this.end && this.end>=0))){
               throw `No start and end provided for range selector in form initialization for : ${this.config.name}`
            }
