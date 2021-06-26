@@ -1,22 +1,29 @@
-import { Bloc } from "bloc-them";
+import { Bloc, BlocsProvider } from "bloc-them";
 import { html, TemplateResult } from 'lit-html';
 import { WidgetBuilder } from '../utils/blocs';
 import {repeat} from 'lit-html/directives/repeat';
+import { HideBloc } from "./dialogues";
+import { FormBloc, FormMessageBloc, PostValidationOnChangeFunction, ValidatorFunction } from "./forms";
+import { SingleLineInput } from "./inputs/textinputs";
+import { unsafeHTML } from "lit-html/directives/unsafe-html";
 
 enum SelectorStatus{
     LOADING,
     LOADED
 }
 
-interface SelectorState<I>{
+type I = Record<string,any>;
+
+interface SelectorState{
     listOfItems:I[];
     status: SelectorStatus;
     last_item_interactedWith?:I;
 }
 
-export abstract class SelectorBloc<I> extends Bloc<SelectorState<I>>{
+export abstract class SelectorBloc extends Bloc<SelectorState>{
     private _selectedItems : Set<I>=new Set<I>();
-
+    protected fullListOfItemLoadedInitially?: I[];
+    protected currentListOfItems?:I[];
     
     public get selectedItems() : Set<I> {
         return this._selectedItems;
@@ -34,13 +41,16 @@ export abstract class SelectorBloc<I> extends Bloc<SelectorState<I>>{
             listOfItems:[],
             status: SelectorStatus.LOADING
         });
-        this._initialize();
+        setTimeout(()=>{
+            this._initialize();
+        })
     }
 
     private async _initialize(){
         try{
-            const l = await this.loadItems();
-            this.emit({listOfItems:l,status: SelectorStatus.LOADED});
+            this.fullListOfItemLoadedInitially = await this.loadItems();
+            this.currentListOfItems=this.fullListOfItemLoadedInitially;
+            this.emit({listOfItems:this.currentListOfItems,status: SelectorStatus.LOADED});
             return true;
         }catch(e){
             console.error(e);
@@ -92,10 +102,19 @@ export abstract class SelectorBloc<I> extends Bloc<SelectorState<I>>{
         this._selectedItems.clear();
         this.emit({...this.state,last_item_interactedWith:undefined})
     }
+
+    find(search:string,key:string){
+        if(!search || search.trim().length===0){
+            this.emit({...this.state,listOfItems: this.fullListOfItemLoadedInitially!})
+        }else{
+            let r = new RegExp(search,"i");
+            this.emit({...this.state, listOfItems: this.fullListOfItemLoadedInitially?.filter(e=>r.test(e[key] as string))??[]});
+        }
+    }
 }
 
 
-export abstract class SelectorWidget<I> extends WidgetBuilder<SelectorBloc<I>, SelectorState<I>>{
+export abstract class SelectorWidget extends WidgetBuilder<SelectorBloc, SelectorState>{
     constructor(selectorBlocName:string){
         super(selectorBlocName);
     }
@@ -109,7 +128,7 @@ export abstract class SelectorWidget<I> extends WidgetBuilder<SelectorBloc<I>, S
                 this.bloc?._removeFirst(this);   
             }
             this.bloc?._toggleItemSelection(item,this);
-        }} class=${isSelected?"selected":""}>
+        }} class=${isSelected?"item selected":"item"}>
             ${this.itemBuilder(item,index, this.bloc!._isItemSelected(item))}
         </div>`;
     }
@@ -121,7 +140,7 @@ export abstract class SelectorWidget<I> extends WidgetBuilder<SelectorBloc<I>, S
         return t;
     }
 
-    builder(state: SelectorState<I>): TemplateResult {
+    builder(state: SelectorState): TemplateResult {
         switch (state.status) {
             case SelectorStatus.LOADING:{
                 return html`<lay-them ma="center" ca="center"><div><circular-progress-indicator></circular-progress-indicator></div></lay-them>`;
@@ -131,6 +150,10 @@ export abstract class SelectorWidget<I> extends WidgetBuilder<SelectorBloc<I>, S
                 <style>
                     .selected{
                         background-color: ${this.selectedColor()};
+                        color:white;
+                    }
+                    .item{
+                        padding: 5px;
                     }
                 </style>
                 <lay-them in="column" ma="flex-start" ca="stretch">
@@ -145,8 +168,7 @@ export abstract class SelectorWidget<I> extends WidgetBuilder<SelectorBloc<I>, S
     }
 }
 
-
-export abstract class SelectorWidgetGrid<I> extends WidgetBuilder<SelectorBloc<I>, SelectorState<I>>{
+export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, SelectorState>{
     constructor(selectorBlocName:string){
         super(selectorBlocName);
     }
@@ -172,7 +194,7 @@ export abstract class SelectorWidgetGrid<I> extends WidgetBuilder<SelectorBloc<I
         return t;
     }
 
-    builder(state: SelectorState<I>): TemplateResult {
+    builder(state: SelectorState): TemplateResult {
         switch (state.status) {
             case SelectorStatus.LOADING:{
                 return html`<lay-them ma="center" ca="center"><div><circular-progress-indicator></circular-progress-indicator></div></lay-them>`;
@@ -192,6 +214,197 @@ export abstract class SelectorWidgetGrid<I> extends WidgetBuilder<SelectorBloc<I
                     })}
                 </lay-them>`;
             }
+        }
+    }
+}
+
+
+ export class CreateSearchableSelector{
+    static create(config:{
+        id_key_name:string,
+        search_key_name:string,
+        selector_type:"grid"|"list",
+        tag_name:string,
+        selector_hide_bloc_name:string,
+        maxNumberOfSelect:number,
+        loadItemsFunction(): Promise<I[]> ,
+        title:string,
+        search_placeholder:string,
+        itemBuilderFunction(item: I, index: number, isSelected: boolean): TemplateResult,
+        onChangeFunction(selectedItems: Set<I>, context: HTMLElement): void,
+    }){
+
+        class ISelectorBloc extends SelectorBloc{
+            protected maxNumberOfSelect: number=config.maxNumberOfSelect;
+            loadItems=config.loadItemsFunction;
+            onchange=config.onChangeFunction;
+
+            protected _name: string="ISelectorBloc"
+        }
+        
+        let t:any;
+
+        if(config.selector_type==="list"){
+            t = class ISelectorListWidget extends SelectorWidget{
+                constructor(){
+                    super("ISelectorBloc")
+                }
+                itemBuilder=config.itemBuilderFunction;
+                itemToKey(item: I): string {
+                    return item[config.id_key_name] as string;
+                }
+            }
+        }else{
+            t = class ISelectorListWidget extends SelectorWidgetGrid{
+                constructor(){
+                    super("ISelectorBloc")
+                }
+                itemBuilder=config.itemBuilderFunction;
+                itemToKey(item: I): string {
+                    return item[config.id_key_name] as string;
+                }
+            }
+        }
+        let selectorTagName=config.tag_name+"-selector-widget";
+        if(!customElements.get(selectorTagName)){
+            customElements.define(selectorTagName,t);
+        }
+
+        class SearchFormBloc extends FormBloc{
+            private selectorBloc?: ISelectorBloc;
+
+            constructor(){
+                super({})
+            }
+
+            validatorFunctionGiver(nameOfInput: string): ValidatorFunction<any> | undefined {
+                if(nameOfInput==="search_string"){
+                    return (cv:string)=>{
+                        if(cv && cv.length>100){
+                            return "only_100_char";
+                        }
+                    }
+                }
+            }
+            postOnChangeFunctionGiver(nameOfInput: string): PostValidationOnChangeFunction<any> | undefined {
+                if(!this.selectorBloc){
+                    this.selectorBloc=BlocsProvider.search<ISelectorBloc>("ISelectorBloc",this.hostElement);
+                }
+                if(nameOfInput === "search_string"){
+                    return (cv:string,val)=>{
+                        this.selectorBloc?.find(cv,config.search_key_name);
+                    }
+                }
+            }
+            protected _name: string="SearchFormBloc"
+        }
+
+        class SearchInput extends SingleLineInput<SearchFormBloc>{
+            constructor(){
+                super({
+                    bloc_name:"SearchFormBloc",
+                    name:"search_string",
+                    clearable:true,
+                    icon: "search",
+                    placeholder: config.search_placeholder
+                })
+            }
+        }
+        const searchInputTagName = config.tag_name+"-search-input";
+        if(!customElements.get(searchInputTagName)){
+            customElements.define(searchInputTagName,SearchInput)
+        }
+
+        class SearchableSelector extends WidgetBuilder<HideBloc,boolean>{
+            constructor(){
+                super(config.selector_hide_bloc_name,{
+                    blocs_map:{
+                        ISelectorBloc: new ISelectorBloc(),
+                        SearchFormBloc: new SearchFormBloc(),
+                        FormMessageBloc: new FormMessageBloc()
+                    }
+                });
+            }
+            builder(state: boolean): TemplateResult {
+                if(state){
+                    return html``;
+                }else{
+                    return html`<style>
+                    .fullscreenGlass{
+                        position:fixed;
+                        width:100%;
+                        height: 100%;
+                        background-color: ${this.theme.dialogue_bg};
+                        z-index: 10;
+                        top: 0;
+                        left: 0;
+                    }
+                    .cont{
+                        max-width: 95vw;
+                        max-height: 95vh;
+                        min-height: 300px;
+                        min-width: 300px;
+                        background-color: white;
+                        border-radius: ${this.theme.cornerRadius};
+                        overflow: hidden;
+                    }
+                    .title_bar{
+                        padding: 10px;color:white;font-size:${this.theme.H2_font_size};background-color:${this.theme.primaryColor};
+                        box-shadow: 0px 2px 3px #00000040;
+                        z-index: 2;
+                    }
+                    .button{
+                        height: 40px;
+                    }
+                    .items{
+                        flex-grow: 1;overflow-y: auto;height: 0px;
+                    }
+                    .buttons_area{
+                        box-shadow: 0px -1px 3px #00000040;
+                    }
+                    .search_input{
+                        box-shadow: 0px 2px 3px #00000040;
+                        z-index: 1;
+                    }
+                    </style>
+                    <div class="fullscreenGlass">
+                            <lay-them ma="center" ca="center">
+                                <div class="cont">
+                                    <lay-them in="column" ma="flex-start" ca="stretch">
+                                        <div class="title_bar">
+                                            <ut-p use="color:white;">${config.title}</ut-p>
+                                        </div>
+                                        <div class="search_input">
+                                            ${unsafeHTML(`<${searchInputTagName}></${searchInputTagName}`)}
+                                        </div>
+                                        <div class="items">
+                                            ${unsafeHTML(`<${selectorTagName}></${selectorTagName}>`)}
+                                        </div>
+                                        <div class="buttons_area">
+                                            <lay-them in="row" ma="flex-start" ca="stretch" overflow="hidden">
+                                                <div style="flex:1;" class="button" @click=${()=>{
+                                                    this.bloc?.toggle();
+                                                }}>
+                                                    <ink-well><lay-them ma="center" ca="center"><ut-icon icon="done"></ut-icon></lay-them></ink-well>
+                                                </div>
+                                                <div style="flex:1;" class="button" @click=${()=>{
+                                                    BlocsProvider.search<ISelectorBloc>("ISelectorBloc",this)?.onchange(new Set<I>(),this);
+                                                    this.bloc?.toggle();
+                                                }}>
+                                                    <ink-well><lay-them ma="center" ca="center"><ut-icon icon="clear"></ut-icon></lay-them></ink-well>
+                                                </div>
+                                            </lay-them>
+                                        </div>
+                                    </lay-them>
+                                </div>
+                            </lay-them>
+                    </div>`;
+                }
+            }
+
+        }
+        if(!customElements.get(config.tag_name)){
+            customElements.define(config.tag_name,SearchableSelector);
         }
     }
 }

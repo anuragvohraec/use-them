@@ -10,7 +10,7 @@ import { BogusBloc, WidgetBuilder } from '../utils/blocs';
 import { html, TemplateResult } from 'lit-html';
 import { InkWell } from './inkwell';
 import { RadioButtonsBuilder } from './inputs/radiobuttons';
-import {SelectorBloc, SelectorWidget} from './selectors';
+import {CreateSearchableSelector, SelectorBloc, SelectorWidget} from './selectors';
 import { BlocsProvider } from 'bloc-them';
 import { DatePicker } from './inputs/date-picker';
 import { CircularCounterBloc , GESTURE, GestureDetectorBloc, GestureDetector, GestureDetectorBuilder, VerticalScrollLimitDetector, HorizontalScrollLimitDetector} from './gesturedetector';
@@ -209,7 +209,7 @@ interface Employee{
     name: string;
     age: number;
 }
-class MySelectorBloc extends SelectorBloc<Employee>{
+class MySelectorBloc extends SelectorBloc{
     onchange(selectedItems: Set<Employee>): void {
         console.log("Value chnaged");
         
@@ -221,7 +221,7 @@ class MySelectorBloc extends SelectorBloc<Employee>{
     protected _name: string="MySelectorBloc";
 }
 
-class MySelectorWidget extends SelectorWidget<Employee>{
+class MySelectorWidget extends SelectorWidget{
     protected itemBuilder(item: Employee, index: number, isSelected: boolean): TemplateResult {
         return html`<div>${item.name}</div><div>${item.age}</div>`;
     }
@@ -465,3 +465,51 @@ class TesQrCodeIconButtonDisplayer extends WidgetBuilder<BogusBloc,number>{
     }
 }
 customElements.define("test-qr-code-button",TesQrCodeIconButtonDisplayer);
+
+CreateSearchableSelector.create({
+    id_key_name:"_id",
+    maxNumberOfSelect:2,
+    search_key_name:"name",
+    search_placeholder:"Search for employee",
+    selector_hide_bloc_name:"HideSearchSelectorBloc",
+    selector_type:"list",
+    tag_name:"test-search-employee",
+    title:"Search for employee",
+    loadItemsFunction:async()=>{
+        return [
+            {_id:"1",name:"Anurag"},
+            {_id:"2",name:"Tony"},
+            {_id:"3",name:"Steve"},
+            {_id:"4",name:"Natasha"},
+            {_id:"5",name:"Hawkey"},
+            {_id:"6",name:"Banner"},
+            {_id:"7",name:"Thor"},
+        ];
+    },
+    onChangeFunction:(si,ctx)=>{
+        console.log(si);
+    },
+    itemBuilderFunction:(item,index,isSelected:boolean)=>{
+        return html`<div>${item["name"]}</div>`;
+    }
+})
+
+
+class TesSearchableSelectorButtonDisplayer extends WidgetBuilder<BogusBloc,number>{
+
+    constructor(){
+        super("BogusBloc",{
+            blocs_map: {
+                BogusBloc: new BogusBloc(),
+                HideSearchSelectorBloc: new HideBloc(),
+            } 
+        })
+    }
+    builder(state: number): TemplateResult {
+        return html`<labeled-icon-button icon="search" label="Employee" @click=${()=>{
+            BlocsProvider.search<HideBloc>("HideSearchSelectorBloc",this)?.toggle();
+        }}></labeled-icon-button>
+        <test-search-employee></test-search-employee>`;
+    }
+}
+customElements.define("test-search-button",TesSearchableSelectorButtonDisplayer);
