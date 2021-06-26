@@ -103,11 +103,17 @@ export abstract class SelectorBloc extends Bloc<SelectorState>{
         this.emit({...this.state,last_item_interactedWith:undefined})
     }
 
+    /**
+     * Post change to on change function, unselects all element after this
+     */
     post_change(){
         this.onchange(this._selectedItems,this.hostElement);
         this.unselectAll();
     }
 
+    /**
+     * Cancel selection and unselects all element after this
+     */
     cancel(){
         this.onchange(new Set<I>(),this.hostElement);
         this.unselectAll();
