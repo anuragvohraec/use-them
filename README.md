@@ -105,6 +105,9 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version" : "7.0.2"
+1. `CreateSearchableSelector` class for easily creating searchable selectors.
+
 ### "version" : "7.0.1"
 1. QRCode/barCode scanner
 2. `ut-dialogue` now if has blank attribute then it will render blank when is hidden.
