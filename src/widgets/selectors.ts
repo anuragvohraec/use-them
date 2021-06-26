@@ -108,6 +108,7 @@ export abstract class SelectorBloc extends Bloc<SelectorState>{
      */
     post_change(){
         this.onchange(this._selectedItems,this.hostElement);
+        this.state.listOfItems=this.fullListOfItemLoadedInitially!;
         this.unselectAll();
     }
 
@@ -116,6 +117,7 @@ export abstract class SelectorBloc extends Bloc<SelectorState>{
      */
     cancel(){
         this.onchange(new Set<I>(),this.hostElement);
+        this.state.listOfItems=this.fullListOfItemLoadedInitially!;
         this.unselectAll();
     }
 

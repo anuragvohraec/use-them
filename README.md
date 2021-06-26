@@ -105,6 +105,9 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version": "7.0.3"
+1. Bug fixes
+
 ### "version" : "7.0.2"
 1. `CreateSearchableSelector` class for easily creating searchable selectors.
 
