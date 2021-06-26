@@ -152,9 +152,6 @@ export abstract class SelectorWidget extends WidgetBuilder<SelectorBloc, Selecto
                         background-color: ${this.selectedColor()};
                         color:white;
                     }
-                    .item{
-                        padding: 5px;
-                    }
                 </style>
                 <lay-them in="column" ma="flex-start" ca="stretch">
                 ${repeat(state.listOfItems,(item:I)=>{

@@ -490,7 +490,7 @@ CreateSearchableSelector.create({
         console.log(si);
     },
     itemBuilderFunction:(item,index,isSelected:boolean)=>{
-        return html`<div>${item["name"]}</div>`;
+        return html`<div style="padding:5px;">${item["name"]}</div>`;
     }
 })
 
