@@ -487,7 +487,7 @@ CreateSearchableSelector.create({
         ];
     },
     onChangeFunction:(si,ctx)=>{
-        console.log(si);
+        console.log(Array.from(si));
     },
     itemBuilderFunction:(item,index,isSelected:boolean)=>{
         return html`<div style="padding:5px;">${item["name"]}</div>`;

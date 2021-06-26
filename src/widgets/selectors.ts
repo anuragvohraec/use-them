@@ -36,7 +36,7 @@ export abstract class SelectorBloc extends Bloc<SelectorState>{
      */
     protected abstract maxNumberOfSelect:number;
 
-    constructor(){
+    constructor(protected call_onchange_on_selection:boolean=true){
         super({
             listOfItems:[],
             status: SelectorStatus.LOADING
@@ -66,7 +66,7 @@ export abstract class SelectorBloc extends Bloc<SelectorState>{
     _toggleItemSelection(item:I,context:HTMLElement,skip_onchange:boolean=false){
         this._isItemSelected(item)?this._selectedItems.delete(item):this._selectedItems.add(item);
         this.emit({...this.state, last_item_interactedWith: item});
-        if(!skip_onchange){
+        if(!skip_onchange && this.call_onchange_on_selection){
             this.onchange(this._selectedItems,context);
         } 
     }
@@ -101,6 +101,16 @@ export abstract class SelectorBloc extends Bloc<SelectorState>{
     unselectAll(){
         this._selectedItems.clear();
         this.emit({...this.state,last_item_interactedWith:undefined})
+    }
+
+    post_change(){
+        this.onchange(this._selectedItems,this.hostElement);
+        this.unselectAll();
+    }
+
+    cancel(){
+        this.onchange(new Set<I>(),this.hostElement);
+        this.unselectAll();
     }
 
     find(search:string,key:string){
@@ -235,6 +245,10 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
             protected maxNumberOfSelect: number=config.maxNumberOfSelect;
             loadItems=config.loadItemsFunction;
             onchange=config.onChangeFunction;
+
+            constructor(){
+                super(false);
+            }
 
             protected _name: string="ISelectorBloc"
         }
@@ -380,12 +394,15 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
                                         <div class="buttons_area">
                                             <lay-them in="row" ma="flex-start" ca="stretch" overflow="hidden">
                                                 <div style="flex:1;" class="button" @click=${()=>{
+                                                    let s = BlocsProvider.search<ISelectorBloc>("ISelectorBloc",this);
+                                                    s?.post_change();
                                                     this.bloc?.toggle();
                                                 }}>
                                                     <ink-well><lay-them ma="center" ca="center"><ut-icon icon="done"></ut-icon></lay-them></ink-well>
                                                 </div>
                                                 <div style="flex:1;" class="button" @click=${()=>{
-                                                    BlocsProvider.search<ISelectorBloc>("ISelectorBloc",this)?.onchange(new Set<I>(),this);
+                                                    let s = BlocsProvider.search<ISelectorBloc>("ISelectorBloc",this);
+                                                    s?.cancel();
                                                     this.bloc?.toggle();
                                                 }}>
                                                     <ink-well><lay-them ma="center" ca="center"><ut-icon icon="clear"></ut-icon></lay-them></ink-well>
