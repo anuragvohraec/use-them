@@ -89,7 +89,6 @@ class QrCodeScannerBloc extends Bloc<QrScannerState>{
                         this.state.codes=[]
                     }
                     this.state.codes.push(e);
-                    console.log(this.state.codes);
                     this.emit({...this.state,codes:[...this.state.codes]})
                 })
             }else{
