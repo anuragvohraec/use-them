@@ -3,6 +3,7 @@ import { TemplateResult, html } from 'lit-html';
 import {  BlocsProvider } from 'bloc-them';
 import { I18NBloc } from '../text';
 import {ifDefined} from 'lit-html/directives/if-defined';
+import { UseThemConfiguration } from '../../configs';
 
 export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string,F>{
     builder(state: FormState): TemplateResult {
@@ -49,7 +50,7 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
                 ${this.getIcon()}
                 <div style="flex: 1;">
                     <lay-them in="row" ca="center">
-                        <input id="sli" ?disabled=${this.disabled} @input=${this.haveChanged} list="${ifDefined(this.dataList)}"  inputmode="${ifDefined(this.config.inputmode)}" .value=${this.getValue()??""} class="sli-bg" placeholder="${ifDefined(this.config.placeholder)}" type="${ifDefined(this.config.type)}">
+                        <input id="sli" @focus=${()=>{navigator.vibrate(UseThemConfiguration.PRESS_VIB);}} ?disabled=${this.disabled} @input=${this.haveChanged} list="${ifDefined(this.dataList)}"  inputmode="${ifDefined(this.config.inputmode)}" .value=${this.getValue()??""} class="sli-bg" placeholder="${ifDefined(this.config.placeholder)}" type="${ifDefined(this.config.type)}">
                         ${this.getClearButton()}
                     </lay-them>
                 </div>
@@ -118,7 +119,7 @@ export class TextAreaInput<F extends FormBloc> extends FormInputBuilder<string,F
     }
 
     builder(state: FormState): TemplateResult {
-        return html`<textarea placeholder="${ifDefined(this.config.placeholder)}" @keyup=${this.haveChanged} style="padding:10px;outline: none;resize: none;width: 100%;height:100%;box-sizing: border-box; min-height: 100px; background-color: ${this.theme.input_bg_color};border-radius: ${this.theme.cornerRadius};border: none;" type="text">${this.getValue()}</textarea>`;
+        return html`<textarea placeholder="${ifDefined(this.config.placeholder)}" @focus=${()=>{navigator.vibrate(UseThemConfiguration.PRESS_VIB);}} @keyup=${this.haveChanged} style="padding:10px;outline: none;resize: none;width: 100%;height:100%;box-sizing: border-box; min-height: 100px; background-color: ${this.theme.input_bg_color};border-radius: ${this.theme.cornerRadius};border: none;" type="text">${this.getValue()}</textarea>`;
     }
 
     getValue =(): string|undefined=>{

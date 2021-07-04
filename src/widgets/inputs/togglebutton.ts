@@ -1,5 +1,6 @@
 import { FormInputBuilder, FormState, FormBloc, InputBuilderConfig } from '../forms';
 import { TemplateResult, html } from 'lit-html';
+import { UseThemConfiguration } from '../../configs';
 
 export class ToggleButton<F extends FormBloc> extends FormInputBuilder<boolean, F>{
   private value: boolean=false;
@@ -24,6 +25,7 @@ export class ToggleButton<F extends FormBloc> extends FormInputBuilder<boolean, 
         }else{
           this._ON_animate(); 
         }
+        navigator.vibrate(UseThemConfiguration.PRESS_VIB);
         this.value= !this.value;
         this.hasChanged!(this.value);
       }

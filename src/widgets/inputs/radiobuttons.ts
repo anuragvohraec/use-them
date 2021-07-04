@@ -1,5 +1,6 @@
 import { BlocsProvider } from "bloc-them";
 import { html, TemplateResult } from "lit-html";
+import { UseThemConfiguration } from "../../configs";
 import { WidgetBuilder } from '../../utils/blocs';
 import { FormBloc, FormMessageBloc, FormState } from "../forms";
 
@@ -24,6 +25,7 @@ export class RadioButtonsBuilder<F extends FormBloc> extends WidgetBuilder<F,For
 
     
     onChange=(e:Event)=>{
+        navigator.vibrate(UseThemConfiguration.PRESS_VIB);
         //@ts-ignore
         const t:HTMLElement = e.target;
         const v = t.getAttribute("value");

@@ -1,5 +1,6 @@
 
 import { html, TemplateResult } from 'lit-html';
+import { UseThemConfiguration } from '../../configs';
 import { FormBloc, FormInputBuilder, FormState, InputBuilderConfig } from '../forms';
 
 
@@ -92,6 +93,7 @@ export class CheckBox<F extends FormBloc> extends FormInputBuilder<string,F>{
     }
 
     haveChanged=(e: InputEvent)=>{
+        navigator.vibrate(UseThemConfiguration.PRESS_VIB);
         let t = (e.target as HTMLInputElement).checked;
         let finalValue = t?this.checkValue:undefined;
         this.hasChanged!(finalValue!);
