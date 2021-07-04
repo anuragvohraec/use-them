@@ -3,6 +3,7 @@ import {Bloc, BlocsProvider, BlocBuilder} from 'bloc-them';
 import { Compass, PathDirection} from './compass';
 import {unsafeHTML} from 'lit-html/directives/unsafe-html';
 import {Utils} from '../../utils/utils';
+import { UseThemConfiguration } from '../../configs';
 
 export interface RouteState{
   url_path: string;
@@ -68,6 +69,9 @@ export class RouteThemBloc extends Bloc<RouteState>{
         throw `An app should have only one router which can control history. Some where in your code <${prev_bloc}> window.onpopstate function is already registered. And you are retrying again this in bloc ${this.name}!`;
       }
       let p = (e: PopStateEvent)=>{
+        
+        navigator.vibrate(UseThemConfiguration.PRESS_VIB);
+        
         let oldState: RouteState = e.state;
         if(!oldState){
           oldState=this.initState;
@@ -95,6 +99,7 @@ export class RouteThemBloc extends Bloc<RouteState>{
   }
 
   popOutOfCurrentPage(){
+    navigator.vibrate(UseThemConfiguration.PRESS_VIB);
     history.back();
   }
 
@@ -103,6 +108,7 @@ export class RouteThemBloc extends Bloc<RouteState>{
   }
   
   goToPage(url_path: string, data?: any){
+    navigator.vibrate(UseThemConfiguration.PRESS_VIB);
     let r = this._compass.find(url_path);
     if(r){
       let newRouteState: RouteState = {

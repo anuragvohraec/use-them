@@ -2,6 +2,7 @@ import { BlocsProvider } from 'bloc-them';
 import { TemplateResult,html } from 'lit-html';
 import { AppPageBloc, RouteState } from '../widgets/route-them/RouteThem';
 import { WidgetBuilder , NoBlocWidgetBuilder} from "../utils/blocs";
+import { UseThemConfiguration } from '../configs';
 
 class TitleBarWithBackButton extends WidgetBuilder<AppPageBloc,RouteState>{
 
