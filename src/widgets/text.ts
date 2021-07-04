@@ -1,5 +1,5 @@
 import { Bloc, BlocsProvider} from 'bloc-them';
-import { TemplateResult , html} from 'lit-html';
+import { TemplateResult , html, nothing} from 'lit-html';
 import {WidgetBuilder} from '../utils/blocs';
 
 /**
@@ -45,9 +45,26 @@ export abstract class I18NBlocProvider extends BlocsProvider{
 
 export abstract class _I18NText extends WidgetBuilder<I18NBloc,LanguagePack>{
     private _font_size:string = "1em";
+    private _key?: string | undefined;
+    
+    public get key(): string | undefined {
+        return this._key;
+    }
+
+    public set key(value: string | undefined) {
+        this._key = value;
+        if(this.bloc){
+            this._build(this.bloc.state);
+        }
+    }
+
 
     builder(state: LanguagePack): TemplateResult {
-        return html`<span style="font-size: ${this._font_size}; color: ${this.color}">${_I18NText._getText(this.textContent,state)}</span>`;
+        let t = this.key??this.textContent;
+        if(!t){
+            return nothing as TemplateResult;
+        }
+        return html`<span style="font-size: ${this._font_size}; color: ${this.color}">${_I18NText._getText(t,state)}</span>`;
     }
 
     

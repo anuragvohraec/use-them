@@ -18,6 +18,7 @@ import { FilePickerBloc,FilePickerScreen } from '../screens/file-selector';
 import { PickedFileInfoForOutPut } from '../interfaces';
 import { ConfirmationDialogue } from './confirmation-dialogue';
 import { QrCodeListenerBloc, QrCodeScannerConfig, QrResult } from './qr-code-scanner';
+import { SmartTabsBuilder } from './smart-tabs';
 
 
 export class MyFormBloc extends FormBloc{
@@ -514,3 +515,31 @@ class TesSearchableSelectorButtonDisplayer extends WidgetBuilder<BogusBloc,numbe
     }
 }
 customElements.define("test-search-button",TesSearchableSelectorButtonDisplayer);
+
+SmartTabsBuilder.create({
+    tag_name: "test-smart-tabs",
+    smartTabConfig: [{icon:"done",id:"id1",label:"Label1"},
+    {icon:"today",id:"id2",label:"Label2"},
+    {icon:"insert-drive-file",id:"id3",label:"Label3"},
+    {icon:"highlight",id:"id4",label:"Label4"},
+    
+
+    {icon:"done",id:"id5",label:"Label1"},
+    {icon:"today",id:"id6",label:"Label2"},
+    {icon:"insert-drive-file",id:"id7",label:"Label3"},
+    {icon:"highlight",id:"id8",label:"Label4"},
+
+    {icon:"done",id:"id9",label:"Label1"},
+    {icon:"today",id:"id10",label:"Label2"},
+    {icon:"insert-drive-file",id:"id11",label:"Label3"},
+    {icon:"highlight",id:"id12",label:"Label4"}
+],
+    builderForIdFunction:(id:string,ctx)=>{
+        switch(id){
+            default: return html`<div>${id}</div>`;
+        }
+    },
+    onTabChangeCallBack:(id)=>{
+        console.log("Tab changed: ",id);
+    }
+})
