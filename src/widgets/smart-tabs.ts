@@ -19,6 +19,11 @@ export abstract class SmartTabsBloc extends Bloc<string>{
         super(smartTabConfigs[index].id);
         this.indexExtent=this.smartTabConfigs.length-1;
     }
+    
+    private scrollTabIntoView(id:string){
+        let t = this.hostElement?.shadowRoot?.querySelector(`lay-them > div.tabs_bar > ink-well[tab_id='${id}']`);
+        t?.scrollIntoView();
+    }
 
     goToNextTab(){
         this.index++;
@@ -26,9 +31,8 @@ export abstract class SmartTabsBloc extends Bloc<string>{
             this.index=0;
         }
         let id= this.smartTabConfigs[this.index].id;
-        let t = this.hostElement?.shadowRoot?.querySelector(`lay-them > div.tabs_bar > ink-well[tab_id='${id}']`);
-        t?.scrollIntoView();
-        this.goToTab(id);
+        this.scrollTabIntoView(id);
+        this.goToTab(id,this.index);
     }
 
     goToPrevTab(){
@@ -36,11 +40,13 @@ export abstract class SmartTabsBloc extends Bloc<string>{
         if(this.index<0){
             this.index=this.indexExtent;
         }
-        this.emit(this.smartTabConfigs[this.index].id);
+        let id= this.smartTabConfigs[this.index].id;
+        this.scrollTabIntoView(id);
+        this.goToTab(id,this.index);
     }
 
-    goToTab(id:string){
-        this.index = this.smartTabConfigs.findIndex((e)=>e.id===id);
+    goToTab(id:string,index?:number){
+        this.index = index??this.smartTabConfigs.findIndex((e)=>e.id===id);
         this.emit(id);
         this.onTabChangeCallBack?.(id);
     }
