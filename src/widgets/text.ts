@@ -28,7 +28,6 @@ export class I18NBloc  extends Bloc<LanguagePack>{
                if(r){
                    return r;
                }else{
-                   //console.log("Text keys not found: ", textKey.substring(0,30));
                    return textKey;
                }
         }
@@ -73,7 +72,6 @@ export abstract class _I18NText extends WidgetBuilder<I18NBloc,LanguagePack>{
                if(state[t]){
                    return state[t];
                }else{
-                   //console.log("Text keys not found: ", textKey.substring(0,30));
                    return textKey;
                }
         }

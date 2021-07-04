@@ -101,9 +101,6 @@ class QrCodeScannerBloc extends Bloc<QrScannerState>{
                     }
                 }
 
-            }else{
-                console.log("No video element");
-                
             }
         }
     }
