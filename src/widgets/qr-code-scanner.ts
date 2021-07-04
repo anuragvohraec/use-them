@@ -1,5 +1,6 @@
 import { Bloc, BlocsProvider } from "bloc-them";
 import { html, TemplateResult } from "lit-html";
+import { UseThemConfiguration } from "../configs";
 import { WidgetBuilder } from "../utils/blocs";
 import { HideBloc } from "./dialogues";
 
@@ -79,9 +80,11 @@ class QrCodeScannerBloc extends Bloc<QrScannerState>{
         if (!('BarcodeDetector' in window)) {
             this.emit({status:Status.SCANNER_NOT_SUPPORTED});
         } else {
+            let qrConfig = (this.hostElement as QrCodeCameraStream).qrConfig;
+
             // create new detector
             //@ts-ignore
-            let barcodeDetector: any = new BarcodeDetector({formats: (this.hostElement as QrCodeCameraStream).qrConfig?.formats??["qr_code","ean_13"]});
+            let barcodeDetector: any = new BarcodeDetector({formats: qrConfig?.formats??["qr_code","ean_13"]});
             if(this.video_el){
                 let barCodes = await barcodeDetector.detect(this.video_el);
                 (barCodes as Array<any>).forEach(e=>{
@@ -90,7 +93,16 @@ class QrCodeScannerBloc extends Bloc<QrScannerState>{
                     }
                     this.state.codes.push(e);
                     this.emit({...this.state,codes:[...this.state.codes]})
-                })
+                });
+
+                if(barCodes.length>0){
+                    navigator.vibrate(UseThemConfiguration.PRESS_VIB);
+                    if(qrConfig?.sound_url){
+                        let a = new Audio(qrConfig.sound_url);
+                        await a.play();
+                    }
+                }
+
             }else{
                 console.log("No video element");
                 
@@ -222,7 +234,12 @@ export interface QrCodeScannerConfig{
      * A bloc of type : QrCodeListenerBloc.
      * Default name: QrCodeListenerBloc
      */
-    notify_bloc_name?:string
+    notify_bloc_name?:string;
+
+    /**
+     * Sound to play for each scan
+     */
+    sound_url?:string;
 }
 
 class QrCodeScannerWidget extends WidgetBuilder<HideBloc,boolean>{

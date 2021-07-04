@@ -445,7 +445,8 @@ class TestQrCodeListenerBloc extends QrCodeListenerBloc{
 
 class TesQrCodeIconButtonDisplayer extends WidgetBuilder<BogusBloc,number>{
     private qrConfig: QrCodeScannerConfig={
-        notify_bloc_name:"TestQrCodeListenerBloc"
+        notify_bloc_name:"TestQrCodeListenerBloc",
+        sound_url:"/sound/scan_sound.mp3"
     }
 
     constructor(){
