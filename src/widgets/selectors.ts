@@ -6,6 +6,7 @@ import { HideBloc } from "./dialogues";
 import { FormBloc, FormMessageBloc, PostValidationOnChangeFunction, ValidatorFunction } from "./forms";
 import { SingleLineInput } from "./inputs/textinputs";
 import { unsafeHTML } from "lit-html/directives/unsafe-html";
+import { UseThemConfiguration } from "../configs";
 
 enum SelectorStatus{
     LOADING,
@@ -64,6 +65,7 @@ export abstract class SelectorBloc extends Bloc<SelectorState>{
     abstract loadItems():Promise<I[]>;
 
     _toggleItemSelection(item:I,context:HTMLElement,skip_onchange:boolean=false){
+        navigator.vibrate(UseThemConfiguration.PRESS_VIB);
         this._isItemSelected(item)?this._selectedItems.delete(item):this._selectedItems.add(item);
         this.emit({...this.state, last_item_interactedWith: item});
         if(!skip_onchange && this.call_onchange_on_selection){
