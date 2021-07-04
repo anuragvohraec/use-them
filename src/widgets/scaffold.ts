@@ -1,5 +1,6 @@
 import { Bloc } from 'bloc-them';
 import { TemplateResult, html } from 'lit-html';
+import { UseThemConfiguration } from '../configs';
 import { WidgetBuilder } from '../utils/blocs';
 
 export interface ScaffoldState {
@@ -19,6 +20,7 @@ export class ScaffoldBloc extends Bloc<ScaffoldState>{
     }
 
     toggleMenu() {
+        navigator.vibrate(UseThemConfiguration.PRESS_VIB);
         let newState = { ...this.state };
         newState.showMenu = !newState.showMenu;
         this.emit(newState);

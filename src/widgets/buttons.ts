@@ -2,6 +2,7 @@ import { WidgetBuilder, ActionBloc, NoBlocWidgetBuilder, BogusBloc } from '../ut
 import { Bloc, BlocBuilderConfig } from 'bloc-them';
 import { TemplateResult, html } from 'lit-html';
 import { ColorUtil } from '../utils/utils';
+import { UseThemConfiguration } from '../configs';
 
 
 export abstract class RaisedButton<B extends Bloc<S>, S> extends WidgetBuilder<B,S>{
@@ -85,7 +86,10 @@ export abstract class RaisedButton<B extends Bloc<S>, S> extends WidgetBuilder<B
 
     abstract onPress():void;
 
-    buttonAction = ()=>{this.onPress()};
+    buttonAction = ()=>{
+        navigator.vibrate(UseThemConfiguration.PRESS_VIB);
+        this.onPress();
+    };
 
 }
 

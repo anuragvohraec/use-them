@@ -1,6 +1,5 @@
 import { Bloc, BlocsProvider } from "bloc-them";
 import { html, TemplateResult } from "lit-html";
-import { UseThemConfiguration } from "../configs";
 import { WidgetBuilder } from "../utils/blocs";
 import { HideBloc } from "./dialogues";
 
@@ -96,7 +95,6 @@ class QrCodeScannerBloc extends Bloc<QrScannerState>{
                 });
 
                 if(barCodes.length>0){
-                    navigator.vibrate(UseThemConfiguration.SCAN_VIB);
                     if(qrConfig?.sound_url){
                         let a = new Audio(qrConfig.sound_url);
                         await a.play();

@@ -36,6 +36,7 @@ export class InkWell extends WidgetBuilder<BogusBloc,number>{
 
     private _actionOnPress=(e:Event)=>{
         navigator.vibrate(UseThemConfiguration.PRESS_VIB);
+
         this.onpressaction(e);
     }
 
