@@ -1,5 +1,6 @@
 import { Bloc, BlocsProvider } from "bloc-them";
 import { html, TemplateResult } from 'lit-html';
+import { UseThemConfiguration } from "../../configs";
 import { WidgetBuilder } from '../../utils/blocs';
 import { RaisedButton } from '../buttons';
 import { HideBloc } from '../dialogues';
@@ -334,6 +335,7 @@ class DatePickerInput extends WidgetBuilder<DatePickerBloc,DatePickerState>{
 
     builder(state: DatePickerState): TemplateResult {
        return html`<div style="width: 100%; height:100%;" @click=${()=>{
+            navigator.vibrate(UseThemConfiguration.PRESS_VIB);
            let t = BlocsProvider.of<HideBloc>("HideBloc",this);
            t?.toggle();
            this.used=true;
