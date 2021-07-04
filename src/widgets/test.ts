@@ -519,7 +519,7 @@ customElements.define("test-search-button",TesSearchableSelectorButtonDisplayer)
 SmartTabsBuilder.create({
     tag_name: "test-smart-tabs",
     smartTabConfig: [{icon:"done",id:"id1",label:"Label1"},
-    {icon:"today",id:"id2",label:"Label2"},
+    {icon:"today",id:"id2",label:"Label2 is very big for some space"},
     {icon:"insert-drive-file",id:"id3",label:"Label3"},
     {icon:"highlight",id:"id4",label:"Label4"},
     
