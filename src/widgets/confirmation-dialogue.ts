@@ -1,6 +1,7 @@
 import { BlocsProvider } from "bloc-them";
 import { html, TemplateResult } from "lit-html";
 import {unsafeHTML} from 'lit-html/directives/unsafe-html';
+import { UseThemConfiguration } from "../configs";
 import { WidgetBuilder } from "../utils/blocs";
 import { HideBloc } from "./dialogues";
 
@@ -103,8 +104,9 @@ export abstract class ConfirmationDialogue extends WidgetBuilder<HideBloc,boolea
                             <lay-them in="column" ma="flex-start" ca="stretch">
                                 <div style="padding: 10px;color:white;font-size:${this.theme.H2_font_size};background-color:${this.theme.primaryColor};">${this.confirmationInfo?.title}</div>
                                 <div style="padding: 10px;">${unsafeHTML(this.confirmationInfo?.msg)}</div>
+                                <slot></slot>
                                 ${this.confirmationInfo.user_comments_msg? html`<div style="padding: 10px;">
-                                    <textarea class="textAreaBG" placeholder=${this.confirmationInfo.user_comments_msg} @keyup=${this.user_msg_changed} type="text"></textarea>
+                                    <textarea class="textAreaBG" @focus=${()=>{navigator.vibrate(UseThemConfiguration.PRESS_VIB);}} placeholder=${this.confirmationInfo.user_comments_msg} @keyup=${this.user_msg_changed} type="text"></textarea>
                                 </div>`:html``}
                                 <ut-confirmation-dialogue-progress-indicator>
                                     <lay-them in="row" ma="flex-start" ca="stretch" overflow="hidden">
