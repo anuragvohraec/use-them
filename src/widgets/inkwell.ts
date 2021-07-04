@@ -1,4 +1,5 @@
 import { html, TemplateResult } from 'lit-html';
+import { UseThemConfiguration } from '../configs';
 import { BogusBloc, WidgetBuilder } from '../utils/blocs';
 
 /**
@@ -34,6 +35,7 @@ export class InkWell extends WidgetBuilder<BogusBloc,number>{
 
 
     private _actionOnPress=(e:Event)=>{
+        navigator.vibrate(UseThemConfiguration.PRESS_VIB);
         this.onpressaction(e);
     }
 

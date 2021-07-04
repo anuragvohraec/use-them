@@ -96,7 +96,7 @@ class QrCodeScannerBloc extends Bloc<QrScannerState>{
                 });
 
                 if(barCodes.length>0){
-                    navigator.vibrate(UseThemConfiguration.PRESS_VIB);
+                    navigator.vibrate(UseThemConfiguration.SCAN_VIB);
                     if(qrConfig?.sound_url){
                         let a = new Audio(qrConfig.sound_url);
                         await a.play();

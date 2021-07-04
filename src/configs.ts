@@ -1,3 +1,4 @@
 export class UseThemConfiguration{
-    static readonly PRESS_VIB=[400];
+    static SCAN_VIB=[70];
+    static PRESS_VIB=[60];
 }
