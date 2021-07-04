@@ -1,5 +1,6 @@
 import { FormInputBuilder, FormBloc, FormState, InputBuilderConfig } from '../forms';
 import { TemplateResult, html } from 'lit-html';
+import { UseThemConfiguration } from '../../configs';
 
 
 export interface Range{
@@ -197,6 +198,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
     }
 
     _drag_ON= (e:TouchEvent)=>{
+      navigator.vibrate(UseThemConfiguration.PRESS_VIB);
      this.isDraging=true;
    }
 
