@@ -524,15 +524,15 @@ SmartTabsBuilder.create({
     {icon:"highlight",id:"id4",label:"Label4"},
     
 
-    {icon:"done",id:"id5",label:"Label1"},
-    {icon:"today",id:"id6",label:"Label2"},
-    {icon:"insert-drive-file",id:"id7",label:"Label3"},
-    {icon:"highlight",id:"id8",label:"Label4"},
+    {icon:"warning",id:"id5",label:"Label5"},
+    {icon:"chevron-left",id:"id6",label:"Label6"},
+    {icon:"insert-drive-file",id:"id7",label:"Label7"},
+    {icon:"clear",id:"id8",label:"Label4"},
 
-    {icon:"done",id:"id9",label:"Label1"},
-    {icon:"today",id:"id10",label:"Label2"},
-    {icon:"insert-drive-file",id:"id11",label:"Label3"},
-    {icon:"highlight",id:"id12",label:"Label4"}
+    {icon:"attach-file",id:"id9",label:"Label9"},
+    {icon:"qrcode",id:"id10",label:"Label10"},
+    {icon:"account-circle",id:"id11",label:"Label11"},
+    {icon:"account-balance",id:"id12",label:"Label12"}
 ],
     builderForIdFunction:(id:string,ctx)=>{
         switch(id){

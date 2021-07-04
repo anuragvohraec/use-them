@@ -1,6 +1,8 @@
-import { Bloc } from "bloc-them";
+import { Bloc, BlocsProvider } from "bloc-them";
 import { html, nothing, TemplateResult } from "lit-html";
+import { UseThemConfiguration } from "../configs";
 import { WidgetBuilder } from "../utils/blocs";
+import { GestureDetector } from "./gesturedetector";
 
 interface SmartTabsConfig{
     label:string;
@@ -35,6 +37,7 @@ export abstract class SmartTabsBloc extends Bloc<string>{
     }
 
     goToTab(id:string){
+        this.index = this.smartTabConfigs.findIndex((e)=>e.id===id);
         this.emit(id);
         this.onTabChangeCallBack?.(id);
     }
@@ -42,6 +45,28 @@ export abstract class SmartTabsBloc extends Bloc<string>{
     abstract onTabChangeCallBack?(id:string):void
     abstract builderForId(id:string, ctx:WidgetBuilder<SmartTabsBloc,string>):TemplateResult
 }
+
+class StbGestureDetector extends GestureDetector{
+    private stbBloc?:SmartTabsBloc;
+
+    getStbBloc():SmartTabsBloc{
+        if(!this.stbBloc){
+            this.stbBloc = BlocsProvider.search<SmartTabsBloc>("STB",this);
+        }
+        return this.stbBloc!;
+    }
+
+    onSwipeLeft=()=>{
+        navigator.vibrate(UseThemConfiguration.PRESS_VIB);
+        this.getStbBloc().goToNextTab();
+    }
+
+    onSwipeRight=()=>{
+        navigator.vibrate(UseThemConfiguration.PRESS_VIB);
+        this.getStbBloc().goToPrevTab();
+    }
+}
+customElements.define("ut-stb-gesture-detector",StbGestureDetector);
 
 abstract class SmartTabsWidgetBuilder<B extends SmartTabsBloc> extends WidgetBuilder<B,string>{
 
@@ -81,7 +106,9 @@ abstract class SmartTabsWidgetBuilder<B extends SmartTabsBloc> extends WidgetBui
                 ${tabs_bar}
             </div>
             <div style="flex-grow:1">
-                ${tabContent}
+                <ut-stb-gesture-detector>
+                    ${tabContent}
+                </ut-stb-gesture-detector>
             </div>
         </lay-them>
         `;
