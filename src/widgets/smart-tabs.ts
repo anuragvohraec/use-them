@@ -25,7 +25,10 @@ export abstract class SmartTabsBloc extends Bloc<string>{
         if(this.index>this.indexExtent){
             this.index=0;
         }
-        this.goToTab(this.smartTabConfigs[this.index].id);
+        let id= this.smartTabConfigs[this.index].id;
+        let t = this.hostElement?.shadowRoot?.querySelector(`lay-them > div.tabs_bar > ink-well[tab_id='${id}']`);
+        t?.scrollIntoView();
+        this.goToTab(id);
     }
 
     goToPrevTab(){
@@ -76,15 +79,17 @@ abstract class SmartTabsWidgetBuilder<B extends SmartTabsBloc> extends WidgetBui
     }
 
     builder(state: string): TemplateResult {
-        let tabs_bar = html`<lay-them in="row" ma="flex-start" ca="stretch">
+        let tabs_bar = html`
             ${this.bloc?.smartTabConfigs.map(e=>{
-                return html`<ink-well tab_id=${e.id} @click=${this.goToTab}>
-                    <lay-them ma="center" ca="center">
-                        <div class="tab_icon" ><ut-icon icon=${e.icon}></ut-icon>${state===e.id?html`<ut-h5 .key=${e.label} style="padding-left: 5px;"></ut-h5>`:nothing}</div>
-                    </lay-them>
-                </ink-well>`;
-            })}
-        </lay-them>`;
+                return html`
+                    <ink-well tab_id=${e.id} @click=${this.goToTab}>
+                        <div class="tab_icon">
+                            <div><ut-icon icon=${e.icon}></ut-icon></div>
+                            <div class="tab-text">${state===e.id?html`<ut-h5 .key=${e.label} style="padding-left: 5px;"></ut-h5>`:nothing}</div>
+                        </div>
+                    </ink-well>
+                `;
+            })}`;
 
         let tabContent = this.bloc!.builderForId(state, this);
         
@@ -92,6 +97,8 @@ abstract class SmartTabsWidgetBuilder<B extends SmartTabsBloc> extends WidgetBui
             .tabs_bar{
                 height: 50px;
                 width: 100%;
+                display: flex;
+                overflow-x: auto;
             }
             .tab_icon{
                 max-height: 50px;
@@ -99,6 +106,11 @@ abstract class SmartTabsWidgetBuilder<B extends SmartTabsBloc> extends WidgetBui
                 align-items: center;
                 padding: 10px;
                 justify-content: center;
+            }
+            .tab-text{
+                white-space: nowrap;
+                max-width: 60vw;
+                overflow-x: hidden;
             }
         </style>
         <lay-them in="column" ma="flex-start" ca="stretch">
@@ -124,7 +136,7 @@ export interface BuilderForIDFunction{
 }
 
 export class SmartTabsBuilder{
-    static create(config:{tag_name:string,smartTabConfig:SmartTabsConfig[],builderForIdFunction:BuilderForIDFunction, index?:number, onTabChangeCallBack?:OnTabChangeCallBack}){
+    static create(config:{tag_name:string,smartTabConfig:SmartTabsConfig[],builderForIdFunction:BuilderForIDFunction, index?:number, onTabChangeCallBack?:OnTabChangeCallBack, blocs_map?:Record<string, Bloc<any>>}){
         
         class STB extends SmartTabsBloc{
             
@@ -139,12 +151,13 @@ export class SmartTabsBuilder{
             }
         }
 
+        let blocs_map:Record<string, Bloc<any>> = {...config.blocs_map};
+        blocs_map["STB"]=new STB()
+
         class StbBuilder extends SmartTabsWidgetBuilder<STB>{
             constructor(){
                 super("STB",{
-                    blocs_map:{
-                        STB: new STB()
-                    }
+                    blocs_map
                 })
             }
         }

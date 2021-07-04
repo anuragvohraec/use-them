@@ -519,7 +519,7 @@ customElements.define("test-search-button",TesSearchableSelectorButtonDisplayer)
 SmartTabsBuilder.create({
     tag_name: "test-smart-tabs",
     smartTabConfig: [{icon:"done",id:"id1",label:"Label1"},
-    {icon:"today",id:"id2",label:"Label2 is very big for some space"},
+    {icon:"today",id:"id2",label:"Label2 is very big for some space and this should be still very big and big too see how much"},
     {icon:"insert-drive-file",id:"id3",label:"Label3"},
     {icon:"highlight",id:"id4",label:"Label4"},
     
@@ -527,7 +527,7 @@ SmartTabsBuilder.create({
     {icon:"warning",id:"id5",label:"Label5"},
     {icon:"chevron-left",id:"id6",label:"Label6"},
     {icon:"insert-drive-file",id:"id7",label:"Label7"},
-    {icon:"clear",id:"id8",label:"Label4"},
+    {icon:"clear",id:"id8",label:"Label8"},
 
     {icon:"attach-file",id:"id9",label:"Label9"},
     {icon:"qrcode",id:"id10",label:"Label10"},
