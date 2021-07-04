@@ -55,7 +55,7 @@ abstract class SmartTabsWidgetBuilder<B extends SmartTabsBloc> extends WidgetBui
             ${this.bloc?.smartTabConfigs.map(e=>{
                 return html`<ink-well tab_id=${e.id} @click=${this.goToTab}>
                     <lay-them ma="center" ca="center">
-                        <div class="tab_icon" ><ut-icon icon=${e.icon}></ut-icon>${state===e.id?html`<ut-h5 .key=${e.label} style="padding-right: 30px;"></ut-h5>`:nothing}</div>
+                        <div class="tab_icon" ><ut-icon icon=${e.icon}></ut-icon>${state===e.id?html`<ut-h5 .key=${e.label} style="padding-left: 5px;"></ut-h5>`:nothing}</div>
                     </lay-them>
                 </ink-well>`;
             })}
@@ -70,9 +70,10 @@ abstract class SmartTabsWidgetBuilder<B extends SmartTabsBloc> extends WidgetBui
             }
             .tab_icon{
                 max-height: 50px;
-                min-width: 50px;
                 display: flex;
                 align-items: center;
+                padding: 10px;
+                justify-content: center;
             }
         </style>
         <lay-them in="column" ma="flex-start" ca="stretch">
