@@ -1,6 +1,7 @@
 import { Bloc, BlocsProvider } from 'bloc-them';
 import { html, TemplateResult } from 'lit-html';
-import {NoBlocNoStateWidget, NoBlocWidgetBuilder, WidgetBuilder} from '../utils/blocs.js';
+import { WidgetBuilder} from '../utils/blocs.js';
+import {UseThemConfiguration} from "../configs";
 
 export enum GESTURE{
     NO_ACTION,//0
@@ -296,10 +297,12 @@ class SliderGestureDetector extends GestureDetector{
     }
 
     onSwipeLeft=()=>{
+        navigator.vibrate(UseThemConfiguration.PRESS_VIB);
         this.circularCounterBloc.increment();
     }
     
     onSwipeRight=()=>{
+        navigator.vibrate(UseThemConfiguration.PRESS_VIB);
         this.circularCounterBloc.decrement();
     }
 }
@@ -338,8 +341,10 @@ export abstract class VerticalScrollLimitDetector extends BlocsProvider{
             //@ts-ignore
             let element:HTMLElement = e.target;
             if (element.offsetHeight + element.scrollTop === element.scrollHeight){
+                navigator.vibrate(UseThemConfiguration.PRESS_VIB);
                 this.bottomLimitReached();
             }else if(element.scrollTop===0){
+                navigator.vibrate(UseThemConfiguration.PRESS_VIB);
                 this.topLimitReached();
             }
             e.stopPropagation();
@@ -386,8 +391,10 @@ export abstract class HorizontalScrollLimitDetector extends BlocsProvider{
             //@ts-ignore
             let element:HTMLElement = e.target;
             if (element.offsetWidth + element.scrollLeft === element.scrollWidth){
+                navigator.vibrate(UseThemConfiguration.PRESS_VIB);
                 this.rightLimitReached();
             }else if(element.scrollLeft===0){
+                navigator.vibrate(UseThemConfiguration.PRESS_VIB);
                 this.leftLimitReached();
             }
             e.stopPropagation();
