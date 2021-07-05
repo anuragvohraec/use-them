@@ -197,7 +197,7 @@ customElements.define("my-ink-well",MyInkwell);
 
 class MyRadioButtons extends RadioButtonsBuilder<MyFormBloc>{
     constructor(){
-        super("MyFormBloc",{
+        super({bloc_name:"MyFormBloc",name:"selectVal"},{
             "val1": "Value 1",
             "val2": "Value 2",
             "val3": "Value 3"

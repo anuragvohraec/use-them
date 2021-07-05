@@ -2,25 +2,19 @@ import { BlocsProvider } from "bloc-them";
 import { html, TemplateResult } from "lit-html";
 import { UseThemConfiguration } from "../../configs";
 import { WidgetBuilder } from '../../utils/blocs';
-import { FormBloc, FormMessageBloc, FormState } from "../forms";
+import { FormBloc, FormInputBuilder, FormMessageBloc, FormState, InputBuilderConfig } from "../forms";
 
 /**
  * key for this used as Value and value is used as Label for radioButtons
  */
-interface RadioButtonValueLabelMap{
+export interface RadioButtonValueLabelMap{
     [key:string]:string;
 }
 
-export class RadioButtonsBuilder<F extends FormBloc> extends WidgetBuilder<F,FormState>{
-    private name:string;
-    constructor(formBlocName:string, private valueLabelMap: RadioButtonValueLabelMap){
-        super(formBlocName);
-        let n = this.getAttribute("name");
-        if(!n){
-            throw `Radio buttons do not have a name attribute!`;
-        }else{
-            this.name = n;
-        }
+export class RadioButtonsBuilder<F extends FormBloc> extends FormInputBuilder<string,F>{
+
+    constructor(config:InputBuilderConfig, private valueLabelMap: RadioButtonValueLabelMap){
+        super(config);
     }
 
     
@@ -29,7 +23,7 @@ export class RadioButtonsBuilder<F extends FormBloc> extends WidgetBuilder<F,For
         //@ts-ignore
         const t:HTMLElement = e.target;
         const v = t.getAttribute("value");
-        this.bloc?.delegateChangeTo(this.name,v,BlocsProvider.of<FormMessageBloc>("FormMessageBloc",t)!);
+        this.bloc?.delegateChangeTo(this.config.name,v,BlocsProvider.of<FormMessageBloc>("FormMessageBloc",t)!);
     }
 
     
@@ -58,7 +52,7 @@ export class RadioButtonsBuilder<F extends FormBloc> extends WidgetBuilder<F,For
                 return html`
                 <div style="padding: 5px;" @click=${this.onChange} value="${v}">
                     <lay-them in="row" ma="flex-start" ca="center">
-                        <div class="radio ${state[this.name]===v?"active":"inactive"}" @click=${this.onChange} value="${v}"></div>
+                        <div class="radio ${state[this.config.name]===v?"active":"inactive"}" @click=${this.onChange} value="${v}"></div>
                         <ut-p>${this.valueLabelMap[v]}</ut-p>
                     </lay-them>
                 </div>
