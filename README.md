@@ -105,6 +105,9 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version":"8.0.0"
+1. `FormInputMaker` class for creating form inputs easily. Signature of an input constructor is bit changed.
+
 ### "version": "7.0.5"
 1. Smart tabs. They are not that smart actually are juts named that way because of simplicity of their creation using `SmartTabsBuilder` class.
 

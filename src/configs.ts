@@ -1,3 +1,3 @@
 export class UseThemConfiguration{
-    static PRESS_VIB=[50];
+    static PRESS_VIB=[35];
 }

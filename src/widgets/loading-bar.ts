@@ -237,7 +237,6 @@ class LoadingCell extends NoBlocWidgetBuilder{
 .load-wraper{
     height: 100%;
     width: 100%;
-    background-color: #ececec;
     overflow: hidden;
 }
 .activity{
