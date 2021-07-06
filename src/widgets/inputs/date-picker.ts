@@ -108,7 +108,7 @@ class DatePickerBloc extends Bloc<DatePickerState>{
         newState.date=newDate.getDate();
         newState.month=newDate.getMonth();
         newState.year= newDate.getFullYear();
-        return this.state;
+        return newState;
     }
 
     postDateToForm(context:HTMLElement){
@@ -307,7 +307,7 @@ class DatePickerModal extends WidgetBuilder<DatePickerBloc,DatePickerState>{
                 this.bloc.isDirty=true;
                 this.bloc.emit(newState);
             }
-        },200)
+        },300)
     }
 
     constructor(){
