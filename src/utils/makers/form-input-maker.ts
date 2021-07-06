@@ -5,9 +5,8 @@ import { DatePicker, DatePickerConfig } from '../../widgets/inputs/date-picker';
 import { RangeSelector } from '../../widgets/inputs/rangeselector';
 import { repeat } from 'lit-html/directives/repeat';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html';
-import { FormBloc, FormState, InputBuilderConfig } from '../../widgets/forms';
-import { html, nothing, TemplateResult } from 'lit-html';
-import { WidgetBuilder } from '../blocs';
+import { InputBuilderConfig } from '../../widgets/forms';
+import { html,  TemplateResult } from 'lit-html';
 import { BlocsProvider } from 'bloc-them';
 
 export interface InputInfo{
