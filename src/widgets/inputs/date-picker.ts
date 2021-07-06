@@ -316,7 +316,7 @@ class DatePickerModal extends WidgetBuilder<DatePickerBloc,DatePickerState>{
                             <date-picker-body></date-picker-body> 
                         </div>
                         <div style="padding-top: 10px;">
-                            <date-picker-ok-button use="background-color: ${this.theme.primaryColor};"><lay-them ma="center" ca="center"><ut-icon icon="done"></ut-icon></lay-them></date-picker-ok-button>
+                            <date-picker-ok-button use="background-color: ${this.theme.primaryColor};"><lay-them ma="center" ca="center"><ut-icon icon="done" use="icon_inactive:white;"></ut-icon></lay-them></date-picker-ok-button>
                         </div>
                     </lay-them>
                 </div>
