@@ -34,12 +34,17 @@ export class MyFormBloc extends FormBloc{
                 return (nv:string, valMsg)=>{
                     console.log("Value for user is: ",nv);
                 }
+            case "myCheckBox":
+                return (nv:string, valMsg)=>{
+                    console.log("Check box value is: ",nv);
+                }
         }
     }
     constructor(){
         super({
             userChoice: true,
             priceRange: {start: 200, end:700},
+            myCheckBox: "CheckBoxValue",
             areDisabled: new Set([])
         });
     }

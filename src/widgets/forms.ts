@@ -4,7 +4,7 @@
 
 import { Bloc, BlocsProvider } from 'bloc-them'
 import { WidgetBuilder } from '../utils/blocs';
-import { TemplateResult, html } from 'lit-html';
+import { TemplateResult, html, nothing } from 'lit-html';
 
 
  export interface FormState{
@@ -101,15 +101,16 @@ import { TemplateResult, html } from 'lit-html';
         const postOnChangeFunc = this.postOnChangeFunctionGiver(nameOfInput);
         if(preOnChangeFunc){
             preOnChangeFunc(currentValue);
+            let validationResult:string|undefined;
             if(val){
-                const validationResult = val(currentValue);
+                 validationResult = val(currentValue);
                 if(!formMessageBloc){
                     formMessageBloc = BlocsProvider.search("FormMessageBloc",this.hostElement);
                 }
                 formMessageBloc!.postMessage(nameOfInput,validationResult!);
-                if(postOnChangeFunc){
-                    postOnChangeFunc(currentValue, validationResult);
-                }
+            }
+            if(postOnChangeFunc){
+                postOnChangeFunc(currentValue, validationResult);
             }
         }
     }
@@ -184,14 +185,23 @@ import { TemplateResult, html } from 'lit-html';
 
      constructor(){
          super("FormMessageBloc");
-         let forAtt = this.getAttribute("for");
-         if(!forAtt){
-             throw 'No for attribute present on a form message';
-         }
-         this.name = forAtt;
+     }
+
+     connectedCallback(){
+         super.connectedCallback();
+         setTimeout(()=>{
+            let forAtt = this.getAttribute("for");
+            if(!forAtt){
+                throw 'No for attribute present on a form message';
+            }
+            this.name = forAtt;
+         });
      }
 
      builder(state: FormMessageState): TemplateResult {
+         if(!this.name){
+             return nothing as TemplateResult;
+         }
          let msg = state[this.name!];
          return html`<span>${msg}</span>`;
      }

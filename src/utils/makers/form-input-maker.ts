@@ -6,7 +6,9 @@ import { RangeSelector } from '../../widgets/inputs/rangeselector';
 import { repeat } from 'lit-html/directives/repeat';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html';
 import { FormBloc, FormState, InputBuilderConfig } from '../../widgets/forms';
-import { html, TemplateResult } from 'lit-html';
+import { html, nothing, TemplateResult } from 'lit-html';
+import { WidgetBuilder } from '../blocs';
+import { BlocsProvider } from 'bloc-them';
 
 export interface InputInfo{
     type:"SingleLineInput"|"TextAreaInput"|"CheckBox"|"DatePicker"|"RadioButtons"|"RangeSelector"|"ToggleButton";
@@ -16,15 +18,28 @@ export interface InputInfo{
     input_info_msg?:string
 }
 
-export class FormInputMaker{
-     static create<F extends FormBloc>(config:{tag_prefix:string, inputs:Record<string,InputInfo>},state:FormState):TemplateResult{
-        let tags_list:Record<string,string>={};
-        for(let nameOfInput of Object.keys(config.inputs)){
-            let tag_name = `${config.tag_prefix}-${nameOfInput.toLowerCase()}-input`;
-            let inputInfo:InputInfo = config.inputs[nameOfInput];
+
+export class FormInputMaker extends BlocsProvider{
+    private nameList!:string[];
+    private tags_list:Record<string,string>={};
+
+    constructor(private config:{ formBloc_name:string,tag_prefix:string, inputs:Record<string,InputInfo>}){
+        super({});
+        this.defineTags();
+    }
+
+    private convertNameToInputTagName(nameOfInput:string){
+        return `${this.config.tag_prefix}-${nameOfInput.toLowerCase()}-input`;
+    }
+
+    private defineTags(){
+        this.nameList = Object.keys(this.config.inputs);
+        for(let nameOfInput of this.nameList){
+            let tag_name = this.convertNameToInputTagName(nameOfInput);
+            let inputInfo:InputInfo = this.config.inputs[nameOfInput];
             switch (inputInfo.type) {
                 case "SingleLineInput": {
-                    class A extends SingleLineInput<F>{
+                    class A extends SingleLineInput<any>{
                         constructor(){
                             super(inputInfo.config);
                         }
@@ -35,7 +50,7 @@ export class FormInputMaker{
                     break;
                 }
                 case "TextAreaInput": {
-                    class A extends TextAreaInput<F>{
+                    class A extends TextAreaInput<any>{
                         constructor(){
                             super(inputInfo.config);
                         }
@@ -46,7 +61,7 @@ export class FormInputMaker{
                     break;
                 }
                 case "CheckBox": {
-                    class A extends CheckBox<F>{
+                    class A extends CheckBox<any>{
                         constructor(){
                             super(inputInfo.config,inputInfo.input_init_values as string);
                         }
@@ -68,7 +83,7 @@ export class FormInputMaker{
                     break;
                 }
                 case "RadioButtons": {
-                    class A extends RadioButtonsBuilder<F>{
+                    class A extends RadioButtonsBuilder<any>{
                         constructor(){
                             super(inputInfo.config,inputInfo.input_init_values as RadioButtonValueLabelMap);
                         }
@@ -79,7 +94,7 @@ export class FormInputMaker{
                     break;
                 }
                 case "RangeSelector": {
-                    class A extends RangeSelector<F>{
+                    class A extends RangeSelector<any>{
                         constructor(){
                             super(inputInfo.config);
                         }
@@ -90,11 +105,12 @@ export class FormInputMaker{
                     break;
                 }
             }
-            tags_list[nameOfInput]=tag_name;
+            this.tags_list[nameOfInput]=tag_name;
         }
+     }
 
-        let namesList = Object.keys(config.inputs);
 
+    builder(): TemplateResult {
         return html`
         <style>
             .input{
@@ -108,15 +124,15 @@ export class FormInputMaker{
                 color: red;
             }
         </style>
-        ${repeat(namesList,(item)=>item,(name,index)=>{
+        ${repeat(this.nameList,(item)=>item,(name,index)=>{
             return html`
             <div class="input">
-                <label for=${name}><ut-h5 .key=${config.inputs[name].label}></ut-h5> : <ut-h5 use="color:#8a8a8a;" .key=${config.inputs[name].input_info_msg}></ut-h5></label>
-                ${unsafeHTML(`<${tags_list[name]} value=${state?.[name]}></${tags_list[name]}>`)}
+                <label for=${name}><ut-h5 .key=${this.config.inputs[name].label}></ut-h5> : <ut-h5 use="color:#8a8a8a;" .key=${this.config.inputs[name].input_info_msg}></ut-h5></label>
+                ${unsafeHTML(`<${this.tags_list[name]}></${this.tags_list[name]}>`)}
                 <div class="input-msg"><form-message for=${name}></form-message></div>
             </div>
             `;
         })}
         `;
-     }
+    }
  }

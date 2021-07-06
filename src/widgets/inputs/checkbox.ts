@@ -1,5 +1,6 @@
 
 import { html, TemplateResult } from 'lit-html';
+import { ifDefined } from 'lit-html/directives/if-defined';
 import { UseThemConfiguration } from '../../configs';
 import { FormBloc, FormInputBuilder, FormState, InputBuilderConfig } from '../forms';
 
@@ -87,7 +88,7 @@ export class CheckBox<F extends FormBloc> extends FormInputBuilder<string,F>{
                 </style>
             <label class="container">
                 <slot name="label"><ut-p>${this.config.placeholder}</ut-p></slot>
-                <input type="checkbox" value="${this.checkValue}" ?disabled=${this.disabled} @click=${this.haveChanged}>
+                <input type="checkbox" value="${this.checkValue}" ?disabled=${this.disabled} @click=${this.haveChanged} ?checked=${state[this.config.name]===this.checkValue?true:false}>
                 <span class="checkmark"></span>
             </label>`;
     }
