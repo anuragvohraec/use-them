@@ -4,7 +4,7 @@ import { UseThemConfiguration } from "../../configs";
 import { WidgetBuilder } from '../../utils/blocs';
 import { RaisedButton } from '../buttons';
 import { HideBloc } from '../dialogues';
-import { FormBloc, FormMessageBloc } from '../forms';
+import { FormBloc, FormMessageBloc, FormState, InputBuilderConfig } from '../forms';
 
 enum DatePickerStatus{
     SHOW_DATE,
@@ -275,6 +275,29 @@ class DatePickerOKButton extends RaisedButton<HideBloc,boolean>{
 customElements.define("date-picker-ok-button", DatePickerOKButton);
 
 class DatePickerModal extends WidgetBuilder<DatePickerBloc,DatePickerState>{
+    private _date?: number | undefined;
+    public get date(): number | undefined {
+        return this._date;
+    }
+    public set date(value: number | undefined) {
+        this._date = value;
+    }
+
+    connectedCallback(){
+        super.connectedCallback();
+        setTimeout(()=>{
+            if(this.bloc){
+                let newState:DatePickerState={...this.bloc.state};
+                let newDate = new Date();
+                newDate.setTime(this.date!);
+                newState.date=newDate.getDate();
+                newState.month=newDate.getMonth();
+                newState.year= newDate.getFullYear();
+                this.bloc.emit(newState);
+            }
+        },200)
+    }
+
     constructor(){
         super("DatePickerBloc");
     }
@@ -327,8 +350,6 @@ class DatePickerModal extends WidgetBuilder<DatePickerBloc,DatePickerState>{
 customElements.define("date-picker-modal",DatePickerModal);
 
 class DatePickerInput extends WidgetBuilder<DatePickerBloc,DatePickerState>{
-    private used:boolean=false;
-
     convert_sate_to_date_string(state:DatePickerState){
         return html`${state.date}-${DatePickerBloc.MonthMap[state.month]}-${state.year}`;
     }
@@ -338,9 +359,8 @@ class DatePickerInput extends WidgetBuilder<DatePickerBloc,DatePickerState>{
             navigator.vibrate(UseThemConfiguration.PRESS_VIB);
            let t = BlocsProvider.of<HideBloc>("HideBloc",this);
            t?.toggle();
-           this.used=true;
        }}>${(()=>{
-           if(!this.used) {
+           if(!state) {
                return html`<lay-them in="row" ma="space-between" ca="center"><div style="color: #808080; padding: 0px 10px;">${this.bloc?.placeholder}</div><div style="padding: 0px 10px;"><ut-icon icon="today" use="icon_inactive: #a7a7a7;"></ut-icon></div></lay-them><slot></slot>`;
            }else{
                return html`<lay-them in="row" ma="space-between" ca="center"><div style="padding: 0px 10px;">${this.convert_sate_to_date_string(state)}</div><div style="padding: 0px 10px;"><ut-icon icon="today" ></ut-icon></div></lay-them><slot></slot>`;
@@ -353,20 +373,22 @@ class DatePickerInput extends WidgetBuilder<DatePickerBloc,DatePickerState>{
 }
 customElements.define("date-picker-input",DatePickerInput);
 
-export class DatePicker extends BlocsProvider{
-    constructor(config:DatePickerConfig){
-        super({
-            HideBloc: new HideBloc(),
-            DatePickerBloc: new DatePickerBloc(config)
+export class DatePicker<F extends FormBloc> extends WidgetBuilder<F,FormState>{
+    constructor(private formInputConfig:InputBuilderConfig,datePickerConfig: DatePickerConfig){
+        super(formInputConfig.bloc_name,{
+            blocs_map:{
+                HideBloc: new HideBloc(),
+                DatePickerBloc: new DatePickerBloc(datePickerConfig)
+            }
         })
     }
-    builder(): TemplateResult {
+    builder(state:FormState): TemplateResult {
         return html`
         <div style="width: 100%; height: 40px; border-radius: 4px;background-color:#e6e6e6;font-family: monospace; user-select:none;">
             <date-picker-input>
                 <ut-dialogue>
                     <lay-them ma="center" ca="center">
-                        <date-picker-modal></date-picker-modal>
+                        <date-picker-modal .date=${state[this.formInputConfig.name]}></date-picker-modal>
                     </lay-them>
                 </ut-dialogue>
             </date-picker-input>

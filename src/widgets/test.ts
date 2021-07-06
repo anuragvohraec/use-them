@@ -38,6 +38,10 @@ export class MyFormBloc extends FormBloc{
                 return (nv:string, valMsg)=>{
                     console.log("Check box value is: ",nv);
                 }
+            case "date":
+                return (nv:string, valMsg)=>{
+                    console.log("Date value is: ",nv);
+                }
         }
     }
     constructor(){
@@ -45,6 +49,7 @@ export class MyFormBloc extends FormBloc{
             userChoice: true,
             priceRange: {start: 200, end:700},
             myCheckBox: "CheckBoxValue",
+            date: -1214298118060,
             areDisabled: new Set([])
         });
     }
@@ -255,9 +260,9 @@ class MySelectorWidgetContainer extends BlocsProvider{
 customElements.define("my-selector",MySelectorWidgetContainer);
 
 
-class MyDatePicker extends DatePicker{
+class MyDatePicker extends DatePicker<MyFormBloc>{
     constructor(){
-        super({
+        super({bloc_name: "MyFormBloc",name:"date"},{
             formBlocName:"MyFormBloc",
             init_date: Date.now(),
             maxYear: 2025,

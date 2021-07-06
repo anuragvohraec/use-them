@@ -72,9 +72,9 @@ export class FormInputMaker extends BlocsProvider{
                     break;
                 }
                 case "DatePicker": {
-                    class A extends DatePicker{
+                    class A extends DatePicker<any>{
                         constructor(){
-                            super(inputInfo.input_init_values as DatePickerConfig);
+                            super(inputInfo.config, inputInfo.input_init_values as DatePickerConfig);
                         }
                     }
                     if(!customElements.get(tag_name)){
