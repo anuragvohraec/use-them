@@ -27,6 +27,7 @@ export interface DatePickerConfig{
 class DatePickerBloc extends Bloc<DatePickerState>{
     
     protected _name: string="DatePickerBloc";
+    public isDirty:boolean = false;
     
     static DayMap:Record<number,string>={
         0:"SUN",
@@ -89,17 +90,29 @@ class DatePickerBloc extends Bloc<DatePickerState>{
     }
 
     select_date(date:number){
+        this.isDirty=true;
         this.emit({...this.state, date});
     }
     
     select_month(month:number){
+        this.isDirty=true;
         this.emit({...this.state, month, status: DatePickerStatus.SHOW_DATE});
     }
     select_year(year:number){
+        this.isDirty=true;
         this.emit({...this.state, year, status: DatePickerStatus.SHOW_DATE});
     }
 
+    convertDateToState(newDate:Date){
+        let newState:DatePickerState={...this.state};
+        newState.date=newDate.getDate();
+        newState.month=newDate.getMonth();
+        newState.year= newDate.getFullYear();
+        return this.state;
+    }
+
     postDateToForm(context:HTMLElement){
+        this.isDirty=true;
         let t = new Date();
         t.setDate(this.state.date);
         t.setMonth(this.state.month);
@@ -107,6 +120,7 @@ class DatePickerBloc extends Bloc<DatePickerState>{
         let fm = BlocsProvider.of<FormMessageBloc>("FormMessageBloc",context);
         let fb = BlocsProvider.of<FormBloc>(this.config.formBlocName,context);
         fb!.delegateChangeTo(this.config.nameForThisInForm,t.getTime(),fm!);
+        this.emit(this.convertDateToState(t));
     }
 
     
@@ -286,13 +300,11 @@ class DatePickerModal extends WidgetBuilder<DatePickerBloc,DatePickerState>{
     connectedCallback(){
         super.connectedCallback();
         setTimeout(()=>{
-            if(this.bloc){
-                let newState:DatePickerState={...this.bloc.state};
+            if(this.bloc && this.date){
                 let newDate = new Date();
                 newDate.setTime(this.date!);
-                newState.date=newDate.getDate();
-                newState.month=newDate.getMonth();
-                newState.year= newDate.getFullYear();
+                let newState:DatePickerState=this.bloc.convertDateToState(newDate);
+                this.bloc.isDirty=true;
                 this.bloc.emit(newState);
             }
         },200)
@@ -360,7 +372,7 @@ class DatePickerInput extends WidgetBuilder<DatePickerBloc,DatePickerState>{
            let t = BlocsProvider.of<HideBloc>("HideBloc",this);
            t?.toggle();
        }}>${(()=>{
-           if(!state) {
+           if(!state || !this.bloc?.isDirty) {
                return html`<lay-them in="row" ma="space-between" ca="center"><div style="color: #808080; padding: 0px 10px;">${this.bloc?.placeholder}</div><div style="padding: 0px 10px;"><ut-icon icon="today" use="icon_inactive: #a7a7a7;"></ut-icon></div></lay-them><slot></slot>`;
            }else{
                return html`<lay-them in="row" ma="space-between" ca="center"><div style="padding: 0px 10px;">${this.convert_sate_to_date_string(state)}</div><div style="padding: 0px 10px;"><ut-icon icon="today" ></ut-icon></div></lay-them><slot></slot>`;

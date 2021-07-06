@@ -49,7 +49,6 @@ export class MyFormBloc extends FormBloc{
             userChoice: true,
             priceRange: {start: 200, end:700},
             myCheckBox: "CheckBoxValue",
-            date: -1214298118060,
             areDisabled: new Set([])
         });
     }
