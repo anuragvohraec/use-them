@@ -123,7 +123,7 @@ abstract class SmartTabsWidgetBuilder<B extends SmartTabsBloc> extends WidgetBui
             <div class="tabs_bar">
                 ${tabs_bar}
             </div>
-            <div style="flex-grow:1">
+            <div style="flex-grow:1;height:0px;">
                 <ut-stb-gesture-detector>
                     ${tabContent}
                 </ut-stb-gesture-detector>
