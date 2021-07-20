@@ -295,6 +295,15 @@ class DatePickerModal extends WidgetBuilder<DatePickerBloc,DatePickerState>{
     }
     public set date(value: number | undefined) {
         this._date = value;
+        if(value){
+            let newDate = new Date();
+            newDate.setTime(this.date!);
+            if(this.bloc){
+                let newState:DatePickerState=this.bloc.convertDateToState(newDate);
+                this.bloc.isDirty=true;
+                this.bloc.emit(newState);
+            }
+        }
     }
 
     connectedCallback(){
