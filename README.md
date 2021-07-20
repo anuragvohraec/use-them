@@ -105,6 +105,9 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+###  "version":"8.0.3"
+1. Date picker bug fix: The form states were not reflecting correctly
+
 ### "version":"8.0.2"
 1. Upgraded `bloc-them` to 5.0.4
 
