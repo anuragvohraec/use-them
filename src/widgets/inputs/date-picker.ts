@@ -249,7 +249,7 @@ class _DatePickerModalBody extends WidgetBuilder<DatePickerBloc,DatePickerState>
                 .container{
                     display:grid;
                     font-family: monospace;
-                    grid-template-columns: auto auto auto auto;
+                    grid-template-columns: auto auto auto auto auto;
                     max-height: 300px;
                 }
                 .year{
@@ -258,11 +258,18 @@ class _DatePickerModalBody extends WidgetBuilder<DatePickerBloc,DatePickerState>
                     justify-content: center;
                     align-items: center;
                 }
+                .bold{
+                    font-weight: bold;
+                }
                 </style>
                 <lay-them in="column" ma="flex-start" ca="stretch">
                     <div class="container">
                         ${this.bloc?.year_list.map(d=>{
-                            return html`<div class="year" @click=${()=>{
+                            let c = "year";
+                            if(d%5 === 0){
+                                c+=" bold";
+                            }
+                            return html`<div class=${c} @click=${()=>{
                                 this.bloc?.select_year(d);
                             }}>${d}</div>`;
                         })}
