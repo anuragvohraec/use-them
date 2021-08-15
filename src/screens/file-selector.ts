@@ -1,5 +1,6 @@
 import { Bloc, BlocBuilderConfig, BlocsProvider } from "bloc-them";
 import { html, TemplateResult } from "lit-html";
+import { ifDefined } from "lit-html/directives/if-defined";
 import { IncomingRequest, InfoAboutAFile,PickedFileInfoForOutPut } from "../interfaces";
 import { BogusBloc, WidgetBuilder } from "../utils/blocs";
 import { Utils } from "../utils/utils";
@@ -374,7 +375,7 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                                 <label for="file-upload">
                                     <circular-icon-button use="icon:attach-file"></circular-icon-button>
                                 </label>
-                                <input id="file-upload" type="file" @change=${this.fileChanged} multiple accept=${this.picker_config.accept??"*/*"}  ?capture=${this.picker_config.capture}>
+                                <input id="file-upload" type="file" @change=${this.fileChanged} multiple accept=${this.picker_config.accept??"*/*"}  capture=${ifDefined(this.picker_config.capture)}>
                             </div>
                             <div>
                                 <circular-icon-button use="icon:done;" @click=${(e:Event)=>{  

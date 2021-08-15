@@ -107,6 +107,7 @@ Simple run `npm run start` to see the demo of the components of **use-them**.
 # Change release
 ###  "version":"8.0.4"
 1. Date picker enhancement: every five year in year selection view is bold now , to find year easier.
+2. Filepicker camera was always opening
 
 ###  "version":"8.0.3"
 1. Date picker bug fix: The form states were not reflecting correctly
