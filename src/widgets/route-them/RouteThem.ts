@@ -79,11 +79,6 @@ export class RouteThemBloc extends Bloc<RouteState>{
           oldState=this.initState;
         }
 
-        //this will pop up any overlay: which listens for OverlayBloc events
-        if(this.state?.overlay_id){
-            this.popOverlayStack(this.state.overlay_id);    
-        }
-
         //if the state has a confirmation message on stack than show confirmation message before pop up
         if(this.state?.data?.confirmation_message){
           let c = confirm(this.state?.data?.confirmation_message);
@@ -95,6 +90,12 @@ export class RouteThemBloc extends Bloc<RouteState>{
         }
         let stateForEmit = {...oldState};
         this.emit(stateForEmit);
+
+        //this will pop up any overlay: which listens for OverlayBloc events
+        if(this.state?.overlay_id){
+          this.popOverlayStack(this.state.overlay_id);
+        }
+
         return this.navHooks?.onPopHook(this.save_history,this.hostElement, stateForEmit);
       };
 

@@ -33,7 +33,9 @@ export class ScaffoldBloc extends Bloc<ScaffoldState>{
         if(this.overlayPageBloc && !this.overlayPageBlocListenerId){
             let t:any =(newState:OverlayStatus)=>{
                 if(newState && newState.overlay_id === SCAFFOLD_MENU_OVERLAY_ID && !newState.show){
-                    this.toggleMenu();
+                    if(this.state.showMenu){
+                        this.toggleMenu();
+                    }
                 }
             };
             t._ln_name=this._name;
@@ -50,11 +52,11 @@ export class ScaffoldBloc extends Bloc<ScaffoldState>{
         }
     }
 
-    toggleMenu() {
+    toggleMenu(pushOverlayStack:boolean=false) {
         navigator.vibrate(UseThemConfiguration.PRESS_VIB);
         let newState = { ...this.state };
         newState.showMenu = !newState.showMenu;
-        if(newState.showMenu){
+        if(newState.showMenu && pushOverlayStack){
             AppPageBloc.search<AppPageBloc>("AppPageBloc",this.hostElement)?.pushOverlayStack(SCAFFOLD_MENU_OVERLAY_ID);
         }
         this.emit(newState);
@@ -186,7 +188,7 @@ class MenuButton extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
     }
 
     toggleMenuBar=()=>{
-        setTimeout(()=>{this.bloc?.toggleMenu();},300);
+        setTimeout(()=>{this.bloc?.toggleMenu(true);},300);
         //@ts-ignore
         this.shadowRoot.querySelector("#animateTransform5322").beginElement();
     }
