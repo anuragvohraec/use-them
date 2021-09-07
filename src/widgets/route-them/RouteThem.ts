@@ -71,32 +71,35 @@ export class RouteThemBloc extends Bloc<RouteState>{
         throw `An app should have only one router which can control history. Some where in your code <${prev_bloc}> window.onpopstate function is already registered. And you are retrying again this in bloc ${this.name}!`;
       }
       let p = (e: PopStateEvent)=>{
-        //Vibrate on back button press
-        navigator.vibrate(UseThemConfiguration.PRESS_VIB);
-        
-        let oldState: RouteState = e.state;
-        if(!oldState){
-          oldState=this.initState;
-        }
-
-        //if the state has a confirmation message on stack than show confirmation message before pop up
-        if(this.state?.data?.confirmation_message){
-          let c = confirm(this.state?.data?.confirmation_message);
-          if(!c){
-            let url_path = this.state.url_path;
-            history.pushState(this.state,this._convertUrlToPath(url_path),Utils.build_path(window.location.origin,this._init_path!,url_path));
-            return;
+        try{
+          let oldState: RouteState = e.state;
+          if(!oldState){
+            oldState=this.initState;
           }
-        }
-        let stateForEmit = {...oldState};
-        this.emit(stateForEmit);
 
-        //this will pop up any overlay: which listens for OverlayBloc events
-        if(this.state?.overlay_id){
-          this.popOverlayStack(this.state.overlay_id);
-        }
+          //if the state has a confirmation message on stack than show confirmation message before pop up
+          if(this.state?.data?.confirmation_message){
+            let c = confirm(this.state?.data?.confirmation_message);
+            if(!c){
+              let url_path = this.state.url_path;
+              history.pushState(this.state,this._convertUrlToPath(url_path),Utils.build_path(window.location.origin,this._init_path!,url_path));
+              return;
+            }
+          }
+          let stateForEmit = {...oldState};
+          this.emit(stateForEmit);
 
-        return this.navHooks?.onPopHook(this.save_history,this.hostElement, stateForEmit);
+          //this will pop up any overlay: which listens for OverlayBloc events
+          if(this.state?.overlay_id){
+            this.popOverlayStack(this.state.overlay_id);
+          }
+
+          return this.navHooks?.onPopHook(this.save_history,this.hostElement, stateForEmit);
+        }finally{
+          //Vibrate on back button press
+          navigator.vibrate(UseThemConfiguration.PRESS_VIB);
+        }
+        
       };
 
       window.onpopstate = p;
@@ -117,22 +120,25 @@ export class RouteThemBloc extends Bloc<RouteState>{
   }
   
   goToPage(url_path: string, data?: any){
-    navigator.vibrate(UseThemConfiguration.PRESS_VIB);
-    let r = this._compass.find(url_path);
-    if(r){
-      let newRouteState: RouteState = {
-        url_path: url_path,
-        pathDirection: r,
-        data,
-      };
-      this.emit(newRouteState);
-      if(this.save_history){
-        let t = this._convertUrlToPath(url_path);
-        history.pushState(newRouteState,t,Utils.build_path(window.location.origin,this._init_path!,url_path));
+    try{
+      let r = this._compass.find(url_path);
+      if(r){
+        let newRouteState: RouteState = {
+          url_path: url_path,
+          pathDirection: r,
+          data,
+        };
+        this.emit(newRouteState);
+        if(this.save_history){
+          let t = this._convertUrlToPath(url_path);
+          history.pushState(newRouteState,t,Utils.build_path(window.location.origin,this._init_path!,url_path));
+        }
+        this.navHooks?.onGoToPageHook(this.save_history,this.hostElement,newRouteState);
+      }else{
+        console.log(`No route exists for path: ${url_path}`);
       }
-      this.navHooks?.onGoToPageHook(this.save_history,this.hostElement,newRouteState);
-    }else{
-      console.log(`No route exists for path: ${url_path}`);
+    }finally{
+      navigator.vibrate(UseThemConfiguration.PRESS_VIB);
     }
   }
 
