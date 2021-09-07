@@ -7,7 +7,7 @@ import { SingleLineInput, TextAreaInput } from './inputs/textinputs';
 import { CheckBox } from './inputs/checkbox';
 import { HideBloc } from './dialogues';
 import { BogusBloc, WidgetBuilder } from '../utils/blocs';
-import { html, TemplateResult } from 'lit-html';
+import { html, nothing, TemplateResult } from 'lit-html';
 import { InkWell } from './inkwell';
 import { RadioButtonsBuilder } from './inputs/radiobuttons';
 import {CreateSearchableSelector, SelectorBloc, SelectorWidget} from './selectors';
@@ -19,6 +19,7 @@ import { PickedFileInfoForOutPut } from '../interfaces';
 import { ConfirmationDialogue } from './confirmation-dialogue';
 import { QrCodeListenerBloc, QrCodeScannerConfig, QrResult } from './qr-code-scanner';
 import { SmartTabsBuilder } from './smart-tabs';
+import { GenerateVerticalTabs } from './vertical-tabs';
 
 
 export class MyFormBloc extends FormBloc{
@@ -551,5 +552,21 @@ SmartTabsBuilder.create({
     },
     onTabChangeCallBack:(id)=>{
         console.log("Tab changed: ",id);
+    }
+})
+
+GenerateVerticalTabs.create({
+    tag_name:"test-vertical-tabs",
+    tabs_name_icon:["name1","name2","name3","name4 with big title", "name5","name6","nam7"],
+    builder_function:(tab_name)=>{
+        switch(tab_name){
+            case "name1": return html`
+                <div>${tab_name}</div>
+            `;
+            default: return html`
+            <div>${tab_name}</div>
+            `;
+        }
+        return nothing as TemplateResult;
     }
 })

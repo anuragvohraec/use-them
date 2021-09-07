@@ -53,6 +53,11 @@ export class Theme{
     public icon_active=this.primaryColor;
     public icon_inactive="#919191";
     public icon_size="20px";
+
+    public vTab_inactiveColor="#dbdbdb";
+    public vTab_activeColor="#fafafa";
+    public vTab_active_icon_color=this.primaryColor;
+    public vTab_inactive_icon_color="#919191";
 }
 
 
