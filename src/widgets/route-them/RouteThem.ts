@@ -79,11 +79,9 @@ export class RouteThemBloc extends Bloc<RouteState>{
           oldState=this.initState;
         }
 
-        console.log("Calling pop overlayId: Before",this.state, oldState);
         //this will pop up any overlay: which listens for OverlayBloc events
         if(this.state?.overlay_id){
-            this.popOverlayStack(this.state.overlay_id); 
-            console.log("Calling pop overlayId: After");       
+            this.popOverlayStack(this.state.overlay_id);    
         }
 
         //if the state has a confirmation message on stack than show confirmation message before pop up
@@ -138,7 +136,6 @@ export class RouteThemBloc extends Bloc<RouteState>{
   }
 
   pushOverlayStack(overlay_id:string){
-    console.log("Push overlay called");
     let url_path = this.state.url_path;
     let data = this.state.data;
     if(!data){
@@ -150,7 +147,6 @@ export class RouteThemBloc extends Bloc<RouteState>{
   }
 
   private popOverlayStack(overlay_id:string){
-    console.log("pop overlay called");
     OverlayPageBloc.search<OverlayPageBloc>("OverlayPageBloc",this.hostElement)?.hide(overlay_id);
   }
 

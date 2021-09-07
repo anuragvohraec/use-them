@@ -28,15 +28,10 @@ export class ScaffoldBloc extends Bloc<ScaffoldState>{
 
     onConnection(ctx:HTMLElement){
         super.onConnection(ctx);
-        console.log("onConection called");
-        
         //listen for OverlayBloc events
         this.overlayPageBloc = OverlayPageBloc.search<OverlayPageBloc>("OverlayPageBloc",ctx);
         if(this.overlayPageBloc && !this.overlayPageBlocListenerId){
-            console.log("listenining for overlay pgae bloc");
             let t:any =(newState:OverlayStatus)=>{
-                console.log("new state for overlay status");
-                
                 if(newState && newState.overlay_id === SCAFFOLD_MENU_OVERLAY_ID && !newState.show){
                     this.toggleMenu();
                 }
@@ -49,7 +44,6 @@ export class ScaffoldBloc extends Bloc<ScaffoldState>{
     }
 
     onDisconnection(){
-        console.log("stop listenining for overlay pgae bloc");
         //stop listening to overlay bloc events
         if(this.overlayPageBloc && this.overlayPageBlocListenerId){
             this.overlayPageBloc._stopListening(this.overlayPageBlocListenerId);
@@ -94,7 +88,8 @@ export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
     }
 
     toggleMenuBar=()=>{
-        this.bloc?.toggleMenu();
+        // this.bloc?.toggleMenu();
+        AppPageBloc.search<AppPageBloc>("AppPageBloc",this)?.popOutOfCurrentPage();
     }
 
     builder(state: ScaffoldState): TemplateResult {
