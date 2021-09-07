@@ -6,7 +6,6 @@ import resolve from '@rollup/plugin-node-resolve';
 export default [{
   input: './index.ts',
   output: {
-    sourcemap: true,
     dir: 'dist',
     paths:{
         "lit-html": "/js/lit-html/lit-html.js",
@@ -25,7 +24,7 @@ export default [{
   output: {
     dir: 'dist'
   },
-  plugins: [typescript({ sourceMap: false , inlineSources: false}),resolve({
+  plugins: [typescript(),resolve({
     browser:true
   }),terser({ format: { comments: false } })]
 }];
