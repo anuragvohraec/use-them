@@ -4,11 +4,13 @@ import { Compass, PathDirection} from './compass';
 import {unsafeHTML} from 'lit-html/directives/unsafe-html';
 import {Utils} from '../../utils/utils';
 import { UseThemConfiguration } from '../../configs';
+import { OverlayPageBloc } from './overlays';
 
 export interface RouteState{
   url_path: string;
   pathDirection: PathDirection;
   data?: any;
+  overlay_id?:string;
 }
 
 export abstract class RouteThemNavigationHookBloc extends Bloc<number>{
@@ -69,7 +71,7 @@ export class RouteThemBloc extends Bloc<RouteState>{
         throw `An app should have only one router which can control history. Some where in your code <${prev_bloc}> window.onpopstate function is already registered. And you are retrying again this in bloc ${this.name}!`;
       }
       let p = (e: PopStateEvent)=>{
-        
+        //Vibrate on back button press
         navigator.vibrate(UseThemConfiguration.PRESS_VIB);
         
         let oldState: RouteState = e.state;
@@ -77,6 +79,14 @@ export class RouteThemBloc extends Bloc<RouteState>{
           oldState=this.initState;
         }
 
+        console.log("Calling pop overlayId: Before",this.state, oldState);
+        //this will pop up any overlay: which listens for OverlayBloc events
+        if(this.state?.overlay_id){
+            this.popOverlayStack(this.state.overlay_id); 
+            console.log("Calling pop overlayId: After");       
+        }
+
+        //if the state has a confirmation message on stack than show confirmation message before pop up
         if(this.state?.data?.confirmation_message){
           let c = confirm(this.state?.data?.confirmation_message);
           if(!c){
@@ -125,6 +135,23 @@ export class RouteThemBloc extends Bloc<RouteState>{
     }else{
       console.log(`No route exists for path: ${url_path}`);
     }
+  }
+
+  pushOverlayStack(overlay_id:string){
+    console.log("Push overlay called");
+    let url_path = this.state.url_path;
+    let data = this.state.data;
+    if(!data){
+      data = this.initState;
+    }
+    data.overlay_id=overlay_id;
+    let t = this._convertUrlToPath(url_path);
+    history.pushState(data,t,Utils.build_path(window.location.origin,this._init_path!,url_path));
+  }
+
+  private popOverlayStack(overlay_id:string){
+    console.log("pop overlay called");
+    OverlayPageBloc.search<OverlayPageBloc>("OverlayPageBloc",this.hostElement)?.hide(overlay_id);
   }
 
   _goToPageDoNotSaveHistory(url_path: string,data?: any){
@@ -290,7 +317,8 @@ export class AppPageBloc extends RouteThemBloc{
 export class AppPageController extends BlocsProvider{
   constructor(){
     super({
-      AppPageBloc: new AppPageBloc()
+      AppPageBloc: new AppPageBloc(),
+      OverlayPageBloc: new OverlayPageBloc()
     })
   }
 

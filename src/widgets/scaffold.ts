@@ -2,6 +2,8 @@ import { Bloc } from 'bloc-them';
 import { TemplateResult, html } from 'lit-html';
 import { UseThemConfiguration } from '../configs';
 import { WidgetBuilder } from '../utils/blocs';
+import { OverlayPageBloc, OverlayStatus } from './route-them/overlays';
+import { AppPageBloc } from './route-them/RouteThem';
 
 export interface ScaffoldState {
     showMenu: boolean;
@@ -9,8 +11,13 @@ export interface ScaffoldState {
     snackBarMessage?: string;
 }
 
+const SCAFFOLD_MENU_OVERLAY_ID="scaffold_menu";
+
 export class ScaffoldBloc extends Bloc<ScaffoldState>{
     protected _name: string="ScaffoldBloc";
+
+    private overlayPageBloc?:OverlayPageBloc;
+    private overlayPageBlocListenerId?:string;
 
     constructor() {
         super({
@@ -19,10 +26,43 @@ export class ScaffoldBloc extends Bloc<ScaffoldState>{
         });
     }
 
+    onConnection(ctx:HTMLElement){
+        super.onConnection(ctx);
+        console.log("onConection called");
+        
+        //listen for OverlayBloc events
+        this.overlayPageBloc = OverlayPageBloc.search<OverlayPageBloc>("OverlayPageBloc",ctx);
+        if(this.overlayPageBloc && !this.overlayPageBlocListenerId){
+            console.log("listenining for overlay pgae bloc");
+            let t:any =(newState:OverlayStatus)=>{
+                console.log("new state for overlay status");
+                
+                if(newState && newState.overlay_id === SCAFFOLD_MENU_OVERLAY_ID && !newState.show){
+                    this.toggleMenu();
+                }
+            };
+            t._ln_name=this._name;
+            this.overlayPageBlocListenerId = this.overlayPageBloc._listen(t);
+        }else{
+            console.log("No Overlay Page Bloc found");
+        }
+    }
+
+    onDisconnection(){
+        console.log("stop listenining for overlay pgae bloc");
+        //stop listening to overlay bloc events
+        if(this.overlayPageBloc && this.overlayPageBlocListenerId){
+            this.overlayPageBloc._stopListening(this.overlayPageBlocListenerId);
+        }
+    }
+
     toggleMenu() {
         navigator.vibrate(UseThemConfiguration.PRESS_VIB);
         let newState = { ...this.state };
         newState.showMenu = !newState.showMenu;
+        if(newState.showMenu){
+            AppPageBloc.search<AppPageBloc>("AppPageBloc",this.hostElement)?.pushOverlayStack(SCAFFOLD_MENU_OVERLAY_ID);
+        }
         this.emit(newState);
     }
 
