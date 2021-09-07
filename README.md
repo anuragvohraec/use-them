@@ -105,6 +105,11 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version": "9.0.0"
+1. Vertical tabs: GenerateVerticalTabs.create function to create vertical tabs
+2. Bug fix: range selector was giving negative value or out of range values
+3. pop ups like dialogue, confirmation dialogue, scaffold menu layover, can be closed by pressing back button : Experimental and hence made this version 9.0.0
+
 ### "version": "8.0.6"
 1. Upgraded bloc-them
 
