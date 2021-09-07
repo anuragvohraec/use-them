@@ -56,25 +56,30 @@ export class GenerateVerticalTabs{
                     .tab-body{
                         flex:1;
                     }
+                    .tab-headers{
+                        height:100%;
+                    }
                 </style>
-                <lay-them in="row" ca="flex-start" ma="stretch">
+                <lay-them in="row" ma="flex-start" ca="stretch">
                         <div class="tab-body">
                             ${config.builder_function(state)}
                         </div>
                         <div class="tab-headers">
-                            ${repeat(config.tabs_name_icon,(i)=>i,(item, index)=>{
-                                return html`
-                                <ink-well tab_name=${item}  @click=${this.goToTab}>
-                                    <div class=${state===item?"tab selected":"tab"}>
-                                        <div>
-                                            <ut-icon icon=${item} use="icon_inactive:${state===item?this.theme.vTab_active_icon_color:this.theme.vTab_inactive_icon_color};"></ut-icon>
+                            <lay-them in="column" ma="flex-start">
+                                ${repeat(config.tabs_name_icon,(i)=>i,(item, index)=>{
+                                    return html`
+                                    <ink-well tab_name=${item}  @click=${this.goToTab}>
+                                        <div class=${state===item?"tab selected":"tab"}>
+                                            <div>
+                                                <ut-icon icon=${item} use="icon_inactive:${state===item?this.theme.vTab_active_icon_color:this.theme.vTab_inactive_icon_color};"></ut-icon>
+                                            </div>
+                                            <div class="vtxt">
+                                                ${item.toUpperCase()}
+                                            </div>
                                         </div>
-                                        <div class="vtxt">
-                                            ${item.toUpperCase()}
-                                        </div>
-                                    </div>
-                                </ink-well>`;
-                            })}
+                                    </ink-well>`;
+                                })}
+                            </lay-them>
                         </div>
                 </lay-them>`;
             }
