@@ -43,8 +43,9 @@ export class GenerateVerticalTabs{
                 return html`
                 <style>
                     .vtxt{
-                        writing-mode: vertical-lr;
-                        text-orientation: upright;
+                        /* writing-mode: vertical-lr;
+                        text-orientation: upright; */
+                        writing-mode: vertical-rl;text-orientation: mixed;
                     }
                     .tab{
                        padding: 10px;
