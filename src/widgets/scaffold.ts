@@ -40,8 +40,6 @@ export class ScaffoldBloc extends Bloc<ScaffoldState>{
             };
             t._ln_name=this._name;
             this.overlayPageBlocListenerId = this.overlayPageBloc._listen(t);
-        }else{
-            console.log("No Overlay Page Bloc found");
         }
     }
 
