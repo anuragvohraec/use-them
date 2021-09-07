@@ -11,13 +11,8 @@ export interface ScaffoldState {
     snackBarMessage?: string;
 }
 
-const SCAFFOLD_MENU_OVERLAY_ID="scaffold_menu";
-
 export class ScaffoldBloc extends Bloc<ScaffoldState>{
     protected _name: string="ScaffoldBloc";
-
-    private overlayPageBloc?:OverlayPageBloc;
-    private overlayPageBlocListenerId?:string;
 
     constructor() {
         super({
@@ -26,13 +21,18 @@ export class ScaffoldBloc extends Bloc<ScaffoldState>{
         });
     }
 
+
+    private overlayPageBloc?:OverlayPageBloc;
+    private overlayPageBlocListenerId?:string;
+
+
     onConnection(ctx:HTMLElement){
         super.onConnection(ctx);
         //listen for OverlayBloc events
         this.overlayPageBloc = OverlayPageBloc.search<OverlayPageBloc>("OverlayPageBloc",ctx);
         if(this.overlayPageBloc && !this.overlayPageBlocListenerId){
             let t:any =(newState:OverlayStatus)=>{
-                if(newState && newState.overlay_id === SCAFFOLD_MENU_OVERLAY_ID && !newState.show){
+                if(newState && newState.overlay_id === this._name && !newState.show){
                     if(this.state.showMenu){
                         this.toggleMenu();
                     }
@@ -55,7 +55,7 @@ export class ScaffoldBloc extends Bloc<ScaffoldState>{
         let newState = { ...this.state };
         newState.showMenu = !newState.showMenu;
         if(newState.showMenu && pushOverlayStack){
-            AppPageBloc.search<AppPageBloc>("AppPageBloc",this.hostElement)?.pushOverlayStack(SCAFFOLD_MENU_OVERLAY_ID);
+            AppPageBloc.search<AppPageBloc>("AppPageBloc",this.hostElement)?.pushOverlayStack(this._name);
         }
         this.emit(newState);
     }
