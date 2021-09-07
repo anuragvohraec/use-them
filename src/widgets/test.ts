@@ -47,7 +47,7 @@ export class MyFormBloc extends FormBloc{
     constructor(){
         super({
             userChoice: true,
-            priceRange: {start: 200, end:700},
+            priceRange: {start: 0  , end:2},
             myCheckBox: "CheckBoxValue",
             date: -1214298118060,
             areDisabled: new Set([])

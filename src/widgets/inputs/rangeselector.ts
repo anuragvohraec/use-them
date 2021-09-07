@@ -175,6 +175,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
        id="start-handle"
        cy="25"
        r="${this.handleRadius}"
+       @click=${this.hasTouched}
        @touchstart=${this._drag_ON}
        @touchend=${this._drag_OFF}
        @touchmove=${this._start_dragHandler}
@@ -184,6 +185,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
        id="end-handle"
        cy="25"
        r="${this.handleRadius}"
+       @click=${this.hasTouched}
        @touchstart=${this._drag_ON}
        @touchend=${this._drag_OFF}
        @touchmove=${this._end_dragHandler}/>
@@ -197,8 +199,12 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
         `;
     }
 
-    _drag_ON= (e:TouchEvent)=>{
+    
+    hasTouched=(e:Event)=>{
       navigator.vibrate(UseThemConfiguration.PRESS_VIB);
+    }
+
+    _drag_ON= (e:TouchEvent)=>{
      this.isDraging=true;
    }
 
@@ -265,6 +271,9 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
       if(this.isint){
          en = Math.floor(en);
          st = Math.floor(st);
+      }
+      if(st<this.min){
+         st=this.min;
       }
       this.value = {start: st, end:en};
       this.hasChanged!(this.value);
