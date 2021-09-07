@@ -60,29 +60,36 @@ export class GenerateVerticalTabs{
                     .tab-headers{
                         height:100%;
                     }
+                    .filler{
+                        flex:1;
+                        background: ${this.theme.vTab_inactiveColor};
+                    }
                 </style>
-                <lay-them in="row" ma="flex-start" ca="stretch">
-                        <div class="tab-body">
-                            ${config.builder_function(state)}
-                        </div>
-                        <div class="tab-headers">
-                            <lay-them in="column" ma="flex-start">
-                                ${repeat(config.tabs_name_icon,(i)=>i,(item, index)=>{
-                                    return html`
-                                    <ink-well tab_name=${item}  @click=${this.goToTab}>
-                                        <div class=${state===item?"tab selected":"tab"}>
-                                            <div>
-                                                <ut-icon icon=${item} use="icon_inactive:${state===item?this.theme.vTab_active_icon_color:this.theme.vTab_inactive_icon_color};"></ut-icon>
+                <div style="width:100%l;height:100%;">
+                    <lay-them in="row" ma="flex-start" ca="stretch">
+                            <div class="tab-body">
+                                ${config.builder_function(state)}
+                            </div>
+                            <div class="tab-headers">
+                                <lay-them in="column" ma="flex-start">
+                                    ${repeat(config.tabs_name_icon,(i)=>i,(item, index)=>{
+                                        return html`
+                                        <ink-well tab_name=${item}  @click=${this.goToTab}>
+                                            <div class=${state===item?"tab selected":"tab"}>
+                                                <div>
+                                                    <ut-icon icon=${item} use="icon_inactive:${state===item?this.theme.vTab_active_icon_color:this.theme.vTab_inactive_icon_color};"></ut-icon>
+                                                </div>
+                                                <div class="vtxt">
+                                                    ${item.toUpperCase()}
+                                                </div>
                                             </div>
-                                            <div class="vtxt">
-                                                ${item.toUpperCase()}
-                                            </div>
-                                        </div>
-                                    </ink-well>`;
-                                })}
-                            </lay-them>
-                        </div>
-                </lay-them>`;
+                                        </ink-well>`;
+                                    })}
+                                    <div class="filler"></div>
+                                </lay-them>
+                            </div>
+                    </lay-them>
+                </div>`;
             }
         }
         customElements.define(config.tag_name,TabsWidget);

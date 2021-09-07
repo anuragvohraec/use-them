@@ -557,7 +557,7 @@ SmartTabsBuilder.create({
 
 GenerateVerticalTabs.create({
     tag_name:"test-vertical-tabs",
-    tabs_name_icon:["search","name2","name3","name4 with big title", "name5","name6","nam7"],
+    tabs_name_icon:["search","name2"],
     builder_function:(tab_name)=>{
         switch(tab_name){
             case "name1": return html`
