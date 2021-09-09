@@ -143,8 +143,6 @@ export class RouteThemBloc extends Bloc<RouteState>{
   }
 
   pushOverlayStack(overlay_id:string){
-    console.log("Pushing :",overlay_id);
-    
     let url_path = this.state.url_path;
     let newRouteState= this.state;
     if(!newRouteState){
@@ -155,17 +153,11 @@ export class RouteThemBloc extends Bloc<RouteState>{
     }
     newRouteState.data.overlay_id=overlay_id;
 
-    // let data = this.state.data;
-    // if(!data){
-    //   data = this.initState.data;
-    // }
-    // data.overlay_id=overlay_id;
     let t = this._convertUrlToPath(url_path);
     history.pushState(newRouteState,t,Utils.build_path(window.location.origin,this._init_path!,url_path));
   }
 
   private popOverlayStack(overlay_id:string){
-    console.log("Popping :",overlay_id);
     OverlayPageBloc.search<OverlayPageBloc>("OverlayPageBloc",this.hostElement)?.hide(overlay_id);
     if(this.state?.data?.overlay_id){
       delete this.state.data.overlay_id;

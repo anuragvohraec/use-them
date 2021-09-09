@@ -405,7 +405,7 @@ export class DatePicker<F extends FormBloc> extends WidgetBuilder<F,FormState>{
     constructor(private formInputConfig:InputBuilderConfig,datePickerConfig: DatePickerConfig){
         super(formInputConfig.bloc_name,{
             blocs_map:{
-                HideBloc: new HideBloc(),
+                HideBloc: new HideBloc(true,`date_picker_${formInputConfig.name}`),
                 DatePickerBloc: new DatePickerBloc(datePickerConfig)
             }
         })
