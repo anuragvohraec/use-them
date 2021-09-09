@@ -17,8 +17,10 @@ export class HideBloc extends Bloc<boolean>{
 
     toggle(){
         this.emit(!this.state);
-        if(this.overlay_id && !this.state){
-            AppPageBloc.search<AppPageBloc>("AppPageBloc",this.hostElement)?.pushOverlayStack(this.overlay_id);
+        if(this.overlay_id){
+            if(!this.state){
+                AppPageBloc.search<AppPageBloc>("AppPageBloc",this.hostElement)?.pushOverlayStack(this.overlay_id);
+            }
         }
     }
 

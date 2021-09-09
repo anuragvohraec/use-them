@@ -91,6 +91,7 @@ export class RouteThemBloc extends Bloc<RouteState>{
           //this will pop up any overlay: which listens for OverlayBloc events
           if(this.state?.data?.overlay_id){
             this.popOverlayStack(this.state.data.overlay_id);
+            delete stateForEmit.data?.overlay_id;
           }
 
           return this.navHooks?.onPopHook(this.save_history,this.hostElement, stateForEmit);
@@ -142,6 +143,8 @@ export class RouteThemBloc extends Bloc<RouteState>{
   }
 
   pushOverlayStack(overlay_id:string){
+    console.log("Pushing :",overlay_id);
+    
     let url_path = this.state.url_path;
     let newRouteState= this.state;
     if(!newRouteState){
@@ -162,7 +165,11 @@ export class RouteThemBloc extends Bloc<RouteState>{
   }
 
   private popOverlayStack(overlay_id:string){
+    console.log("Popping :",overlay_id);
     OverlayPageBloc.search<OverlayPageBloc>("OverlayPageBloc",this.hostElement)?.hide(overlay_id);
+    if(this.state?.data?.overlay_id){
+      delete this.state.data.overlay_id;
+    }
   }
 
   _goToPageDoNotSaveHistory(url_path: string,data?: any){
