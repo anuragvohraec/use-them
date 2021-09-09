@@ -143,13 +143,22 @@ export class RouteThemBloc extends Bloc<RouteState>{
 
   pushOverlayStack(overlay_id:string){
     let url_path = this.state.url_path;
-    let data = this.state.data;
-    if(!data){
-      data = this.initState.data;
+    let newRouteState= this.state;
+    if(!newRouteState){
+      newRouteState = this.initState;
     }
-    data.overlay_id=overlay_id;
+    if(!newRouteState.data){
+      newRouteState.data={};
+    }
+    newRouteState.data.overlay_id=overlay_id;
+
+    // let data = this.state.data;
+    // if(!data){
+    //   data = this.initState.data;
+    // }
+    // data.overlay_id=overlay_id;
     let t = this._convertUrlToPath(url_path);
-    history.pushState(data,t,Utils.build_path(window.location.origin,this._init_path!,url_path));
+    history.pushState(newRouteState,t,Utils.build_path(window.location.origin,this._init_path!,url_path));
   }
 
   private popOverlayStack(overlay_id:string){
