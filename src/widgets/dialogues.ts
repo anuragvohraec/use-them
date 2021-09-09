@@ -11,14 +11,14 @@ import { AppPageBloc } from "./route-them/RouteThem";
 export class HideBloc extends Bloc<boolean>{
     protected _name: string="HideBloc";
 
-    constructor(initState:boolean=true,private pushOnStackFeature:boolean=false){
+    constructor(initState:boolean=true,private overlay_id?:string){
         super(initState);
     }
 
     toggle(){
         this.emit(!this.state);
-        if(this.state===false){
-            AppPageBloc.search<AppPageBloc>("AppPageBloc",this.hostElement)?.pushOverlayStack(this._name);
+        if(this.overlay_id && !this.state){
+            AppPageBloc.search<AppPageBloc>("AppPageBloc",this.hostElement)?.pushOverlayStack(this.overlay_id);
         }
     }
 
@@ -29,24 +29,31 @@ export class HideBloc extends Bloc<boolean>{
 
     onConnection(ctx:HTMLElement){
         super.onConnection(ctx);
-        //listen for OverlayBloc events
-        this.overlayPageBloc = OverlayPageBloc.search<OverlayPageBloc>("OverlayPageBloc",ctx);
-        if(this.overlayPageBloc && !this.overlayPageBlocListenerId){
-            let t:any =(newState:OverlayStatus)=>{
-                if(newState && newState.overlay_id === this._name && !newState.show){
-                    if(!this.state){
-                        this.toggle();
+        console.log("Connected");
+        
+        if(this.overlay_id){
+            //listen for OverlayBloc events
+            this.overlayPageBloc = OverlayPageBloc.search<OverlayPageBloc>("OverlayPageBloc",ctx);
+            if(this.overlayPageBloc){
+                let t:any =(newState:OverlayStatus)=>{
+                    console.log("Got new overlay state", newState);
+                    
+                    if(newState && newState.overlay_id === this.overlay_id && !newState.show){
+                        if(!this.state){
+                            this.toggle();
+                        }
                     }
-                }
-            };
-            t._ln_name=this._name;
-            this.overlayPageBlocListenerId = this.overlayPageBloc._listen(t);
+                };
+                t._ln_name=this._name;
+                this.overlayPageBlocListenerId = this.overlayPageBloc._listen(t);
+            }
         }
     }
 
     onDisconnection(){
+        console.log("DisConnected");
         //stop listening to overlay bloc events
-        if(this.overlayPageBloc && this.overlayPageBlocListenerId){
+        if(this.overlay_id && this.overlayPageBloc && this.overlayPageBlocListenerId){
             this.overlayPageBloc._stopListening(this.overlayPageBlocListenerId);
         }
     }

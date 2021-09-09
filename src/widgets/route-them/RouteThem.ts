@@ -162,6 +162,8 @@ export class RouteThemBloc extends Bloc<RouteState>{
   }
 
   private popOverlayStack(overlay_id:string){
+    console.log("Poppping out: ", overlay_id);
+    
     OverlayPageBloc.search<OverlayPageBloc>("OverlayPageBloc",this.hostElement)?.hide(overlay_id);
   }
 

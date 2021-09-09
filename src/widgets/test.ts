@@ -413,7 +413,7 @@ class ShowUserConfirmationButton extends RaisedButton<HideBloc,boolean>{
     constructor(){
         super("HideBloc",{
             blocs_map: {
-                HideBloc: new HideBloc()
+                HideBloc: new HideBloc(true,"confirmation_box1")
             }
         })
     }
