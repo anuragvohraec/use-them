@@ -16,11 +16,15 @@ export class HideBloc extends Bloc<boolean>{
     }
 
     toggle(){
-        this.emit(!this.state);
         if(this.overlay_id){
-            if(!this.state){
+            if(this.state){
+                this.emit(false);
                 AppPageBloc.search<AppPageBloc>("AppPageBloc",this.hostElement)?.pushOverlayStack(this.overlay_id);
+            }else{
+                AppPageBloc.search<AppPageBloc>("AppPageBloc",this.hostElement)?.popOutOfCurrentPage();
             }
+        }else{
+            this.emit(!this.state);
         }
     }
 
@@ -38,7 +42,7 @@ export class HideBloc extends Bloc<boolean>{
                 let t:any =(newState:OverlayStatus)=>{
                     if(newState && newState.overlay_id === this.overlay_id && !newState.show){
                         if(!this.state){
-                            this.toggle();
+                            this.emit(true);
                         }
                     }
                 };
