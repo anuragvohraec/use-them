@@ -41,4 +41,4 @@ export * from './widgets/vertical-tabs.js';
 
 export * from './utils/makers/form-input-maker.js';
 
-//export * from './widgets/test.js';
+export * from './widgets/test.js';

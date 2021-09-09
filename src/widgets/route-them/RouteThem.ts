@@ -10,7 +10,6 @@ export interface RouteState{
   url_path: string;
   pathDirection: PathDirection;
   data?: any;
-  overlay_id?:string;
 }
 
 export abstract class RouteThemNavigationHookBloc extends Bloc<number>{
@@ -45,7 +44,7 @@ export interface PopStateFunction{
 export class RouteThemBloc extends Bloc<RouteState>{
 
   protected _name: string="RouteThemBloc";
-  public static INIT_STATE:RouteState = {url_path:"/", pathDirection: { path_params: {}, matched_pattern: "/", parent_matches: [] }}
+  public static INIT_STATE:RouteState = {url_path:"/", pathDirection: { path_params: {}, matched_pattern: "/", parent_matches: [] },data:{}}
   private _compass: Compass = new Compass();
   private _init_path?: string;
 
@@ -90,8 +89,8 @@ export class RouteThemBloc extends Bloc<RouteState>{
           this.emit(stateForEmit);
 
           //this will pop up any overlay: which listens for OverlayBloc events
-          if(this.state?.overlay_id){
-            this.popOverlayStack(this.state.overlay_id);
+          if(this.state?.data?.overlay_id){
+            this.popOverlayStack(this.state.data.overlay_id);
           }
 
           return this.navHooks?.onPopHook(this.save_history,this.hostElement, stateForEmit);
@@ -146,7 +145,7 @@ export class RouteThemBloc extends Bloc<RouteState>{
     let url_path = this.state.url_path;
     let data = this.state.data;
     if(!data){
-      data = this.initState;
+      data = this.initState.data;
     }
     data.overlay_id=overlay_id;
     let t = this._convertUrlToPath(url_path);
