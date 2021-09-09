@@ -29,15 +29,11 @@ export class HideBloc extends Bloc<boolean>{
 
     onConnection(ctx:HTMLElement){
         super.onConnection(ctx);
-        console.log("Connected");
-        
         if(this.overlay_id){
             //listen for OverlayBloc events
             this.overlayPageBloc = OverlayPageBloc.search<OverlayPageBloc>("OverlayPageBloc",ctx);
             if(this.overlayPageBloc){
                 let t:any =(newState:OverlayStatus)=>{
-                    console.log("Got new overlay state", newState);
-                    
                     if(newState && newState.overlay_id === this.overlay_id && !newState.show){
                         if(!this.state){
                             this.toggle();
@@ -51,7 +47,6 @@ export class HideBloc extends Bloc<boolean>{
     }
 
     onDisconnection(){
-        console.log("DisConnected");
         //stop listening to overlay bloc events
         if(this.overlay_id && this.overlayPageBloc && this.overlayPageBlocListenerId){
             this.overlayPageBloc._stopListening(this.overlayPageBlocListenerId);
