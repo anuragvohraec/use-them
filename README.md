@@ -105,6 +105,9 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version": "9.0.2"
+1. Bug fix: Backable screen was creating in correct history stack. Due to an issue in bloc-them lib. Fixed and upgraded bloc-them
+
 ### "version": "9.0.1"
 1. Bug fix back button on dialogue was not behaving as intended. The history stack was not clearing up properly. Fixed it. Now if you wanted a pop which uses HideBloc 
 to be manged by Page back button, then you need to pass an `overlay_id:string` parameter to HideBloc constructor. This overlay_id can be any string.

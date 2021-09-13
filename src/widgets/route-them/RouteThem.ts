@@ -155,6 +155,7 @@ export class RouteThemBloc extends Bloc<RouteState>{
 
     let t = this._convertUrlToPath(url_path);
     history.pushState(newRouteState,t,Utils.build_path(window.location.origin,this._init_path!,url_path));
+    this.emit(newRouteState);
   }
 
   private popOverlayStack(overlay_id:string){
