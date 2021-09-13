@@ -1,7 +1,7 @@
 import { BlocsProvider } from 'bloc-them';
 import { html, render, TemplateResult } from 'lit-html';
 import { APage, RouteState, RouteThem, RouteThemBloc } from '../widgets/route-them/RouteThem';
-import { WidgetBuilder } from '../utils/blocs';
+import { BogusBloc, WidgetBuilder } from '../utils/blocs';
 import { GestureDetector } from './gesturedetector';
 
 
@@ -156,13 +156,15 @@ class _TabsGestureDetector extends GestureDetector{
 
 customElements.define("tabs-gesture-detector", _TabsGestureDetector);
 
-export class TabController extends BlocsProvider{
+export class TabController extends WidgetBuilder<BogusBloc,number>{
     
     private _headers?: TemplateResult;
 
     constructor(){
-        super({
-            TabRouterBloc: new TabRouterBloc()
+        super("BogusBloc",{
+            blocs_map:{
+                TabRouterBloc: new TabRouterBloc()
+            }
         })
     }
 
@@ -213,12 +215,17 @@ export class TabController extends BlocsProvider{
         }
     }
 
-    builder(): TemplateResult {
+    builder(state:number): TemplateResult {
         return html`
         <style>
             .headers{
-                height: 50px;
-                width: 100%;
+                height: ${this.theme.tab_header_height};
+                width: auto;
+                margin: ${this.theme.tab_header_margin};
+                border-radius: ${this.theme.tab_header_border_radius};
+                overflow: ${this.theme.tab_header_overflow};
+                box-shadow: ${this.theme.tab_header_bar_shadow};
+                z-index: ${this.theme.tab_header_zIndex};
             }
             .icon{
                 flex: 1;

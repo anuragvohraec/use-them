@@ -85,7 +85,7 @@ export abstract class ConfirmationDialogue extends WidgetBuilder<HideBloc,boolea
                 .cont{
                     background-color: white;
                     max-width: 300px;
-                    border-radius: 4px;
+                    border-radius: ${this.theme.confirmation_dialogue_border_radius};
                     overflow: hidden;
                     box-shadow: 0px 0px 4px;
                 }
@@ -102,7 +102,7 @@ export abstract class ConfirmationDialogue extends WidgetBuilder<HideBloc,boolea
                     <lay-them ma="center" ca="center">
                         <div class="cont">
                             <lay-them in="column" ma="flex-start" ca="stretch">
-                                <div style="padding: 10px;color:white;font-size:${this.theme.H2_font_size};background-color:${this.theme.primaryColor};">${this.confirmationInfo?.title}</div>
+                                <div style="padding: 10px;color:white;font-size:${this.theme.H2_font_size};background-color:${this.theme.primaryColor};background-image:${this.theme.confirmation_dialogue_title_bar_image};">${this.confirmationInfo?.title}</div>
                                 <div style="padding: 10px;">${unsafeHTML(this.confirmationInfo?.msg)}</div>
                                 <slot></slot>
                                 ${this.confirmationInfo.user_comments_msg? html`<div style="padding: 10px;">

@@ -106,7 +106,7 @@ export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
                 height:100%; 
             }
             .glass{
-                background-color: ${this.theme.glass_black};
+                background-color: ${this.theme.scaffold_menu_glass_color};
             }
             .snack-bar{
                 background-color: ${this.theme.snack_bar_bg};position: fixed; bottom: 50px; padding:10px 20px; max-width: 90%; color: white;
@@ -118,9 +118,9 @@ export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
             <lay-them for="base of scaffold">
                 <div class="appbar">
                     <lay-them in="stack">
-                        <div style="height: 60px; position: fixed; width: 100%; box-shadow: 0px 0px 4px black;">
+                        <div style="height: 60px; position: fixed; width: 100%; box-shadow: ${this.theme.scaffold_title_background_shadow};">
                             <slot name="appbar-bg">
-                                <svg version="1.1" viewBox="0 0 100 100" preserveAspectRatio="none" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                <svg style="display: ${this.theme.scaffold_title_bar_default_background_display};" version="1.1" viewBox="0 0 100 100" preserveAspectRatio="none" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                                     <defs>
                                         <linearGradient id="linearGradient850" x1="-28.773" x2="119.68" y1="53.936" y2="50.846" gradientUnits="userSpaceOnUse">
                                             <stop stop-color="${this.theme.secondaryColor}" offset="0"></stop>
@@ -148,7 +148,7 @@ export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
                 </div>
             </lay-them>
         </div>
-        <div class="expanded glass" style="z-index: 10000;display: ${(()=>{
+        <div class="expanded glass" style="z-index: 10000;backdrop-filter: blur(4px);display: ${(()=>{
             if(state.showMenu){
                 return "block";
             }else{
@@ -156,7 +156,7 @@ export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
             }
         })()};">
             <lay-them in="row" ca="stretch" ma="flex-start">
-                <div style="background-color: white; flex: 2 1 auto; max-width: 250px; box-shadow: 0px 0px 30px black;">
+                <div style="background-color: white; flex: 2 1 auto; max-width: 250px; box-shadow: ${this.theme.scaffold_menu_shadow};">
                     <slot name="menu"></slot>
                 </div>
                 <div style="flex: 1 1 auto;" @click=${this.toggleMenuBar}></div>
@@ -193,6 +193,7 @@ class MenuButton extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
 
     builder(state: ScaffoldState): TemplateResult {
         return html`<svg
+        style="fill:${this.theme.scaffold_menu_icon_color};"
         width="10mm"
         height="10mm"
         viewBox="0 0 25 25"
@@ -206,21 +207,21 @@ class MenuButton extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
             transform="translate(-1.5748032e-7,1.4999999)"
             onclick="">
             <rect
-            style="fill:${this.theme.iconColor};stroke-width:1.92378;stroke-linejoin:round;stroke-opacity:0.658819"
+            style="stroke-width:1.92378;stroke-linejoin:round;stroke-opacity:0.658819"
             id="rect835"
             width="15"
             height="2"
             x="5"
             y="5" />
             <rect
-            style="fill:${this.theme.iconColor};stroke-width:1.92378;stroke-linejoin:round;stroke-opacity:0.658819"
+            style="stroke-width:1.92378;stroke-linejoin:round;stroke-opacity:0.658819"
             id="rect837"
             width="15"
             height="2"
             x="5"
             y="10" />
             <rect
-            style="fill:${this.theme.iconColor};stroke-width:1.92378;stroke-linejoin:round;stroke-opacity:0.658819"
+            style="stroke-width:1.92378;stroke-linejoin:round;stroke-opacity:0.658819"
             id="rect839"
             width="15"
             height="2"

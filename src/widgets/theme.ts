@@ -47,6 +47,14 @@ export class Theme{
     public tab_inactive_color="#dbdbdb";
     public tab_inactive_icon_color="#919191";
     public tab_active_icon_color=this.primaryColor;
+    
+    public tab_header_margin="inherit";
+    public tab_header_border_radius="inherit";
+    public tab_header_overflow="inherit";
+    public tab_header_shadow="none";
+    public tab_header_zIndex="inherit";
+    public tab_header_bar_shadow="none";
+    public tab_header_height="50px";
 
     public selector_item_selection_color=this.primaryColor;
 
@@ -59,6 +67,15 @@ export class Theme{
 
     public vTab_active_icon_color=this.primaryColor;
     public vTab_inactive_icon_color="#919191";
+
+    public scaffold_menu_icon_color="#fff";
+    public scaffold_title_background_shadow="0px 0px 4px black";
+    public scaffold_title_bar_default_background_display="block";
+    public scaffold_menu_glass_color=this.glass_black;
+    public scaffold_menu_shadow="0px 0px 30px black";
+
+    public confirmation_dialogue_title_bar_image="inherit";
+    public confirmation_dialogue_border_radius=this.cornerRadius;
 }
 
 
