@@ -105,6 +105,9 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version": "9.0.4"
+1. Increased styling modularity of many components.
+
 ### "version": "9.0.2"
 1. Bug fix: Backable screen was creating in correct history stack. Due to an issue in bloc-them lib. Fixed and upgraded bloc-them
 
