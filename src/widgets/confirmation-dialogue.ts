@@ -1,4 +1,4 @@
-import { BlocsProvider } from "bloc-them";
+import { Bloc, BlocsProvider } from "bloc-them";
 import { html, TemplateResult } from "lit-html";
 import {unsafeHTML} from 'lit-html/directives/unsafe-html';
 import { UseThemConfiguration } from "../configs";
@@ -33,6 +33,8 @@ export interface ConfirmationDialogueInfo{
      * This will be used as placeholder for that text area.
      */
     user_comments_msg?:string;
+
+    blocs_map?: Record<string, Bloc<any>>;
 }
 
 /**
@@ -49,7 +51,8 @@ export abstract class ConfirmationDialogue extends WidgetBuilder<HideBloc,boolea
     constructor(blocName:string, protected confirmationInfo:ConfirmationDialogueInfo){
         super(blocName,{
             blocs_map:{
-                ProgressBloc: new HideBloc()
+                ...confirmationInfo.blocs_map,
+                ProgressBloc: new HideBloc(),
             }
         });
     }

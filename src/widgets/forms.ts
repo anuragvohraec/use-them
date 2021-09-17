@@ -52,7 +52,7 @@ import { TemplateResult, html, nothing } from 'lit-html';
 
  export abstract class FormBloc extends Bloc<FormState>{
 
-    constructor(initState: FormState){
+    constructor(initState: FormState, protected formMessageBlocName:string="FormMessageBloc"){
         super(initState);
     }
 
@@ -105,7 +105,7 @@ import { TemplateResult, html, nothing } from 'lit-html';
             if(val){
                  validationResult = val(currentValue);
                 if(!formMessageBloc){
-                    formMessageBloc = BlocsProvider.search("FormMessageBloc",this.hostElement);
+                    formMessageBloc = BlocsProvider.search(this.formMessageBlocName,this.hostElement);
                 }
                 formMessageBloc!.postMessage(nameOfInput,validationResult!);
             }
@@ -117,7 +117,7 @@ import { TemplateResult, html, nothing } from 'lit-html';
 
     checkAllValidationPassed(){
         //check there are no validation messages
-        let msgBloc = BlocsProvider.of<FormMessageBloc>("FormMessageBloc",this.hostElement);
+        let msgBloc = BlocsProvider.of<FormMessageBloc>(this.formMessageBlocName,this.hostElement);
         let msgState = JSON.parse(JSON.stringify(msgBloc!.state));
         if(Object.keys(msgState).length>0){
             return false;
@@ -183,8 +183,8 @@ import { TemplateResult, html, nothing } from 'lit-html';
  export class MessageBuilder extends WidgetBuilder<FormMessageBloc,FormMessageState>{
      private name?: string;
 
-     constructor(){
-         super("FormMessageBloc");
+     constructor(protected formMessageBlocName:string="FormMessageBloc"){
+         super(formMessageBlocName);
      }
 
      connectedCallback(){
