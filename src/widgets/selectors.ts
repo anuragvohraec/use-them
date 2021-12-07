@@ -252,7 +252,11 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
         search_placeholder:string,
         itemBuilderFunction(item: I, index: number, isSelected: boolean): TemplateResult,
         onChangeFunction(selectedItems: Set<I>, context: HTMLElement): void,
-    }, backable_screen_title?:string){
+    }, backable_screen_config?:{
+        title:string,
+        onAccept:Function,
+        onCancel:Function
+    }){
 
         class ISelectorBloc extends SelectorBloc{
             protected maxNumberOfSelect: number=config.maxNumberOfSelect;
@@ -352,21 +356,21 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
 
             private acceptSelection=(e:Event)=>{
                 let s = BlocsProvider.search<ISelectorBloc>("ISelectorBloc",this);
-                s?.post_change();
-                if(!backable_screen_title){    
+                if(!backable_screen_config){    
                     this.bloc?.toggle();
                 }else{
-                    AppPageBloc.search<AppPageBloc>("AppPageBloc",this)?.popOutOfCurrentPage();
+                    backable_screen_config.onAccept(s?.selectedItems);   
                 }
+                s?.post_change();
             }
 
             private cancelSelection=(e:Event)=>{
                 let s = BlocsProvider.search<ISelectorBloc>("ISelectorBloc",this);
                 s?.cancel();
-                if(!backable_screen_title){
+                if(!backable_screen_config){
                     this.bloc?.toggle();
                 }else{
-                    AppPageBloc.search<AppPageBloc>("AppPageBloc",this)?.popOutOfCurrentPage();
+                    backable_screen_config.onCancel();
                 }
             }
 
@@ -393,7 +397,7 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
                 }
                 </style>
                 <lay-them in="column" ma="flex-start" ca="stretch">
-                    ${!backable_screen_title?html`
+                    ${!backable_screen_config?html`
                     <div class="title_bar">
                         <ut-p use="color:white;">${config.title}</ut-p>
                     </div>
@@ -421,7 +425,7 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
                 if(state){
                     return html``;
                 }else{
-                    if(!backable_screen_title){
+                    if(!backable_screen_config){
                         return html`<style>
                         .fullscreenGlass{
                             position:fixed;
@@ -450,7 +454,7 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
                                 </lay-them>
                         </div>`;
                     }else{
-                        return html`<backable-screen title=${backable_screen_title}>
+                        return html`<backable-screen title=${backable_screen_config.title}>
                             ${this.mainSearchableTemplate()}
                         </backable-screen>`;
                     }
