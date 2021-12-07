@@ -8,6 +8,7 @@ import { unsafeHTML } from 'lit-html/directives/unsafe-html';
 import { InputBuilderConfig } from '../../widgets/forms';
 import { html,  TemplateResult } from 'lit-html';
 import { BlocsProvider } from 'bloc-them';
+import { ToggleButton } from '../../widgets/inputs/togglebutton';
 
 export interface InputInfo{
     type:"SingleLineInput"|"TextAreaInput"|"CheckBox"|"DatePicker"|"RadioButtons"|"RangeSelector"|"ToggleButton";
@@ -103,6 +104,16 @@ export class FormInputMaker extends BlocsProvider{
                     }
                     break;
                 }
+                case "ToggleButton":{
+                    class A extends ToggleButton<any>{
+                        constructor(){
+                            super(inputInfo.config);
+                        }
+                    }
+                    if(!customElements.get(tag_name)){
+                        customElements.define(tag_name,A);
+                    }
+                }break;
             }
             this.tags_list[nameOfInput]=tag_name;
         }
