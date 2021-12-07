@@ -163,6 +163,7 @@ export class TabController extends WidgetBuilder<BogusBloc,number>{
     constructor(){
         super("BogusBloc",{
             blocs_map:{
+                BogusBloc: new BogusBloc(),
                 TabRouterBloc: new TabRouterBloc()
             }
         })
