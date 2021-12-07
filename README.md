@@ -105,6 +105,10 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version": "9.0.7"
+1. `ut-icon` changed its code to align them at center, and hence are now block style
+2. `CreateSearchableSelector` modified to create not only popup dialogues, but can also be used to create backable screens
+
 ### "version": "9.0.4"
 1. Increased styling modularity of many components.
 

@@ -1,5 +1,5 @@
 import { Bloc, BlocsProvider } from "bloc-them";
-import { html, TemplateResult } from 'lit-html';
+import { html, TemplateResult,nothing } from 'lit-html';
 import { WidgetBuilder } from '../utils/blocs';
 import {repeat} from 'lit-html/directives/repeat';
 import { HideBloc } from "./dialogues";
@@ -7,6 +7,7 @@ import { FormBloc, FormMessageBloc, PostValidationOnChangeFunction, ValidatorFun
 import { SingleLineInput } from "./inputs/textinputs";
 import { unsafeHTML } from "lit-html/directives/unsafe-html";
 import { UseThemConfiguration } from "../configs";
+import { AppPageBloc } from "./route-them/RouteThem";
 
 enum SelectorStatus{
     LOADING,
@@ -235,7 +236,9 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
     }
 }
 
-
+/**
+ * Helper class to create searchable popups and backable-screens
+ */
  export class CreateSearchableSelector{
     static create(config:{
         id_key_name:string,
@@ -249,7 +252,7 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
         search_placeholder:string,
         itemBuilderFunction(item: I, index: number, isSelected: boolean): TemplateResult,
         onChangeFunction(selectedItems: Set<I>, context: HTMLElement): void,
-    }){
+    }, backable_screen_title?:string){
 
         class ISelectorBloc extends SelectorBloc{
             protected maxNumberOfSelect: number=config.maxNumberOfSelect;
@@ -346,83 +349,111 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
                     }
                 });
             }
+
+            private acceptSelection=(e:Event)=>{
+                let s = BlocsProvider.search<ISelectorBloc>("ISelectorBloc",this);
+                s?.post_change();
+                if(!backable_screen_title){    
+                    this.bloc?.toggle();
+                }else{
+                    AppPageBloc.search<AppPageBloc>("AppPageBloc",this)?.popOutOfCurrentPage();
+                }
+            }
+
+            private cancelSelection=(e:Event)=>{
+                let s = BlocsProvider.search<ISelectorBloc>("ISelectorBloc",this);
+                s?.cancel();
+                if(!backable_screen_title){
+                    this.bloc?.toggle();
+                }else{
+                    AppPageBloc.search<AppPageBloc>("AppPageBloc",this)?.popOutOfCurrentPage();
+                }
+            }
+
+            private mainSearchableTemplate():TemplateResult{
+                return html`
+                <style>
+                .title_bar{
+                    padding: 10px;color:white;font-size:${this.theme.H2_font_size};background-color:${this.theme.primaryColor};
+                    box-shadow: 0px 2px 3px #00000040;
+                    z-index: 2;
+                }
+                .button{
+                    height: 40px;
+                }
+                .items{
+                    flex-grow: 1;overflow-y: auto;height: 0px;
+                }
+                .buttons_area{
+                    box-shadow: 0px -1px 3px #00000040;
+                }
+                .search_input{
+                    box-shadow: 0px 2px 3px #00000040;
+                    z-index: 1;
+                }
+                </style>
+                <lay-them in="column" ma="flex-start" ca="stretch">
+                    ${!backable_screen_title?html`
+                    <div class="title_bar">
+                        <ut-p use="color:white;">${config.title}</ut-p>
+                    </div>
+                    `:nothing as TemplateResult}
+                    <div class="search_input">
+                        ${unsafeHTML(`<${searchInputTagName}></${searchInputTagName}`)}
+                    </div>
+                    <div class="items">
+                        ${unsafeHTML(`<${selectorTagName}></${selectorTagName}>`)}
+                    </div>
+                    <div class="buttons_area">
+                        <lay-them in="row" ma="flex-start" ca="stretch" overflow="hidden">
+                            <div style="flex:1;" class="button" @click=${this.acceptSelection}>
+                                <ink-well><lay-them ma="center" ca="center"><ut-icon icon="done"></ut-icon></lay-them></ink-well>
+                            </div>
+                            <div style="flex:1;" class="button" @click=${this.cancelSelection}>
+                                <ink-well><lay-them ma="center" ca="center"><ut-icon icon="clear"></ut-icon></lay-them></ink-well>
+                            </div>
+                        </lay-them>
+                    </div>
+                </lay-them>`;
+            }
+
             builder(state: boolean): TemplateResult {
                 if(state){
                     return html``;
                 }else{
-                    return html`<style>
-                    .fullscreenGlass{
-                        position:fixed;
-                        width:100%;
-                        height: 100%;
-                        background-color: ${this.theme.dialogue_bg};
-                        z-index: 10;
-                        top: 0;
-                        left: 0;
+                    if(!backable_screen_title){
+                        return html`<style>
+                        .fullscreenGlass{
+                            position:fixed;
+                            width:100%;
+                            height: 100%;
+                            background-color: ${this.theme.dialogue_bg};
+                            z-index: 10;
+                            top: 0;
+                            left: 0;
+                        }
+                        .cont{
+                            max-width: 95vw;
+                            max-height: 95vh;
+                            min-height: 300px;
+                            min-width: 300px;
+                            background-color: white;
+                            border-radius: ${this.theme.cornerRadius};
+                            overflow: hidden;
+                        }
+                        </style>
+                        <div class="fullscreenGlass">
+                                <lay-them ma="center" ca="center">
+                                    <div class="cont">
+                                        ${this.mainSearchableTemplate()}
+                                    </div>
+                                </lay-them>
+                        </div>`;
+                    }else{
+                        return html`<backable-screen title=${backable_screen_title}>
+                            ${this.mainSearchableTemplate()}
+                        </backable-screen>`;
                     }
-                    .cont{
-                        max-width: 95vw;
-                        max-height: 95vh;
-                        min-height: 300px;
-                        min-width: 300px;
-                        background-color: white;
-                        border-radius: ${this.theme.cornerRadius};
-                        overflow: hidden;
-                    }
-                    .title_bar{
-                        padding: 10px;color:white;font-size:${this.theme.H2_font_size};background-color:${this.theme.primaryColor};
-                        box-shadow: 0px 2px 3px #00000040;
-                        z-index: 2;
-                    }
-                    .button{
-                        height: 40px;
-                    }
-                    .items{
-                        flex-grow: 1;overflow-y: auto;height: 0px;
-                    }
-                    .buttons_area{
-                        box-shadow: 0px -1px 3px #00000040;
-                    }
-                    .search_input{
-                        box-shadow: 0px 2px 3px #00000040;
-                        z-index: 1;
-                    }
-                    </style>
-                    <div class="fullscreenGlass">
-                            <lay-them ma="center" ca="center">
-                                <div class="cont">
-                                    <lay-them in="column" ma="flex-start" ca="stretch">
-                                        <div class="title_bar">
-                                            <ut-p use="color:white;">${config.title}</ut-p>
-                                        </div>
-                                        <div class="search_input">
-                                            ${unsafeHTML(`<${searchInputTagName}></${searchInputTagName}`)}
-                                        </div>
-                                        <div class="items">
-                                            ${unsafeHTML(`<${selectorTagName}></${selectorTagName}>`)}
-                                        </div>
-                                        <div class="buttons_area">
-                                            <lay-them in="row" ma="flex-start" ca="stretch" overflow="hidden">
-                                                <div style="flex:1;" class="button" @click=${()=>{
-                                                    let s = BlocsProvider.search<ISelectorBloc>("ISelectorBloc",this);
-                                                    s?.post_change();
-                                                    this.bloc?.toggle();
-                                                }}>
-                                                    <ink-well><lay-them ma="center" ca="center"><ut-icon icon="done"></ut-icon></lay-them></ink-well>
-                                                </div>
-                                                <div style="flex:1;" class="button" @click=${()=>{
-                                                    let s = BlocsProvider.search<ISelectorBloc>("ISelectorBloc",this);
-                                                    s?.cancel();
-                                                    this.bloc?.toggle();
-                                                }}>
-                                                    <ink-well><lay-them ma="center" ca="center"><ut-icon icon="clear"></ut-icon></lay-them></ink-well>
-                                                </div>
-                                            </lay-them>
-                                        </div>
-                                    </lay-them>
-                                </div>
-                            </lay-them>
-                    </div>`;
                 }
             }
 
