@@ -106,6 +106,9 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version": "9.0.8"
+1. Bug fix 9.0.7, accept and cancel are passed the HTMLElement too for easy bloc integration.
+
 ### "version": "9.0.7"
 1. `ut-icon` changed its code to align them at center, and hence are now block style
 2. `CreateSearchableSelector` modified to create not only popup dialogues, but can also be used to create backable screens

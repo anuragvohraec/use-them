@@ -359,7 +359,7 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
                 if(!backable_screen_config){    
                     this.bloc?.toggle();
                 }else{
-                    backable_screen_config.onAccept(s?.selectedItems);   
+                    backable_screen_config.onAccept(s?.selectedItems,this);   
                 }
                 s?.post_change();
             }
@@ -370,7 +370,7 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
                 if(!backable_screen_config){
                     this.bloc?.toggle();
                 }else{
-                    backable_screen_config.onCancel();
+                    backable_screen_config.onCancel(this);
                 }
             }
 

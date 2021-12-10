@@ -220,7 +220,7 @@ export class CircularProgressIndicator extends NoBlocWidgetBuilder{
     }
 }
         </style>
-        <progress class="pure-material-progress-circular"/>
+        <lay-them ma="center" ca="center" overflow="hidden"><progress class="pure-material-progress-circular"></progress></lay-them>
         `;
     }
 
