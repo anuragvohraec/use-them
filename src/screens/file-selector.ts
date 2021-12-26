@@ -295,7 +295,7 @@ export class FilePickerExternalTriggers extends Bloc<number>{
     openFilePicker(tagName:string, routeName:string){
         AppPageBloc.search<AppPageBloc>("AppPageBloc",this.hostElement)?.goToPage(routeName);
         setTimeout(()=>{
-            this.filePickerRegistry[tagName.toLowerCase()]?.openFilePicker();
+            this.filePickerRegistry[tagName.toLowerCase()]?.openFilePickerExternally();
         },300);
     }
 }
@@ -345,7 +345,10 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
         super.disconnectedCallback(); 
     }
 
-    openFilePicker=()=>{
+    /**
+     * Used specifically by external triggers. To open file picker
+     */
+    openFilePickerExternally=()=>{
         let t = this.shadowRoot?.querySelector("backable-screen > lay-them > div.options > image-picker-confirmation-box-container > lay-them > div:nth-child(1) > label") as HTMLInputElement;
         t.click();
     }
