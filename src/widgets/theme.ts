@@ -73,6 +73,7 @@ export class Theme{
     public scaffold_title_bar_default_background_display="block";
     public scaffold_menu_glass_color=this.glass_black;
     public scaffold_menu_shadow="0px 0px 30px black";
+    public scaffold_title_bar_border_radius="0px";
 
     public confirmation_dialogue_title_bar_image="inherit";
     public confirmation_dialogue_border_radius=this.cornerRadius;
