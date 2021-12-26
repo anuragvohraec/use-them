@@ -274,6 +274,33 @@ export interface FilePickerConfig{
 }
 
 /**
+ * Is used to open file picker from other places in code.
+ */
+export class FilePickerExternalTriggers extends Bloc<number>{
+    protected _name: string="FilePickerExternalTriggers";
+    protected filePickerRegistry:Record<string,FilePickerScreen>={};
+
+    constructor(){
+        super(0);
+    }
+    
+    register(filePickerScreen:FilePickerScreen){
+        this.filePickerRegistry[filePickerScreen.tagName.toLowerCase()]=filePickerScreen;
+    }
+
+    /**
+     * Manually call app page bloc to open the page too
+     * @param tagName 
+     */
+    openFilePicker(tagName:string, routeName:string){
+        AppPageBloc.search<AppPageBloc>("AppPageBloc",this.hostElement)?.goToPage(routeName);
+        setTimeout(()=>{
+            this.filePickerRegistry[tagName.toLowerCase()]?.openFilePicker();
+        },300);
+    }
+}
+
+/**
  * Usage example:
  * 
  * ```html
@@ -308,11 +335,19 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
         if(this.bloc){
             this.bloc.max_file_picker=this.config.max_file;
         }
+        setTimeout(()=>{
+            FilePickerExternalTriggers.search<FilePickerExternalTriggers>("FilePickerExternalTriggers",this)?.register(this);   
+        },200);
     }
 
     disconnectedCallback(){
         this.bloc?.revokeAllObjectURL();
         super.disconnectedCallback(); 
+    }
+
+    openFilePicker=()=>{
+        let t = this.shadowRoot?.querySelector("backable-screen > lay-them > div.options > image-picker-confirmation-box-container > lay-them > div:nth-child(1) > label") as HTMLInputElement;
+        t.click();
     }
 
     builder(state: PickedFileInfo[]): TemplateResult {
@@ -329,15 +364,16 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                 display: none;
             }
             .image_grid{
-                display: grid;
+                display: flex;
                 gap: 20px;
                 align-items: center;
                 justify-items: center;
                 grid-template-columns: auto auto;
+                justify-content: center;
             }
             .image_item{
-                width: 30vw;
-                height: 30vw;
+                width: 300px;
+                height: 300px;
                 text-align: center;
             }
             .video_item{
@@ -361,7 +397,7 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                                             default: return html`<img class="image_item" src=${pickedFileInfo.url}>`;
                                         }
                                     })()}</div>
-                                    <div style="font-family:monospace;word-break: break-word;width: 30vw;"><ut-h5>${pickedFileInfo.name}</ut-h5></div>
+                                    <div style="font-family:monospace;word-break: break-word;min-width: 30vw;"><ut-h5>${pickedFileInfo.name}</ut-h5></div>
                                 </lay-them>`;
                             })}
                         </div>

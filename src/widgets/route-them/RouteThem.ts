@@ -5,6 +5,7 @@ import {unsafeHTML} from 'lit-html/directives/unsafe-html';
 import {Utils} from '../../utils/utils';
 import { UseThemConfiguration } from '../../configs';
 import { OverlayPageBloc } from './overlays';
+import { FilePickerExternalTriggers } from '../../screens/file-selector';
 
 export interface RouteState{
   url_path: string;
@@ -329,7 +330,8 @@ export class AppPageController extends BlocsProvider{
   constructor(){
     super({
       AppPageBloc: new AppPageBloc(),
-      OverlayPageBloc: new OverlayPageBloc()
+      OverlayPageBloc: new OverlayPageBloc(),
+      FilePickerExternalTriggers: new FilePickerExternalTriggers()
     })
   }
 
