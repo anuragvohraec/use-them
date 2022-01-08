@@ -292,8 +292,8 @@ export class FilePickerExternalTriggers extends Bloc<number>{
      * Manually call app page bloc to open the page too
      * @param tagName 
      */
-    openFilePicker(tagName:string, routeName:string){
-        AppPageBloc.search<AppPageBloc>("AppPageBloc",this.hostElement)?.goToPage(routeName);
+    openFilePicker(tagName:string, routeName:string,data?:any){
+        AppPageBloc.search<AppPageBloc>("AppPageBloc",this.hostElement)?.goToPage(routeName,data);
         setTimeout(()=>{
             this.filePickerRegistry[tagName.toLowerCase()]?.openFilePickerExternally();
         },300);
