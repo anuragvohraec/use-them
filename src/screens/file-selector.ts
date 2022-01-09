@@ -55,6 +55,10 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
             this.emit([...this.state]);
         }
     }
+
+    public get selectedFiles(): File[]|undefined{
+        return this.current_selected_files;
+    }
     
     async fileSelected(context:HTMLInputElement){
         this.revokeAllObjectURL();
