@@ -1,5 +1,5 @@
 import { Bloc, BlocBuilderConfig, BlocsProvider } from "bloc-them";
-import { html, TemplateResult } from "lit-html";
+import { html, nothing, TemplateResult } from "lit-html";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { repeat } from "lit-html/directives/repeat";
 import { IncomingRequest, InfoAboutAFile,PickedFileInfoForOutPut } from "../interfaces";
@@ -333,6 +333,12 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
 
     constructor(protected config:FilePickerConfig){
         super(config.bloc_name,config.bloc_config);
+        
+        if(!this.configs.blocs_map){
+            this.configs.blocs_map={}
+        }
+        this.configs.blocs_map["ImageEditorHideBloc"]=new ImageEditorHideBloc(true,"ImageEditorHideBloc");
+
         this.picker_config ={
             accept:"*/*",
             type: FilePickerType.FILE
@@ -369,6 +375,18 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
         const t= e.currentTarget as HTMLElement;
         const index:number = parseInt(t.getAttribute("i")??"0");
         this.bloc?.removeFile(index);
+    }
+
+    editIndex=(e:Event)=>{
+        const t= e.currentTarget as HTMLElement;
+        const index:number = parseInt(t.getAttribute("i")??"0");
+
+        const ihb = ImageEditorHideBloc.search<ImageEditorHideBloc>("ImageEditorHideBloc",this);
+        if(ihb && this.bloc?.selectedFiles?.[index]){
+            ihb.blob=this.bloc.selectedFiles[index];
+            ihb.fileName=this.bloc.selectedFiles[index].name;
+            ihb.toggle();
+        }
     }
 
     builder(state: PickedFileInfo[]): TemplateResult {
@@ -423,9 +441,9 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                                         })()}></ut-picked-file-widget>`;
                                         default: return html`<lay-them in="stack">
                                             <img class="image_item" src=${pickedFileInfo.url}>
-                                            <div style="bottom:0px;width:100%;height:50px;background-color: #000000ad;">
+                                            <div style="bottom:0px;width:100%;height:50px;background-color: #000000db;">
                                                 <lay-them in="row" ma="space-between" ma="center">
-                                                    <div class="edit-button">
+                                                    <div class="edit-button"  @click=${this.editIndex} i=${index}>
                                                         <ink-well>
                                                             <ut-icon icon="edit" use="icon_inactive:white;"></ut-icon>
                                                         </ink-well>
@@ -470,6 +488,48 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                     </image-picker-confirmation-box-container>
                 </div>
             </lay-them>
-        </backable-screen>`;
+        </backable-screen>
+        <ut-image-editor></ut-image-editor>`;
     }
 }
+
+class ImageEditorHideBloc extends HideBloc{
+    public blob!: Blob;
+    public fileName!:string;
+
+}
+
+class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
+    constructor(){
+        super("ImageEditorHideBloc");
+    }
+
+    builder(state: boolean): TemplateResult {
+        if(state){
+            return nothing as TemplateResult;
+        }else{
+            return html`
+            <style>
+                .cont{
+                    position:fixed;
+                    top:0px;
+                    width:100%;
+                    height:100%;
+                    background-color: #000000c7;
+                    z-index: 3;
+                }
+                .title{
+                    color: white;
+                    padding: 20px;
+                }
+            </style>
+            <div class="cont">
+                <lay-them in="column" ma="flex-start" ca="stretch">
+                    <div class="title">${this.bloc?.fileName}</div>
+
+                </lay-them>
+            </div>`;
+        }
+    }
+}
+customElements.define("ut-image-editor",ImageEditor);
