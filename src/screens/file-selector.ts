@@ -375,7 +375,7 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
         return html`
         <style>
             .options{
-                padding: 20px;
+                padding: 10px;
             }
             input[type="file"] {
                 display: none;
