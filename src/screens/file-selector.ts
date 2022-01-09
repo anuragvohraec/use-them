@@ -382,6 +382,10 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
             .video_item{
                 width: 90vw;
             }
+            .edit-button{
+                width:50px;
+                height:50px;
+            }
         </style>
         <backable-screen title=${title}>
             <lay-them in="column" ca="stretch" ma="flex-start">
@@ -397,7 +401,23 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                                             case "Upload File": return html`<ut-picked-file-widget .info_abt_file=${(()=>{
                                                 return {size: pickedFileInfo.size, ext:pickedFileInfo.mime,name:pickedFileInfo.name};
                                             })()}></ut-picked-file-widget>`;
-                                            default: return html`<img class="image_item" src=${pickedFileInfo.url}>`;
+                                            default: return html`<lay-them in="stack">
+                                                <img class="image_item" src=${pickedFileInfo.url}>
+                                                <div style="bottom:0px;width:100%;height:50px;background-color: #000000ad;">
+                                                    <lay-them in="row" ma="space-between" ma="center">
+                                                        <div class="edit-button">
+                                                            <ink-well>
+                                                                <ut-icon icon="edit" use="icon_inactive:white;"></ut-icon>
+                                                            </ink-well>
+                                                        </div>
+                                                        <div class="edit-button">
+                                                            <ink-well>
+                                                                <ut-icon icon="clear" use="icon_inactive:white;"></ut-icon>
+                                                            </ink-well>
+                                                        </div>
+                                                    </lay-them>
+                                                </div>
+                                            </lay-them>`;
                                         }
                                     })()}</div>
                                     <div style="font-family:monospace;word-break: break-word;min-width: 30vw;"><ut-h5>${pickedFileInfo.name}</ut-h5></div>
