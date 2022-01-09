@@ -1,6 +1,7 @@
 import { Bloc, BlocBuilderConfig, BlocsProvider } from "bloc-them";
 import { html, TemplateResult } from "lit-html";
 import { ifDefined } from "lit-html/directives/if-defined";
+import { repeat } from "lit-html/directives/repeat";
 import { IncomingRequest, InfoAboutAFile,PickedFileInfoForOutPut } from "../interfaces";
 import { BogusBloc, WidgetBuilder } from "../utils/blocs";
 import { Utils } from "../utils/utils";
@@ -46,6 +47,13 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
     
     public get max_file_picker() : number{
         return this._max_file_picker;
+    }
+
+    removeFile(index:number){
+        if(this.state[index]){
+            this.state.splice(index,1);
+            this.emit([...this.state]);
+        }
     }
     
     async fileSelected(context:HTMLInputElement){
@@ -353,6 +361,12 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
         t.click();
     }
 
+    removeIndex=(e:Event)=>{
+        const t= e.currentTarget as HTMLElement;
+        const index:number = parseInt(t.getAttribute("i")??"0");
+        this.bloc?.removeFile(index);
+    }
+
     builder(state: PickedFileInfo[]): TemplateResult {
         let title="attach";
         if(this.title && this.title.trim().length>0){
@@ -373,6 +387,7 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                 justify-items: center;
                 grid-template-columns: auto auto;
                 justify-content: center;
+                flex-wrap: wrap;
             }
             .image_item{
                 width: 300px;
@@ -392,36 +407,38 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                 <div style="flex:1; max-height: calc(100vh - 150px);overflow-y: auto;padding: 10px;">
                     ${state.length===0?html`<lay-them ma="center" ca="center"><ut-p>no_file_selected</ut-p></lay-them>`:html`
                         <div class="image_grid">
-                            ${state.map(pickedFileInfo=>{
+                            ${repeat(state,(item)=>item.name,(pickedFileInfo,index)=>{
+
                                 return html`<lay-them in="column" ma="center">
-                                    <div>${(()=>{
-                                        switch(this.title){
-                                            case "Upload Video": return html`<video controls class="video_item" src=${pickedFileInfo.url}></video>`;
-                                            case "Upload Audio": return html`<audio controls class="video_item" src=${pickedFileInfo.url}></audio>`;
-                                            case "Upload File": return html`<ut-picked-file-widget .info_abt_file=${(()=>{
-                                                return {size: pickedFileInfo.size, ext:pickedFileInfo.mime,name:pickedFileInfo.name};
-                                            })()}></ut-picked-file-widget>`;
-                                            default: return html`<lay-them in="stack">
-                                                <img class="image_item" src=${pickedFileInfo.url}>
-                                                <div style="bottom:0px;width:100%;height:50px;background-color: #000000ad;">
-                                                    <lay-them in="row" ma="space-between" ma="center">
-                                                        <div class="edit-button">
-                                                            <ink-well>
-                                                                <ut-icon icon="edit" use="icon_inactive:white;"></ut-icon>
-                                                            </ink-well>
-                                                        </div>
-                                                        <div class="edit-button">
-                                                            <ink-well>
-                                                                <ut-icon icon="clear" use="icon_inactive:white;"></ut-icon>
-                                                            </ink-well>
-                                                        </div>
-                                                    </lay-them>
-                                                </div>
-                                            </lay-them>`;
-                                        }
-                                    })()}</div>
-                                    <div style="font-family:monospace;word-break: break-word;min-width: 30vw;"><ut-h5>${pickedFileInfo.name}</ut-h5></div>
-                                </lay-them>`;
+                                <div>${(()=>{
+                                    switch(this.title){
+                                        case "Upload Video": return html`<video controls class="video_item" src=${pickedFileInfo.url}></video>`;
+                                        case "Upload Audio": return html`<audio controls class="video_item" src=${pickedFileInfo.url}></audio>`;
+                                        case "Upload File": return html`<ut-picked-file-widget .info_abt_file=${(()=>{
+                                            return {size: pickedFileInfo.size, ext:pickedFileInfo.mime,name:pickedFileInfo.name};
+                                        })()}></ut-picked-file-widget>`;
+                                        default: return html`<lay-them in="stack">
+                                            <img class="image_item" src=${pickedFileInfo.url}>
+                                            <div style="bottom:0px;width:100%;height:50px;background-color: #000000ad;">
+                                                <lay-them in="row" ma="space-between" ma="center">
+                                                    <div class="edit-button">
+                                                        <ink-well>
+                                                            <ut-icon icon="edit" use="icon_inactive:white;"></ut-icon>
+                                                        </ink-well>
+                                                    </div>
+                                                    <div class="edit-button" @click=${this.removeIndex} i=${index}>
+                                                        <ink-well>
+                                                            <ut-icon icon="clear" use="icon_inactive:white;"></ut-icon>
+                                                        </ink-well>
+                                                    </div>
+                                                </lay-them>
+                                            </div>
+                                        </lay-them>`;
+                                    }
+                                })()}</div>
+                                <div style="font-family:monospace;word-break: break-word;min-width: 30vw;"><ut-h5>${pickedFileInfo.name}</ut-h5></div>
+                            </lay-them>`;
+                                
                             })}
                         </div>
                     `}
