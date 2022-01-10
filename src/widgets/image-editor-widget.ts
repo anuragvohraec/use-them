@@ -1,12 +1,17 @@
 import { html, TemplateResult } from "lit-html";
 import { IEMessage, IEMessageType, IEValue } from "../interfaces";
 import { WidgetBuilder } from "../utils/blocs";
+import { FormInputMaker } from "../utils/makers/form-input-maker";
 import { HideBloc } from "./dialogues";
+import { FormBloc, FormMessageBloc, PostValidationOnChangeFunction, ValidatorFunction } from "./forms";
+import { Range } from "./inputs/rangeselector";
 
 export class ImageEditorHideBloc extends HideBloc{
     private _blob!: Blob;
     private _fileName!:string;
     private blobIndex:number=0;
+
+    private currentValue!:IEValue;
 
     public get fileName(){
         return this._fileName;
@@ -72,18 +77,28 @@ export class ImageEditorHideBloc extends HideBloc{
         this.blob=blob;
     }
     
-    public draw(value:IEValue, type:IEMessageType=IEMessageType.DRAW){
+    private draw(value:IEValue, type:IEMessageType=IEMessageType.DRAW){
+        this.currentValue=value;
         let msg:IEMessage={type,value};
         this.imageEditorWorker.postMessage(msg);
     }
 
+    public setBrightness(newValue:number){
+        this.draw({...this.currentValue,brightness:newValue});
+    }
+
+    public setContrast(newValue:number){
+        this.draw({...this.currentValue,contrast:newValue});
+    }
 }
 
 class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
     constructor(){
         super("ImageEditorHideBloc",{
             blocs_map:{
-                ImageEditorHideBloc: new ImageEditorHideBloc(true,"ImageEditorHideBloc")
+                ImageEditorHideBloc: new ImageEditorHideBloc(true,"ImageEditorHideBloc"),
+                ImageEditorFormBloc: new ImageEditorFormBloc(),
+                FormMessageBloc: new FormMessageBloc()
             }
         });
     }
@@ -121,8 +136,78 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
                     <div class="opCont">
                         <canvas class="output" width="300px" height="300px" id="output"></canvas>
                     </div>
+                    <div>
+                        <ut-ie-inputs style="--label-color:white;"></ut-ie-inputs>
+                    </div>
                 </lay-them>
             </div>`;
     }
 }
 customElements.define("ut-image-editor",ImageEditor);
+
+class ImageEditorFormBloc extends FormBloc{
+    private editorBloc!:ImageEditorHideBloc;
+
+    constructor(){
+        super({
+            brightness:{start:1,end:50},
+            contrast:{start:1,end:50}
+        });
+    }
+    validatorFunctionGiver(nameOfInput: string): ValidatorFunction<any> | undefined {
+        return;
+    }
+    postOnChangeFunctionGiver(nameOfInput: string): PostValidationOnChangeFunction<any> | undefined {
+        if(!this.editorBloc){
+            this.editorBloc!=ImageEditorHideBloc.search<ImageEditorHideBloc>("ImageEditorHideBloc",this.hostElement);
+        }
+
+        if(nameOfInput === "brightness"){
+            return (cv:Range)=>{
+                this.editorBloc.setBrightness(cv.end);
+            }
+        }else if(nameOfInput==="contrast"){
+            return (cv:Range)=>{
+                this.editorBloc.setContrast(cv.end);
+            }
+        }
+    }
+    protected _name: string="ImageEditorFormBloc"
+
+}
+
+class ImageEditorInputs extends FormInputMaker{
+    constructor(){
+        super({
+            formBloc_name:"ImageEditorFormBloc",
+            tag_prefix:"ut-ie",
+            inputs:{
+                brightness:{
+                    type:"RangeSelector",
+                    config:{
+                        bloc_name:"ImageEditorFormBloc",
+                        name:"brightness",
+                        range:{
+                            end:100,
+                            start:0
+                        }
+                    },
+                    label:"Brightness"
+                },
+                contrast:{
+                    type:"RangeSelector",
+                    config:{
+                        bloc_name:"ImageEditorFormBloc",
+                        name:"contrast",
+                        range:{
+                            end:100,
+                            start:0
+                        }
+                    },
+                    label:"Contrast"
+                }
+            }
+        })
+    }
+}
+customElements.define("ut-ie-inputs",ImageEditorInputs);

@@ -133,11 +133,14 @@ export class FormInputMaker extends BlocsProvider{
                 font-size: 0.8em; 
                 color: red;
             }
+            label{
+                color: var(--label-color,#000);
+            }
         </style>
         ${repeat(this.nameList,(item)=>item,(name,index)=>{
             return html`
             <div class="input">
-                <label for=${name}><ut-h5 .key=${this.config.inputs[name].label}></ut-h5> : <ut-h5 use="color:#8a8a8a;" .key=${this.config.inputs[name].input_info_msg}></ut-h5></label>
+                <label for=${name}><ut-h5 .key=${this.config.inputs[name].label} use="color:var(--label-color,#000);"></ut-h5> : <ut-h5 use="color:var(--input-info-msg-color,#8a8a8a);" .key=${this.config.inputs[name].input_info_msg}></ut-h5></label>
                 ${unsafeHTML(`<${this.tags_list[name]}></${this.tags_list[name]}>`)}
                 <div class="input-msg"><form-message for=${name}></form-message></div>
             </div>

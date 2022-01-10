@@ -5,6 +5,7 @@
 import { Bloc, BlocsProvider } from 'bloc-them'
 import { WidgetBuilder } from '../utils/blocs';
 import { TemplateResult, html, nothing } from 'lit-html';
+import { Range } from './inputs/rangeselector';
 
 
  export interface FormState{
@@ -147,7 +148,11 @@ import { TemplateResult, html, nothing } from 'lit-html';
     placeholder?:string;
     icon?:string;
     clearable?:boolean;
-    inputmode?:"none"|"decimal"|"numeric"|"tel"|"search"|"email"|"url"
+    inputmode?:"none"|"decimal"|"numeric"|"tel"|"search"|"email"|"url",
+    /**
+     * Used only with range input
+     */
+    range?:Range;
 }
 
 

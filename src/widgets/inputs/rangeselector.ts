@@ -315,8 +315,8 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
 
     constructor(config: InputBuilderConfig){
         super(config);
-        let max = this.getAttribute("max");
-        let min = this.getAttribute("min");
+        let max = config.range?`${config.range.end}`:this.getAttribute("max");
+        let min = config.range?`${config.range.start}`:this.getAttribute("min");
 
         this.handleRadius = 12;
 
