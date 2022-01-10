@@ -379,9 +379,11 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
         if(ctx){
             const ihb = ImageEditorHideBloc.search<ImageEditorHideBloc>("ImageEditorHideBloc",ctx);
             if(ihb && this.bloc?.selectedFiles?.[index]){
-                ihb.blobIndex=index;
-                ihb.fileName=this.bloc.selectedFiles[index].name;
-                ihb.blob=this.bloc.selectedFiles[index];
+                ihb.editImage({
+                    index,
+                    fileName:this.bloc.selectedFiles[index].name,
+                    blob:this.bloc.selectedFiles[index]
+                })
                 ihb.toggle();
             }
         }
@@ -493,19 +495,14 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
 
 class ImageEditorHideBloc extends HideBloc{
     private _blob!: Blob;
-    public fileName!:string;
-    public blobIndex:number=0;
+    private _fileName!:string;
+    private blobIndex:number=0;
+
+    public get fileName(){
+        return this._fileName;
+    }
 
     private _canvas?: HTMLCanvasElement;
-
-    private _draw_value!: IEValue;
-
-    public get draw_value(): IEValue {
-        return this._draw_value;
-    }
-    public set draw_value(value: IEValue) {
-        this._draw_value = value;
-    }
 
     onConnection(ctx:HTMLElement){
         super.onConnection(ctx);
@@ -521,10 +518,10 @@ class ImageEditorHideBloc extends HideBloc{
         this.imageEditorWorker.terminate();
     }
 
-    private resetInitValue(){
+    private getInitValue():IEValue{
         const max_dimension=300;
 
-        this.draw_value = {
+        return {
             brightness:0,
             contrast:0,
             pan:{x:0,y:0},
@@ -534,37 +531,39 @@ class ImageEditorHideBloc extends HideBloc{
                 opMaxLength:max_dimension,
                 origBlob:this.blob
             }
-        }
+        };
     }
 
     private imageEditorWorker= new Worker("/js/use-them/image-editor.js");
 
-    public get canvas(): HTMLCanvasElement {
+    private get canvas(): HTMLCanvasElement {
         if(!this._canvas){
             this._canvas=this.hostElement.shadowRoot?.querySelector("#output") as HTMLCanvasElement;
         }
         return this._canvas;
     }
 
-    public get blob(): Blob {
+    private get blob(): Blob {
         return this._blob;
     }
 
-    public set blob(value: Blob) {
+    private set blob(value: Blob) {
         this._blob = value;
         this.initDraw();
     }
 
     public initDraw(){
-        this.resetInitValue();
-        this.draw(IEMessageType.NEW_IMAGE);
+        this.draw(this.getInitValue(),IEMessageType.NEW_IMAGE);
+    }
+
+    public editImage({index,blob,fileName}:{index:number,blob:Blob,fileName:string}){
+        this.blobIndex=index;
+        this._fileName=fileName;
+        this.blob=blob;
     }
     
-    public draw(type:IEMessageType=IEMessageType.DRAW){
-        let msg:IEMessage={
-            type,
-            value: this.draw_value
-        }
+    public draw(value:IEValue, type:IEMessageType=IEMessageType.DRAW){
+        let msg:IEMessage={type,value};
         this.imageEditorWorker.postMessage(msg);
     }
 
