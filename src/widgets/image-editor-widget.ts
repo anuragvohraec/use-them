@@ -137,7 +137,7 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
                         <canvas class="output" width="300px" height="300px" id="output"></canvas>
                     </div>
                     <div>
-                        <ut-ie-inputs style="--label-color:white;"></ut-ie-inputs>
+                        ${state?html``: html`<ut-ie-inputs style="--label-color:white;"></ut-ie-inputs>`}
                     </div>
                 </lay-them>
             </div>`;
@@ -150,8 +150,8 @@ class ImageEditorFormBloc extends FormBloc{
 
     constructor(){
         super({
-            brightness:{start:1,end:50},
-            contrast:{start:1,end:50}
+            brightness:{start:0,end:50},
+            contrast:{start:0,end:50}
         });
     }
     validatorFunctionGiver(nameOfInput: string): ValidatorFunction<any> | undefined {
