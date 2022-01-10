@@ -105,6 +105,10 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
         });
     }
 
+    hideEditor=(e:Event)=>{
+        this.bloc?.toggle();
+    }
+
     builder(state: boolean): TemplateResult {
         return html`
             <style>
@@ -147,7 +151,7 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
                     <div class="padH20">
                         <lay-them in="row" ma="space-between">
                             <circular-icon-button use="icon:done;primaryColor:white;" style="--bg-color:black;"></circular-icon-button>
-                            <circular-icon-button use="icon:clear;primaryColor:white;" style="--bg-color:black;"></circular-icon-button>
+                            <circular-icon-button use="icon:clear;primaryColor:white;" style="--bg-color:black;" @click=${this.hideEditor}></circular-icon-button>
                         </lay-them>
                     </div>
                 </lay-them>
