@@ -613,42 +613,6 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
                     </div>
                 </lay-them>
             </div>`;
-        if(state){
-            return nothing as TemplateResult;
-        }else{
-            return html`
-            <style>
-                .cont{
-                    position:fixed;
-                    top:0px;
-                    width:100%;
-                    height:100%;
-                    background-color: #000000c7;
-                    z-index: 3;
-                }
-                .title{
-                    color: white;
-                    padding: 20px;
-                }
-                .output{
-                    width: 300px;
-                    height: 300px;
-                }
-                .opCont{
-                    display: flex;
-                    justify-content: center;
-                    padding: 12px;
-                }
-            </style>
-            <div class="cont">
-                <lay-them in="column" ma="flex-start" ca="stretch">
-                    <div class="title">${this.bloc?.fileName}</div>
-                    <div class="opCont">
-                        <canvas class="output" width="300px" height="300px" id="output"></canvas>
-                    </div>
-                </lay-them>
-            </div>`;
-        }
     }
 }
 customElements.define("ut-image-editor",ImageEditor);
