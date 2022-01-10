@@ -2,7 +2,7 @@ import { Bloc, BlocBuilderConfig, BlocsProvider } from "bloc-them";
 import { html, nothing, TemplateResult } from "lit-html";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { repeat } from "lit-html/directives/repeat";
-import { IncomingRequest, InfoAboutAFile,PickedFileInfoForOutPut } from "../interfaces";
+import { IEMessage, IEMessageType, IEValue, IncomingRequest, InfoAboutAFile,PickedFileInfoForOutPut } from "../interfaces";
 import { BogusBloc, WidgetBuilder } from "../utils/blocs";
 import { Utils } from "../utils/utils";
 import { HideBloc } from "../widgets/dialogues";
@@ -379,8 +379,9 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
         if(ctx){
             const ihb = ImageEditorHideBloc.search<ImageEditorHideBloc>("ImageEditorHideBloc",ctx);
             if(ihb && this.bloc?.selectedFiles?.[index]){
-                ihb.blob=this.bloc.selectedFiles[index];
+                ihb.blobIndex=index;
                 ihb.fileName=this.bloc.selectedFiles[index].name;
+                ihb.blob=this.bloc.selectedFiles[index];
                 ihb.toggle();
             }
         }
@@ -493,18 +494,38 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
 class ImageEditorHideBloc extends HideBloc{
     private _blob!: Blob;
     public fileName!:string;
+    public blobIndex:number=0;
 
     private _canvas?: HTMLCanvasElement;
-    private _canCtx?: CanvasRenderingContext2D;
-    private blobUrl?:string;
 
-    public brightness:number=0;
-    public contrast:number=0;
+    private _draw_value!: IEValue;
 
-    public w=0;
-    public h=0;
-    public image?:HTMLImageElement;
-    public scale=1;
+    public get draw_value(): IEValue {
+        return this._draw_value;
+    }
+    public set draw_value(value: IEValue) {
+        this._draw_value = value;
+    }
+
+
+    private resetInitValue(){
+        const max_dimension=300;
+
+        this.draw_value = {
+            brightness:0,
+            contrast:0,
+            pan:{x:0,y:0},
+            zoom:1,
+            initConfig:{
+                baseDimension:{x:max_dimension,y:max_dimension},
+                canvas:this.canvas.transferControlToOffscreen()       ,
+                opMaxLength:max_dimension,
+                origBlob:this.blob
+            }
+        }
+    }
+
+    private imageEditorWorker= new Worker("/js/use-them/image-editor.js");
 
     public get canvas(): HTMLCanvasElement {
         if(!this._canvas){
@@ -513,74 +534,34 @@ class ImageEditorHideBloc extends HideBloc{
         return this._canvas;
     }
 
-    get canCtx():CanvasRenderingContext2D{
-        if(!this._canCtx){
-            let t = this.canvas.getContext("2d");
-            if(t){
-                this._canCtx = t;
-            }
-        }
-        return this._canCtx!;
-    }
-
     public get blob(): Blob {
         return this._blob;
     }
 
-    clean(){
-        if(this.blobUrl){
-            URL.revokeObjectURL(this.blobUrl);
-            this.blobUrl=undefined;
-        }
-        this._canCtx=undefined;
-        this._canvas=undefined;
-        this.brightness=0;
-        this.contrast=0;
-        this.image=undefined;
-        this.w=0;
-        this.h=0;
-        this.scale=1;
-    }
-
-    private imageInitSize(image:HTMLImageElement, opMaxLength:number=300){
-        let vidw=0;
-        let vidh=0;
-
-        const opWidth=opMaxLength;
-        const opHeight=opMaxLength;
-
-        vidw = image.naturalWidth;
-        vidh = image.naturalHeight;
-        
-        if (vidw > opWidth && vidw >= vidh ) { vidh = ~~(vidh *= opWidth / vidw); vidw = opWidth;}
-        if (vidh >= opHeight) { vidw = ~~(vidw *= opHeight / vidh); vidh = opHeight;}
-        this.w=vidw;
-        this.h=vidh;
-    }
-
     public set blob(value: Blob) {
         this._blob = value;
-
-        this.clean();
-        setTimeout(()=>{
-            this.blobUrl=URL.createObjectURL(this._blob);
-
-            this.image = new Image();
-            this.image.src =this.blobUrl; 
-            this.image.onload=(e)=>{
-                this.imageInitSize(this.image!);
-                this.draw();
-            }
-        },200);
+        this.draw(IEMessageType.NEW_IMAGE);
     }
     
-    private draw(){
-        if(this.image){
-            this.canCtx.filter = `brightness(${this.brightness+100}%) contrast(${100+this.contrast}%)`;
-            this.canCtx.rect(0, 0, 300, 300);
-            this.canCtx.fillStyle = "white";
-            this.canCtx.fill();
-            this.canCtx.drawImage(this.image,0,0,this.image.naturalWidth,this.image.naturalHeight,0,0,this.w*this.scale,this.h*this.scale);
+    public draw(type:IEMessageType=IEMessageType.DRAW){
+        switch (type) {
+            case IEMessageType.NEW_IMAGE: {
+                this.resetInitValue();
+                let msg:IEMessage={
+                    type,
+                    value: this.draw_value
+                }
+                if(msg.value.initConfig?.canvas){
+                    this.imageEditorWorker.postMessage({msg},[msg.value.initConfig.canvas])
+                }
+            }break;
+            case IEMessageType.DRAW:{
+                let msg:IEMessage={
+                    type,
+                    value: this.draw_value
+                }
+                this.imageEditorWorker.postMessage({msg});
+            } break;
         }
     }
 
@@ -596,6 +577,39 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
     }
 
     builder(state: boolean): TemplateResult {
+        return html`
+            <style>
+                .cont{
+                    display:${state?"none":"block"};
+                    position:fixed;
+                    top:0px;
+                    width:100%;
+                    height:100%;
+                    background-color: #000000c7;
+                    z-index: 3;
+                }
+                .title{
+                    color: white;
+                    padding: 20px;
+                }
+                .output{
+                    width: 300px;
+                    height: 300px;
+                }
+                .opCont{
+                    display: flex;
+                    justify-content: center;
+                    padding: 12px;
+                }
+            </style>
+            <div class="cont">
+                <lay-them in="column" ma="flex-start" ca="stretch">
+                    <div class="title">${this.bloc?.fileName}</div>
+                    <div class="opCont">
+                        <canvas class="output" width="300px" height="300px" id="output"></canvas>
+                    </div>
+                </lay-them>
+            </div>`;
         if(state){
             return nothing as TemplateResult;
         }else{
