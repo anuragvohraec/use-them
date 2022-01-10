@@ -10,6 +10,7 @@ export class ImageEditorHideBloc extends HideBloc{
     private _blob!: Blob;
     private _fileName!:string;
     private blobIndex:number=0;
+    protected _name: string="ImageEditorHideBloc";
 
     private currentValue!:IEValue;
 
@@ -146,7 +147,15 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
 customElements.define("ut-image-editor",ImageEditor);
 
 class ImageEditorFormBloc extends FormBloc{
-    private editorBloc!:ImageEditorHideBloc;
+    private _editorBloc?:ImageEditorHideBloc;
+
+    private get editorBloc():ImageEditorHideBloc{
+        if(!this._editorBloc){
+            let t = ImageEditorHideBloc.search<ImageEditorHideBloc>("ImageEditorHideBloc",this.hostElement);
+            this._editorBloc=t;
+        }
+        return this._editorBloc!;
+    }
 
     constructor(){
         super({
@@ -157,11 +166,8 @@ class ImageEditorFormBloc extends FormBloc{
     validatorFunctionGiver(nameOfInput: string): ValidatorFunction<any> | undefined {
         return;
     }
+    
     postOnChangeFunctionGiver(nameOfInput: string): PostValidationOnChangeFunction<any> | undefined {
-        if(!this.editorBloc){
-            this.editorBloc!=ImageEditorHideBloc.search<ImageEditorHideBloc>("ImageEditorHideBloc",this.hostElement);
-        }
-
         if(nameOfInput === "brightness"){
             return (cv:Range)=>{
                 this.editorBloc.setBrightness(cv.end);
