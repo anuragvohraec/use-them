@@ -176,7 +176,9 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
                 }
                 .title{
                     color: white;
-                    padding: 20px;
+                    padding: 5px 20px;
+                    text-align: center;
+                    overflow-x:auto;
                 }
                 .output{
                     width: 300px;
@@ -185,7 +187,7 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
                 .opCont{
                     display: flex;
                     justify-content: center;
-                    padding: 12px;
+                    padding: 0px 12px;
                 }
                 .padH20{
                     padding: 0px 20px;
