@@ -131,6 +131,9 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
                     justify-content: center;
                     padding: 12px;
                 }
+                .inputs{
+                    padding: 0px 20px;
+                }
             </style>
             <div class="cont">
                 <lay-them in="column" ma="flex-start" ca="stretch">
@@ -138,7 +141,7 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
                     <div class="opCont">
                         <canvas class="output" width="300px" height="300px" id="output"></canvas>
                     </div>
-                    <div>
+                    <div class="inputs">
                         ${state?html``: html`<ut-ie-inputs style="--label-color:white;"></ut-ie-inputs>`}
                     </div>
                 </lay-them>
