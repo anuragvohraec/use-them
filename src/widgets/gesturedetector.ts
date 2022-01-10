@@ -433,15 +433,15 @@ export abstract class ZoomAndPanBloc extends Bloc<number>{
 }
 
 class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
-    private startX:number=0;
-    private startY:number=0;
+    private currentXForPan:number=0;
+    private currentYForPan:number=0;
 
     private handleStart={
         handleEvent:(e:TouchEvent)=>{
             e.stopPropagation();
             const touch = e.touches[0];
-            this.startX=touch.screenX;
-            this.startY=touch.screenY;
+            this.currentXForPan=touch.screenX;
+            this.currentYForPan=touch.screenY;
             return false;
         },
         capture:false
@@ -451,9 +451,9 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
         handleEvent:(e:TouchEvent)=>{
             e.stopPropagation();
             const touch = e.touches[0];
-            this.bloc?.onPan({x:touch.screenX-this.startX,y:touch.screenY-this.startY});
-            this.startX=touch.screenX;
-            this.startY=touch.screenY;
+            this.bloc?.onPan({x:touch.screenX-this.currentXForPan,y:touch.screenY-this.currentYForPan});
+            this.currentXForPan=touch.screenX;
+            this.currentYForPan=touch.screenY;
             return false;
         },
         capture:false
