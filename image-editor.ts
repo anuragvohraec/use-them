@@ -9,6 +9,9 @@ let imageBitMap:ImageBitmap;
 let opDim:XY={x:0,y:0};
 let offset_for_center:XY={x:0,y:0};
 let isInitialized:Promise<boolean>;
+let takeSnapTimer:any;
+let currentW:number=0;
+let currentH:number=0;
 
 async function process(msg:IEMessage){
     switch (msg.type) {
@@ -74,6 +77,9 @@ function resetOutputDimension(){
     opDim.x=vidw;
     opDim.y=vidh;
     
+    currentH=vidh;
+    currentW=vidw;
+
     offset_for_center={x:0,y:0};
 }
 
@@ -86,7 +92,16 @@ function draw(value:IEValue){
     ctx.rect(0, 0, 300, 300);
     ctx.fillStyle = "white";
     ctx.fill();
-    ctx.drawImage(imageBitMap,0,0,imageBitMap.width,imageBitMap.height,value.pan.x,value.pan.y,opDim.x*value.zoom,opDim.y*value.zoom);
+    const w = currentW*value.zoom;
+    const h= currentH*value.zoom;
+    ctx.drawImage(imageBitMap,0,0,imageBitMap.width,imageBitMap.height,value.pan.x,value.pan.y,w,h);
+    if(takeSnapTimer){
+        clearTimeout(takeSnapTimer);
+    }
+    takeSnapTimer=setTimeout(()=>{
+        currentW=w;
+        currentH=h;
+    },500);
 }
 
 worker_ctx.onmessage=(e:MessageEvent<IEMessage>)=>{

@@ -471,7 +471,7 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
             const touch1 = e.touches[0];
             let touch2:Touch|undefined=undefined;
 
-            if(this.touch2PointerID){
+            if(this.touch2PointerID && e.touches.length==2){
                 for(let i=0;i<e.touches.length;i++){
                     if(e.touches[i].identifier===this.touch2PointerID){
                         touch2=e.touches[i];
