@@ -436,24 +436,63 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
     private currentXForPan:number=0;
     private currentYForPan:number=0;
 
+    private initDistance:number=0;
+    private touch2PointerID?:number;
+
     private handleStart={
         handleEvent:(e:TouchEvent)=>{
             e.stopPropagation();
-            const touch = e.touches[0];
-            this.currentXForPan=touch.screenX;
-            this.currentYForPan=touch.screenY;
+            const touch1 = e.touches[0];
+            const touch2 = e.touches[1];
+
+            if(!touch2){
+                //case of pan
+                this.currentXForPan=touch1.screenX;
+                this.currentYForPan=touch1.screenY;
+                this.touch2PointerID=undefined;
+            }else{
+                this.touch2PointerID=touch2.identifier;
+                //case of zoom
+                this.initDistance = Math.abs(touch1.screenX-touch2.screenX);//this.calculateDistance({x:touch1.screenX,y:touch1.screenY},{x:touch2.screenX,y:touch2.screenY});
+            }
+
             return false;
         },
         capture:false
     }
 
+    calculateDistance1(p1:XY,p2:XY){
+        return Math.sqrt((p1.x-p2.x)**2+(p1.y-p2.y));
+    }
+
     private handleMove={
         handleEvent:(e:TouchEvent)=>{
             e.stopPropagation();
-            const touch = e.touches[0];
-            this.bloc?.onPan({x:touch.screenX-this.currentXForPan,y:touch.screenY-this.currentYForPan});
-            this.currentXForPan=touch.screenX;
-            this.currentYForPan=touch.screenY;
+            const touch1 = e.touches[0];
+            let touch2:Touch|undefined=undefined;
+
+            if(this.touch2PointerID){
+                for(let i=0;i<e.touches.length;i++){
+                    if(e.touches[i].identifier===this.touch2PointerID){
+                        touch2=e.touches[i];
+                        break;
+                    }
+                }    
+            }
+            
+            if(!touch2){
+                //case for panning
+                this.bloc?.onPan({x:touch1.screenX-this.currentXForPan,y:touch1.screenY-this.currentYForPan});
+                this.currentXForPan=touch1.screenX;
+                this.currentYForPan=touch1.screenY;
+            }else{
+                const currentDistance = Math.abs(touch1.screenX-touch2.screenX);//this.calculateDistance({x:touch1.screenX,y:touch1.screenY},{x:touch2.screenX,y:touch2.screenY});
+                const prevDistance = this.initDistance;
+                this.initDistance=currentDistance;
+
+                this.bloc?.onZoom(currentDistance-prevDistance);
+            }
+            
             return false;
         },
         capture:false

@@ -118,6 +118,12 @@ export class ImageEditorHideBloc extends HideBloc{
         this.currentValue.pan.y+=newValue.y;
         this.draw(this.currentValue);
     }
+
+    public onZoom(zoom:number){
+        //TODO implement this
+        this.currentValue.zoom+=zoom;
+        this.draw(this.currentValue);
+    }
 }
 
 class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
@@ -146,7 +152,7 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
             blocs_map:{
                 ZoomAndPanBloc: new class extends ZoomAndPanBloc{
                     onZoom=(zoom: number): void=> {
-                        throw new Error("Method not implemented.");
+                        imageEditorBloc?.onZoom(zoom);
                     }
                     onPan=(pan: XY): void =>{
                         imageEditorBloc?.onPan(pan);
