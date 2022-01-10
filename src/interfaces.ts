@@ -20,3 +20,41 @@ export interface InfoAboutAFile{size:number,ext:string, name:string}
 
 
 export interface PickedFileInfoForOutPut{file_name:string, fileBlob:Blob, fileHashBlob?:Blob, fileHash?:number[]}
+
+/**
+ * Image editor message type
+ */
+export enum IEMessageType{
+    NEW_IMAGE,
+    DRAW
+}
+
+export interface XY{
+    x:number;
+    y:number;
+}
+
+export interface IEInitConfig{
+    origBlob:Blob;
+    canvas:OffscreenCanvas;
+    opMaxLength:number;
+}
+
+/**
+ * Blob is must for image loading
+ */
+export interface IEValue{
+    brightness:number;
+    contrast:number;
+    zoom:number;
+    pan:{x:number,y:number};
+    initConfig?:IEInitConfig
+}
+
+/**
+ * Image editor message
+ */
+export interface IEMessage{
+    type:IEMessageType,
+    value:IEValue
+}

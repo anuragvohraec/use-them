@@ -27,4 +27,13 @@ export default [{
   plugins: [typescript(),resolve({
     browser:true
   }),terser({ format: { comments: false } })]
+},
+{
+  input: './image-editor.ts',
+  output: {
+    dir: 'dist'
+  },
+  plugins: [typescript(),resolve({
+    browser:true
+  }),terser({ format: { comments: false } })]
 }];
