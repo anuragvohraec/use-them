@@ -37,6 +37,7 @@ export interface XY{
 export interface IEInitConfig{
     origBlob:Blob;
     canvas:OffscreenCanvas;
+    baseDimension:XY,
     opMaxLength:number;
 }
 

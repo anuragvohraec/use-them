@@ -15,10 +15,11 @@ async function process(msg:IEMessage){
             isInitialized= new Promise(async res=>{
                 initConfig=msg.value.initConfig!;
                 
+                // initConfig.canvas.width=initConfig.baseDimension.x;
+                // initConfig.canvas.height=initConfig.baseDimension.y;
+
                 imageBitMap = await createImageBitmap(initConfig.origBlob);
                 setOPDimension();
-                initConfig.canvas.width=opDim.x;
-                initConfig.canvas.height=opDim.y;
 
                 let t = initConfig.canvas.getContext("2d");
                 if(t){
