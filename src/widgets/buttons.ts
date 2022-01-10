@@ -144,7 +144,7 @@ export class CircularIconButton extends NoBlocWidgetBuilder{
             throw "No icon provided in use attribute for circular-icon-button";
         }
         return html`
-        <div style="overflow: hidden;height: ${radius};width: ${radius};background-color: #7b7b7b12;border-radius: 50%;">
+        <div style="overflow: hidden;height: ${radius};width: ${radius};background-color: var(--bg-color,#7b7b7b12);border-radius: 50%;">
             <ink-well><lay-them ma="center" ca="center"><ut-icon icon="${icon}" use="icon_inactive: ${this.theme.primaryColor}"></ut-icon></lay-them></ink-well>
         </div>`;
     }

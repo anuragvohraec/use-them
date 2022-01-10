@@ -131,7 +131,7 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
                     justify-content: center;
                     padding: 12px;
                 }
-                .inputs{
+                .padH20{
                     padding: 0px 20px;
                 }
             </style>
@@ -141,8 +141,14 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
                     <div class="opCont">
                         <canvas class="output" width="300px" height="300px" id="output"></canvas>
                     </div>
-                    <div class="inputs">
+                    <div class="padH20">
                         ${state?html``: html`<ut-ie-inputs style="--label-color:white;"></ut-ie-inputs>`}
+                    </div>
+                    <div class="padH20">
+                        <lay-them in="row" ma="space-between">
+                            <circular-icon-button use="icon:done;primaryColor:white;" style="--bg-color:black;"></circular-icon-button>
+                            <circular-icon-button use="icon:clear;primaryColor:white;" style="--bg-color:black;"></circular-icon-button>
+                        </lay-them>
                     </div>
                 </lay-them>
             </div>`;
