@@ -152,7 +152,11 @@ import { Range } from './inputs/rangeselector';
     /**
      * Used only with range input
      */
-    range?:Range;
+    rangeSelectorConfig?:{
+        range:Range;
+        isint:boolean
+    }
+    
 }
 
 

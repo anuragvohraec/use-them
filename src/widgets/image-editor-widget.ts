@@ -170,11 +170,11 @@ class ImageEditorFormBloc extends FormBloc{
     postOnChangeFunctionGiver(nameOfInput: string): PostValidationOnChangeFunction<any> | undefined {
         if(nameOfInput === "brightness"){
             return (cv:Range)=>{
-                this.editorBloc.setBrightness(cv.end);
+                this.editorBloc.setBrightness(cv.end-50);
             }
         }else if(nameOfInput==="contrast"){
             return (cv:Range)=>{
-                this.editorBloc.setContrast(cv.end);
+                this.editorBloc.setContrast(cv.end-50);
             }
         }
     }
@@ -193,9 +193,12 @@ class ImageEditorInputs extends FormInputMaker{
                     config:{
                         bloc_name:"ImageEditorFormBloc",
                         name:"brightness",
-                        range:{
-                            end:100,
-                            start:0
+                        rangeSelectorConfig:{
+                            range:{
+                                end:100,
+                                start:0
+                            },
+                            isint:true
                         }
                     },
                     label:"Brightness"
@@ -205,9 +208,12 @@ class ImageEditorInputs extends FormInputMaker{
                     config:{
                         bloc_name:"ImageEditorFormBloc",
                         name:"contrast",
-                        range:{
-                            end:100,
-                            start:0
+                        rangeSelectorConfig:{
+                            range:{
+                                end:100,
+                                start:0
+                            },
+                            isint:true
                         }
                     },
                     label:"Contrast"
