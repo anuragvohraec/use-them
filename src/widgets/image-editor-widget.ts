@@ -185,6 +185,7 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
                     padding: 5px 20px;
                     text-align: center;
                     overflow-x:auto;
+                    user-select:none;
                 }
                 .output{
                     width: 300px;

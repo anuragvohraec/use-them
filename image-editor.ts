@@ -10,9 +10,6 @@ let opDim:XY={x:0,y:0};
 let offset_for_center:XY={x:0,y:0};
 let isInitialized:Promise<boolean>;
 
-let currentW:number=0;
-let currentH:number=0;
-
 async function process(msg:IEMessage){
     switch (msg.type) {
         case IEMessageType.INIT:{
@@ -76,9 +73,6 @@ function resetOutputDimension(){
     if (vidh >= opHeight) { vidw = ~~(vidw *= opHeight / vidh); vidh = opHeight;}
     opDim.x=vidw;
     opDim.y=vidh;
-
-    currentW=vidw;
-    currentH=vidh;
     
     offset_for_center={x:0,y:0};
 }
@@ -92,7 +86,7 @@ function draw(value:IEValue){
     ctx.rect(0, 0, 300, 300);
     ctx.fillStyle = "white";
     ctx.fill();
-    ctx.drawImage(imageBitMap,0,0,imageBitMap.width,imageBitMap.height,value.pan.x,value.pan.y,currentW*value.zoom,currentH*value.zoom);
+    ctx.drawImage(imageBitMap,0,0,imageBitMap.width,imageBitMap.height,value.pan.x,value.pan.y,opDim.x*value.zoom,opDim.y*value.zoom);
 }
 
 worker_ctx.onmessage=(e:MessageEvent<IEMessage>)=>{
