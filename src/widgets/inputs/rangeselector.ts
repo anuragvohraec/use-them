@@ -35,9 +35,9 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
             user-select: none;
            }
         </style>
-      <lay-them in="row" ma="center">
+      ${this.config.rangeSelectorConfig?.no_label?html``:html`<lay-them in="row" ma="center">
          <div class="no-select" style="font-weight: bold;  font-size: ${this.theme.H3_font_size};">${this.isint?this.value.start:this.value.start.toFixed(2)}</div>
-      </lay-them>
+      </lay-them>`}
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -171,7 +171,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
        d=""
        id="path833" />
     <circle
-       style="fill:${this.end_color};stroke:#ffffff;stroke-width: 4;"
+       style="fill:${this.end_color};stroke:#ffffff;stroke-width: 4;display:${this.config.rangeSelectorConfig?.no_start?'none':'block'};"
        id="start-handle"
        cy="25"
        r="${this.handleRadius}"
@@ -191,11 +191,11 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
        @touchmove=${this._end_dragHandler}/>
   </g>
 </svg>
-<lay-them in="row" ma="space-between">
-   <div class="no-select"><ut-p>${this.min}</ut-p></div>
-   <div class="no-select" style="font-weight: bold;  font-size: ${this.theme.H3_font_size};">${this.isint?this.value.end:this.value.end.toFixed(2)}</div>
-   <div class="no-select"><ut-p>${this.max}</ut-p></div>
-</lay-them>
+${this.config.rangeSelectorConfig?.no_label?html``:html`<lay-them in="row" ma="space-between">
+<div class="no-select"><ut-p>${this.min}</ut-p></div>
+<div class="no-select" style="font-weight: bold;  font-size: ${this.theme.H3_font_size};">${this.isint?this.value.end:this.value.end.toFixed(2)}</div>
+<div class="no-select"><ut-p>${this.max}</ut-p></div>
+</lay-them>`}
         `;
     }
 

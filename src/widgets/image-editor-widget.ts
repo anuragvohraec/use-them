@@ -198,7 +198,9 @@ class ImageEditorInputs extends FormInputMaker{
                                 end:100,
                                 start:0
                             },
-                            isint:true
+                            isint:true,
+                            no_label:true,
+                            no_start:true
                         }
                     },
                     label:"Brightness"
@@ -213,7 +215,9 @@ class ImageEditorInputs extends FormInputMaker{
                                 end:100,
                                 start:0
                             },
-                            isint:true
+                            isint:true,
+                            no_label:true,
+                            no_start:true
                         }
                     },
                     label:"Contrast"

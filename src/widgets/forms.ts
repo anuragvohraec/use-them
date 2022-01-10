@@ -154,7 +154,9 @@ import { Range } from './inputs/rangeselector';
      */
     rangeSelectorConfig?:{
         range:Range;
-        isint:boolean
+        isint:boolean;
+        no_label:boolean;
+        no_start:boolean;
     }
     
 }
