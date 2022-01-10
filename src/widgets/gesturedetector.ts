@@ -2,6 +2,7 @@ import { Bloc, BlocsProvider } from 'bloc-them';
 import { html, TemplateResult } from 'lit-html';
 import { WidgetBuilder} from '../utils/blocs.js';
 import {UseThemConfiguration} from "../configs";
+import { XY } from '../interfaces.js';
 
 export enum GESTURE{
     NO_ACTION,//0
@@ -425,3 +426,41 @@ export abstract class HorizontalScrollLimitDetector extends BlocsProvider{
         @touchmove=${this._discardTouch}><slot></slot></div>`;
     }
 }
+
+export abstract class ZoomAndPanBloc extends Bloc<number>{
+    abstract onZoom(zoom:number):void;
+    abstract onPan(pan:XY):void;
+}
+
+class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
+    private startX:number=0;
+    private startY:number=0;
+
+    private handleStart={
+        handleEvent:(e:TouchEvent)=>{
+            e.stopPropagation();
+            const touch = e.touches[0];
+            this.startX=touch.screenX;
+            this.startY=touch.screenY;
+            return false;
+        },
+        capture:false
+    }
+
+    private handleMove={
+        handleEvent:(e:TouchEvent)=>{
+            e.stopPropagation();
+            const touch = e.touches[0];
+            this.bloc?.onPan({x:touch.screenX-this.startX,y:touch.screenY-this.startY});
+            this.startX=touch.screenX;
+            this.startY=touch.screenY;
+            return false;
+        },
+        capture:false
+    }
+
+    builder(state: number): TemplateResult {
+        return html`<div id="target" style="width:100%;height:100%;" @touchstart=${this.handleStart} @touchmove=${this.handleMove}><slot></slot></div>`;
+    }
+}
+customElements.define("ut-pan-zoom-detector",ZoomAndPanWidget);

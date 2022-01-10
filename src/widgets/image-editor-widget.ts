@@ -1,10 +1,12 @@
+import { BlocBuilderConfig } from "bloc-them";
 import { html, TemplateResult } from "lit-html";
 import { UseThemConfiguration } from "../configs";
-import { IEMessage, IEMessageType, IEValue } from "../interfaces";
+import { IEMessage, IEMessageType, IEValue, XY } from "../interfaces";
 import { WidgetBuilder } from "../utils/blocs";
 import { FormInputMaker } from "../utils/makers/form-input-maker";
 import { HideBloc } from "./dialogues";
 import { FormBloc, FormMessageBloc, PostValidationOnChangeFunction, ValidatorFunction } from "./forms";
+import { ZoomAndPanBloc } from "./gesturedetector";
 import { Range } from "./inputs/rangeselector";
 
 interface ImageEditedListener{
@@ -110,6 +112,12 @@ export class ImageEditorHideBloc extends HideBloc{
     public acceptImage(){
         this.imageEditorWorker.postMessage({type:IEMessageType.GIVE_IMAGE});
     }
+
+    public onPan(newValue:XY){
+        this.currentValue.pan.x+=newValue.x;
+        this.currentValue.pan.y+=newValue.y;
+        this.draw(this.currentValue);
+    }
 }
 
 class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
@@ -130,6 +138,27 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
     acceptImage=(e:Event)=>{
         this.bloc?.acceptImage();
         this.bloc?.toggle();
+    }
+
+    private get zapBlocBuilderConfig():BlocBuilderConfig<ZoomAndPanBloc,number>{
+        let imageEditorBloc=this.bloc;
+        return {
+            blocs_map:{
+                ZoomAndPanBloc: new class extends ZoomAndPanBloc{
+                    onZoom=(zoom: number): void=> {
+                        throw new Error("Method not implemented.");
+                    }
+                    onPan=(pan: XY): void =>{
+                        imageEditorBloc?.onPan(pan);
+                    }
+    
+                    protected _name: string="ZoomAndPanBloc";
+                    constructor(){
+                        super(0);
+                    }
+                }
+            }
+        }
     }
 
     builder(state: boolean): TemplateResult {
@@ -166,7 +195,9 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
                 <lay-them in="column" ma="flex-start" ca="stretch">
                     <div class="title">${this.bloc?.fileName}</div>
                     <div class="opCont">
-                        <canvas class="output" width="300px" height="300px" id="output"></canvas>
+                        <ut-pan-zoom-detector bloc="ZoomAndPanBloc" .blocBuilderConfig=${this.zapBlocBuilderConfig as any}>
+                            <canvas class="output" width="300px" height="300px" id="output"></canvas>
+                        </ut-pan-zoom-detector>
                     </div>
                     <div class="padH20">
                         ${state?html``: html`<ut-ie-inputs style="--label-color:white;"></ut-ie-inputs>`}
