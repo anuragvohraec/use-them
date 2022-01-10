@@ -437,7 +437,7 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
             }
         </style>
         <backable-screen title=${title}>
-            <lay-them in="column" ca="stretch" ma="flex-start">
+            <lay-them in="column" ca="stretch" ma="space-between">
                 <div style="flex-grow: 1;height:0px;overflow-y: auto;padding: 10px;">
                     ${state.length===0?html`<lay-them ma="center" ca="center"><ut-p>no_file_selected</ut-p></lay-them>`:html`
                         <div class="image_grid">
