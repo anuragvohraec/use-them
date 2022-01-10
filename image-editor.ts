@@ -7,7 +7,7 @@ let canvas:OffscreenCanvas;
 let ctx:OffscreenCanvasRenderingContext2D;
 let imageBitMap:ImageBitmap;
 let opDim:XY={x:0,y:0};
-
+let offset_for_center:XY={x:0,y:0};
 let isInitialized:Promise<boolean>;
 
 async function process(msg:IEMessage){
@@ -21,14 +21,25 @@ async function process(msg:IEMessage){
         }break;
         case IEMessageType.NEW_IMAGE:{
             isInitialized= new Promise(async res=>{
-                if((msg.value as IEValue).newImageConfig){
-                    initConfig=(msg.value as IEValue).newImageConfig!;
+                let value = (msg.value as IEValue);
+                if(value.newImageConfig){
+                    initConfig=value.newImageConfig!;
                 
                     // initConfig.canvas.width=initConfig.baseDimension.x;
                     // initConfig.canvas.height=initConfig.baseDimension.y;
 
                     imageBitMap = await createImageBitmap(initConfig.origBlob);
-                    setOPDimension();
+                    resetOutputDimension();
+                    
+                    //center image
+                    if(opDim.x<canvas.width){
+                        offset_for_center.x=Math.floor((canvas.width-opDim.x)/2);
+                    }
+
+                    if(opDim.y<canvas.height){
+                        offset_for_center.y=Math.floor((canvas.height-opDim.y)/2);
+                    }
+
                     res(true);
                 }else{
                     res(false);
@@ -44,7 +55,7 @@ async function process(msg:IEMessage){
     }
 }
 
-function setOPDimension(){
+function resetOutputDimension(){
     let vidw=0;
     let vidh=0;
 
@@ -58,11 +69,15 @@ function setOPDimension(){
     if (vidh >= opHeight) { vidw = ~~(vidw *= opHeight / vidh); vidh = opHeight;}
     opDim.x=vidw;
     opDim.y=vidh;
+    
+    offset_for_center={x:0,y:0};
 }
 
 function draw(value:IEValue){
-    console.log("Drawaing");
-    
+    //offsetting to center
+    value.pan.x=value.pan.x+offset_for_center.x;
+    value.pan.y=value.pan.y+offset_for_center.y;
+
     ctx.filter = `brightness(${value.brightness+100}%) contrast(${100+value.contrast}%)`;
     ctx.rect(0, 0, 300, 300);
     ctx.fillStyle = "white";
