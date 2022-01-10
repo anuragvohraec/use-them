@@ -1,8 +1,8 @@
-import { IEInitConfig, IEMessage,IEMessageType, IEValue, XY } from "./src/interfaces";
+import { NewImageConfig, IEMessage,IEMessageType, IEValue, XY } from "./src/interfaces";
 
 const worker_ctx: Worker = self as any;
 
-let initConfig:IEInitConfig;
+let initConfig:NewImageConfig;
 let ctx:OffscreenCanvasRenderingContext2D;
 let imageBitMap:ImageBitmap;
 let opDim:XY={x:0,y:0};
@@ -11,27 +11,32 @@ let isInitialized:Promise<boolean>;
 
 async function process(msg:IEMessage){
     switch (msg.type) {
+        case IEMessageType.INIT:{
+            let t = (msg.value as OffscreenCanvas).getContext("2d");
+            if(t){
+                ctx=t;
+            } 
+        }break;
         case IEMessageType.NEW_IMAGE:{
             isInitialized= new Promise(async res=>{
-                initConfig=msg.value.initConfig!;
+                if((msg.value as IEValue).newImageConfig){
+                    initConfig=(msg.value as IEValue).newImageConfig!;
                 
-                // initConfig.canvas.width=initConfig.baseDimension.x;
-                // initConfig.canvas.height=initConfig.baseDimension.y;
+                    // initConfig.canvas.width=initConfig.baseDimension.x;
+                    // initConfig.canvas.height=initConfig.baseDimension.y;
 
-                imageBitMap = await createImageBitmap(initConfig.origBlob);
-                setOPDimension();
-
-                let t = initConfig.canvas.getContext("2d");
-                if(t){
-                    ctx=t;
+                    imageBitMap = await createImageBitmap(initConfig.origBlob);
+                    setOPDimension();
+                    res(true);
+                }else{
+                    res(false);
                 }
-                draw(msg.value);
-                res(true);
             });
-        }break;
+        }
         case IEMessageType.DRAW:{
-            await isInitialized;
-            draw(msg.value);
+            if(isInitialized && await isInitialized){
+                draw(msg.value as IEValue);
+            }
         }break;
         default: break;
     }

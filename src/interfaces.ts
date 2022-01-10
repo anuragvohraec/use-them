@@ -25,6 +25,7 @@ export interface PickedFileInfoForOutPut{file_name:string, fileBlob:Blob, fileHa
  * Image editor message type
  */
 export enum IEMessageType{
+    INIT,
     NEW_IMAGE,
     DRAW
 }
@@ -34,9 +35,8 @@ export interface XY{
     y:number;
 }
 
-export interface IEInitConfig{
+export interface NewImageConfig{
     origBlob:Blob;
-    canvas:OffscreenCanvas;
     baseDimension:XY,
     opMaxLength:number;
 }
@@ -49,7 +49,7 @@ export interface IEValue{
     contrast:number;
     zoom:number;
     pan:{x:number,y:number};
-    initConfig?:IEInitConfig
+    newImageConfig?:NewImageConfig
 }
 
 /**
@@ -57,5 +57,8 @@ export interface IEValue{
  */
 export interface IEMessage{
     type:IEMessageType,
-    value:IEValue
+    /**
+     * if type == INIT , then value is OffscreenCanvas
+     */
+    value:IEValue|OffscreenCanvas;
 }

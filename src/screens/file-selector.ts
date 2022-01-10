@@ -507,6 +507,19 @@ class ImageEditorHideBloc extends HideBloc{
         this._draw_value = value;
     }
 
+    onConnection(ctx:HTMLElement){
+        super.onConnection(ctx);
+        let offCan = this.canvas.transferControlToOffscreen();
+        let msg:IEMessage={
+            type:IEMessageType.INIT,
+            value:offCan
+        };
+        this.imageEditorWorker.postMessage(msg,[offCan]);
+    }
+
+    onDisconnection(){
+        this.imageEditorWorker.terminate();
+    }
 
     private resetInitValue(){
         const max_dimension=300;
@@ -516,9 +529,8 @@ class ImageEditorHideBloc extends HideBloc{
             contrast:0,
             pan:{x:0,y:0},
             zoom:1,
-            initConfig:{
+            newImageConfig:{
                 baseDimension:{x:max_dimension,y:max_dimension},
-                canvas:this.canvas.transferControlToOffscreen()       ,
                 opMaxLength:max_dimension,
                 origBlob:this.blob
             }
@@ -540,29 +552,20 @@ class ImageEditorHideBloc extends HideBloc{
 
     public set blob(value: Blob) {
         this._blob = value;
+        this.initDraw();
+    }
+
+    public initDraw(){
+        this.resetInitValue();
         this.draw(IEMessageType.NEW_IMAGE);
     }
     
     public draw(type:IEMessageType=IEMessageType.DRAW){
-        switch (type) {
-            case IEMessageType.NEW_IMAGE: {
-                this.resetInitValue();
-                let msg:IEMessage={
-                    type,
-                    value: this.draw_value
-                }
-                if(msg.value.initConfig?.canvas){
-                    this.imageEditorWorker.postMessage({msg},[msg.value.initConfig.canvas])
-                }
-            }break;
-            case IEMessageType.DRAW:{
-                let msg:IEMessage={
-                    type,
-                    value: this.draw_value
-                }
-                this.imageEditorWorker.postMessage({msg});
-            } break;
+        let msg:IEMessage={
+            type,
+            value: this.draw_value
         }
+        this.imageEditorWorker.postMessage({msg});
     }
 
 }
