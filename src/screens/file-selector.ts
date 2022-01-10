@@ -383,7 +383,7 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                     index,
                     fileName:this.bloc.selectedFiles[index].name,
                     blob:this.bloc.selectedFiles[index]
-                })
+                });
                 ihb.toggle();
             }
         }
