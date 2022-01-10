@@ -135,6 +135,7 @@ export class FormInputMaker extends BlocsProvider{
             }
             label{
                 color: var(--label-color,#000);
+                user-select:none;
             }
         </style>
         ${repeat(this.nameList,(item)=>item,(name,index)=>{
