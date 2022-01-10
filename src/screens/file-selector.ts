@@ -86,7 +86,7 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
         }else{
             const j = Array.from(context.files);
             this.current_selected_files = j;
-            this.emit(j.slice(0,max_files).map(f=>{
+            this.emit(this.current_selected_files.slice(0,max_files).map(f=>{
                 return {name: f.name, url: URL.createObjectURL(f),mime:f.type, size:f.size}
             }));
         }
@@ -380,10 +380,21 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
         if(ctx){
             const ihb = ImageEditorHideBloc.search<ImageEditorHideBloc>("ImageEditorHideBloc",ctx);
             if(ihb && this.bloc?.selectedFiles?.[index]){
+                const fileName = this.bloc.selectedFiles[index].name;
                 ihb.editImage({
                     index,
-                    fileName:this.bloc.selectedFiles[index].name,
-                    blob:this.bloc.selectedFiles[index]
+                    fileName,
+                    blob:this.bloc.selectedFiles[index],
+                    imageEditedListener:(blob:Blob,i:number)=>{
+                        if(this.bloc?.selectedFiles){
+                            this.bloc.selectedFiles[index]=new File([blob],fileName,{
+                                type:"image/webp"
+                            });
+                            this.bloc.emit(this.bloc.selectedFiles.slice(0,this.config.max_file).map(f=>{
+                                return {name: f.name, url: URL.createObjectURL(f),mime:f.type, size:f.size}
+                            }));
+                        }
+                    }
                 });
                 ihb.toggle();
             }

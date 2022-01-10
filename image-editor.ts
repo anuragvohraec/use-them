@@ -51,6 +51,10 @@ async function process(msg:IEMessage){
                 draw(msg.value as IEValue);
             }
         }break;
+        case IEMessageType.GIVE_IMAGE:{
+            const blob = await canvas.convertToBlob({type:"image/webp",quality:1});
+            worker_ctx.postMessage({blob});
+        }
         default: break;
     }
 }

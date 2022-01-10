@@ -7,11 +7,17 @@ import { HideBloc } from "./dialogues";
 import { FormBloc, FormMessageBloc, PostValidationOnChangeFunction, ValidatorFunction } from "./forms";
 import { Range } from "./inputs/rangeselector";
 
+interface ImageEditedListener{
+    (blob:Blob,index:number):void
+}
+
 export class ImageEditorHideBloc extends HideBloc{
     private _blob!: Blob;
     private _fileName!:string;
     private blobIndex:number=0;
     protected _name: string="ImageEditorHideBloc";
+
+    private imageEditedListener!:ImageEditedListener;
 
     private currentValue!:IEValue;
 
@@ -51,7 +57,13 @@ export class ImageEditorHideBloc extends HideBloc{
         };
     }
 
-    private imageEditorWorker= new Worker("/js/use-them/image-editor.js");
+    private imageEditorWorker= (()=>{
+        let w = new Worker("/js/use-them/image-editor.js");
+        w.onmessage=(e:MessageEvent<{blob:Blob}>)=>{
+            this.imageEditedListener(e.data.blob,4);
+        }
+        return w;
+    })();;
 
     private get canvas(): HTMLCanvasElement {
         if(!this._canvas){
@@ -74,9 +86,10 @@ export class ImageEditorHideBloc extends HideBloc{
         this.draw(this.getInitValue(),IEMessageType.NEW_IMAGE);
     }
 
-    public editImage({index,blob,fileName}:{index:number,blob:Blob,fileName:string}){
+    public editImage({index,blob,fileName,imageEditedListener}:{index:number,blob:Blob,fileName:string, imageEditedListener:ImageEditedListener}){
         this.blobIndex=index;
         this._fileName=fileName;
+        this.imageEditedListener=imageEditedListener;
         this.blob=blob;
     }
     
@@ -93,6 +106,10 @@ export class ImageEditorHideBloc extends HideBloc{
     public setContrast(newValue:number){
         this.draw({...this.currentValue,contrast:newValue});
     }
+    
+    public acceptImage(){
+        this.imageEditorWorker.postMessage({type:IEMessageType.GIVE_IMAGE});
+    }
 }
 
 class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
@@ -107,6 +124,11 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
     }
 
     hideEditor=(e:Event)=>{
+        this.bloc?.toggle();
+    }
+
+    acceptImage=(e:Event)=>{
+        this.bloc?.acceptImage();
         this.bloc?.toggle();
     }
 
@@ -151,7 +173,7 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
                     </div>
                     <div class="padH20">
                         <lay-them in="row" ma="space-between">
-                            <circular-icon-button use="icon:done;primaryColor:white;" style="--bg-color:black;"></circular-icon-button>
+                            <circular-icon-button use="icon:done;primaryColor:white;" style="--bg-color:black;" @click=${this.acceptImage}></circular-icon-button>
                             <circular-icon-button use="icon:clear;primaryColor:white;" style="--bg-color:black;" @click=${this.hideEditor}></circular-icon-button>
                         </lay-them>
                     </div>

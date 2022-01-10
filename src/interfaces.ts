@@ -27,7 +27,8 @@ export interface PickedFileInfoForOutPut{file_name:string, fileBlob:Blob, fileHa
 export enum IEMessageType{
     INIT,
     NEW_IMAGE,
-    DRAW
+    DRAW,
+    GIVE_IMAGE
 }
 
 export interface XY{
