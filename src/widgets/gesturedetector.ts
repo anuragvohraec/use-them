@@ -487,10 +487,7 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
                 this.currentYForPan=touch1.screenY;
             }else{
                 const currentDistance = Math.abs(touch1.screenX-touch2.screenX);//this.calculateDistance({x:touch1.screenX,y:touch1.screenY},{x:touch2.screenX,y:touch2.screenY});
-                const prevDistance = this.initDistance;
-                this.initDistance=currentDistance;
-
-                this.bloc?.onZoom(currentDistance-prevDistance);
+                this.bloc?.onZoom(currentDistance/this.initDistance);
             }
             
             return false;

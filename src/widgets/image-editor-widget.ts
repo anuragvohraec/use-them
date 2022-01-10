@@ -121,7 +121,7 @@ export class ImageEditorHideBloc extends HideBloc{
 
     public onZoom(zoom:number){
         //TODO implement this
-        this.currentValue.zoom+=zoom;
+        this.currentValue.zoom=zoom;
         this.draw(this.currentValue);
     }
 }
