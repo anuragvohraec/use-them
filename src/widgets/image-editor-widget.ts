@@ -69,6 +69,7 @@ export class ImageEditorHideBloc extends HideBloc{
     }
 
     public initDraw(){
+        ImageEditorFormBloc.search<ImageEditorFormBloc>("ImageEditorFormBloc",this.hostElement)?.resetForm();
         this.draw(this.getInitValue(),IEMessageType.NEW_IMAGE);
     }
 
@@ -90,13 +91,6 @@ export class ImageEditorHideBloc extends HideBloc{
 
     public setContrast(newValue:number){
         this.draw({...this.currentValue,contrast:newValue});
-    }
-
-    toggle(){
-        if(!this.state){
-            ImageEditorFormBloc.search<ImageEditorFormBloc>("ImageEditorFormBloc",this.hostElement)?.resetForm();
-        }
-        super.toggle();
     }
 }
 
