@@ -458,7 +458,7 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
 
             return false;
         },
-        capture:false
+        capture:true
     }
 
     calculateDistance1(p1:XY,p2:XY){
@@ -495,7 +495,7 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
             
             return false;
         },
-        capture:false
+        capture:true
     }
 
     builder(state: number): TemplateResult {
