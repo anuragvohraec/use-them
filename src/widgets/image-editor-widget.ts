@@ -1,4 +1,5 @@
 import { html, TemplateResult } from "lit-html";
+import { UseThemConfiguration } from "../configs";
 import { IEMessage, IEMessageType, IEValue } from "../interfaces";
 import { WidgetBuilder } from "../utils/blocs";
 import { FormInputMaker } from "../utils/makers/form-input-maker";
@@ -173,15 +174,15 @@ class ImageEditorFormBloc extends FormBloc{
 
     constructor(){
         super({
-            brightness:{start:0,end:50},
-            contrast:{start:0,end:50}
+            brightness:{start:0,end:UseThemConfiguration.IMAGE_EDIT_RANGE},
+            contrast:{start:0,end:UseThemConfiguration.IMAGE_EDIT_RANGE}
         });
     }
 
     resetForm(){
        this.emit({
-            brightness:{start:0,end:50},
-            contrast:{start:0,end:50}
+            brightness:{start:0,end:UseThemConfiguration.IMAGE_EDIT_RANGE},
+            contrast:{start:0,end:UseThemConfiguration.IMAGE_EDIT_RANGE}
         });
     }
 
@@ -192,11 +193,11 @@ class ImageEditorFormBloc extends FormBloc{
     postOnChangeFunctionGiver(nameOfInput: string): PostValidationOnChangeFunction<any> | undefined {
         if(nameOfInput === "brightness"){
             return (cv:Range)=>{
-                this.editorBloc.setBrightness(cv.end-50);
+                this.editorBloc.setBrightness(cv.end-UseThemConfiguration.IMAGE_EDIT_RANGE);
             }
         }else if(nameOfInput==="contrast"){
             return (cv:Range)=>{
-                this.editorBloc.setContrast(cv.end-50);
+                this.editorBloc.setContrast(cv.end-UseThemConfiguration.IMAGE_EDIT_RANGE);
             }
         }
     }
@@ -217,7 +218,7 @@ class ImageEditorInputs extends FormInputMaker{
                         name:"brightness",
                         rangeSelectorConfig:{
                             range:{
-                                end:100,
+                                end:2*UseThemConfiguration.IMAGE_EDIT_RANGE,
                                 start:0
                             },
                             isint:true,
@@ -234,7 +235,7 @@ class ImageEditorInputs extends FormInputMaker{
                         name:"contrast",
                         rangeSelectorConfig:{
                             range:{
-                                end:100,
+                                end:2*UseThemConfiguration.IMAGE_EDIT_RANGE,
                                 start:0
                             },
                             isint:true,
