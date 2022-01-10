@@ -3,6 +3,7 @@ import { NewImageConfig, IEMessage,IEMessageType, IEValue, XY } from "./src/inte
 const worker_ctx: Worker = self as any;
 
 let initConfig:NewImageConfig;
+let canvas:OffscreenCanvas;
 let ctx:OffscreenCanvasRenderingContext2D;
 let imageBitMap:ImageBitmap;
 let opDim:XY={x:0,y:0};
@@ -12,7 +13,8 @@ let isInitialized:Promise<boolean>;
 async function process(msg:IEMessage){
     switch (msg.type) {
         case IEMessageType.INIT:{
-            let t = (msg.value as OffscreenCanvas).getContext("2d");
+            canvas=(msg.value as OffscreenCanvas);
+            let t = canvas.getContext("2d");
             if(t){
                 ctx=t;
             } 
@@ -32,7 +34,7 @@ async function process(msg:IEMessage){
                     res(false);
                 }
             });
-        }
+        };
         case IEMessageType.DRAW:{
             if(isInitialized && await isInitialized){
                 draw(msg.value as IEValue);
@@ -59,6 +61,8 @@ function setOPDimension(){
 }
 
 function draw(value:IEValue){
+    console.log("Drawaing");
+    
     ctx.filter = `brightness(${value.brightness+100}%) contrast(${100+value.contrast}%)`;
     ctx.rect(0, 0, 300, 300);
     ctx.fillStyle = "white";

@@ -565,7 +565,7 @@ class ImageEditorHideBloc extends HideBloc{
             type,
             value: this.draw_value
         }
-        this.imageEditorWorker.postMessage({msg});
+        this.imageEditorWorker.postMessage(msg);
     }
 
 }

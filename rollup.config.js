@@ -35,5 +35,5 @@ export default [{
   },
   plugins: [typescript(),resolve({
     browser:true
-  }),terser({ format: { comments: false } })]
+  })]
 }];
