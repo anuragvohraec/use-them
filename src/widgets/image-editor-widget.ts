@@ -99,6 +99,7 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
                     height:100%;
                     background-color: #000000c7;
                     z-index: 3;
+                    backdrop-filter: blur(2px);
                 }
                 .title{
                     color: white;

@@ -442,7 +442,7 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                                         })()}></ut-picked-file-widget>`;
                                         default: return html`<lay-them in="stack">
                                             <img class="image_item" src=${pickedFileInfo.url}>
-                                            <div style="bottom:0px;width:100%;height:50px;background-color: #000000db;">
+                                            <div style="bottom:0px;width:100%;height:50px;background-color: #00000094;">
                                                 <lay-them in="row" ma="space-between" ma="center">
                                                     <div class="edit-button"  @click=${this.editIndex} i=${index}>
                                                         <ink-well>
