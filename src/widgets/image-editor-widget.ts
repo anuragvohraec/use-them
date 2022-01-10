@@ -91,6 +91,13 @@ export class ImageEditorHideBloc extends HideBloc{
     public setContrast(newValue:number){
         this.draw({...this.currentValue,contrast:newValue});
     }
+
+    toggle(){
+        if(!this.state){
+            ImageEditorFormBloc.search<ImageEditorFormBloc>("ImageEditorFormBloc",this.hostElement)?.resetForm();
+        }
+        super.toggle();
+    }
 }
 
 class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
@@ -163,6 +170,14 @@ class ImageEditorFormBloc extends FormBloc{
             contrast:{start:0,end:50}
         });
     }
+
+    resetForm(){
+       this.emit({
+            brightness:{start:0,end:50},
+            contrast:{start:0,end:50}
+        });
+    }
+
     validatorFunctionGiver(nameOfInput: string): ValidatorFunction<any> | undefined {
         return;
     }
