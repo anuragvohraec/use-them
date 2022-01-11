@@ -1,7 +1,7 @@
 import { BlocBuilderConfig } from "bloc-them";
 import { html, TemplateResult } from "lit-html";
 import { UseThemConfiguration } from "../configs";
-import { IEMessage, IEMessageType, IEValue, XY } from "../interfaces";
+import { IEDrawPurpose, IEMessage, IEMessageType, IEValue, XY } from "../interfaces";
 import { WidgetBuilder } from "../utils/blocs";
 import { FormInputMaker } from "../utils/makers/form-input-maker";
 import { HideBloc } from "./dialogues";
@@ -55,7 +55,8 @@ export class ImageEditorHideBloc extends HideBloc{
                 baseDimension:{x:max_dimension,y:max_dimension},
                 opMaxLength:max_dimension,
                 origBlob:this.blob
-            }
+            },
+            draw_purpose:IEDrawPurpose.NEW_IMAGE
         };
     }
 
@@ -102,11 +103,11 @@ export class ImageEditorHideBloc extends HideBloc{
     }
 
     public setBrightness(newValue:number){
-        this.draw({...this.currentValue,brightness:newValue});
+        this.draw({...this.currentValue,brightness:newValue, draw_purpose:IEDrawPurpose.BRIGHTNESS});
     }
 
     public setContrast(newValue:number){
-        this.draw({...this.currentValue,contrast:newValue});
+        this.draw({...this.currentValue,contrast:newValue, draw_purpose:IEDrawPurpose.CONTRAST});
     }
     
     public acceptImage(){
@@ -116,12 +117,14 @@ export class ImageEditorHideBloc extends HideBloc{
     public onPan(newValue:XY){
         this.currentValue.pan.x+=newValue.x;
         this.currentValue.pan.y+=newValue.y;
+        this.currentValue.draw_purpose=IEDrawPurpose.PAN;
         this.draw(this.currentValue);
     }
 
     public onZoom(zoom:number){
         //TODO implement this
         this.currentValue.zoom=zoom;
+        this.currentValue.draw_purpose=IEDrawPurpose.ZOOM;
         this.draw(this.currentValue);
     }
 }

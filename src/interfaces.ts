@@ -42,6 +42,14 @@ export interface NewImageConfig{
     opMaxLength:number;
 }
 
+export enum IEDrawPurpose{
+    NEW_IMAGE,
+    ZOOM,
+    PAN,
+    BRIGHTNESS,
+    CONTRAST
+}
+
 /**
  * Blob is must for image loading
  */
@@ -50,6 +58,7 @@ export interface IEValue{
     contrast:number;
     zoom:number;
     pan:{x:number,y:number};
+    draw_purpose:IEDrawPurpose;
     newImageConfig?:NewImageConfig
 }
 

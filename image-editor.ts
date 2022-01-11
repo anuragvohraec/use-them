@@ -1,4 +1,4 @@
-import { NewImageConfig, IEMessage,IEMessageType, IEValue, XY } from "./src/interfaces";
+import { NewImageConfig, IEMessage,IEMessageType, IEValue, XY, IEDrawPurpose } from "./src/interfaces";
 
 const worker_ctx: Worker = self as any;
 
@@ -97,11 +97,14 @@ function draw(value:IEValue){
     ctx.drawImage(imageBitMap,0,0,imageBitMap.width,imageBitMap.height,value.pan.x,value.pan.y,w,h);
     if(takeSnapTimer){
         clearTimeout(takeSnapTimer);
+        takeSnapTimer=undefined;
     }
-    takeSnapTimer=setTimeout(()=>{
-        currentW=w;
-        currentH=h;
-    },500);
+    if(value.draw_purpose===IEDrawPurpose.ZOOM){
+        takeSnapTimer=setTimeout(()=>{
+            currentW=w;
+            currentH=h;
+        },500);
+    }
 }
 
 worker_ctx.onmessage=(e:MessageEvent<IEMessage>)=>{
