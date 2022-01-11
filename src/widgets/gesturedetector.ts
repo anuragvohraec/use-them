@@ -439,6 +439,11 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
     private initDistance:number=0;
     private touch2PointerID?:number;
 
+    /**
+     * Used with zoom. If user holds a zoom, then this one solves that issue
+     */
+    private takeSnapTimer:any;
+
     private handleStart={
         handleEvent:(e:TouchEvent)=>{
             e.stopPropagation();
@@ -488,6 +493,13 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
             }else{
                 const currentDistance = Math.abs(touch1.screenX-touch2.screenX);//this.calculateDistance({x:touch1.screenX,y:touch1.screenY},{x:touch2.screenX,y:touch2.screenY});
                 this.bloc?.onZoom(currentDistance/this.initDistance);
+                if(this.takeSnapTimer){
+                    clearTimeout(this.takeSnapTimer);
+                    this.takeSnapTimer=undefined;
+                }
+                this.takeSnapTimer=setTimeout(()=>{
+                    this.initDistance=currentDistance;
+                },UseThemConfiguration.IMAGE_EDIT_ZOOM_RESPONSE_TIME);
             }
             
             return false;

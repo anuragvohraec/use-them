@@ -1,3 +1,4 @@
+import { UseThemConfiguration } from "./src/configs";
 import { NewImageConfig, IEMessage,IEMessageType, IEValue, XY, IEDrawPurpose } from "./src/interfaces";
 
 const worker_ctx: Worker = self as any;
@@ -103,7 +104,7 @@ function draw(value:IEValue){
         takeSnapTimer=setTimeout(()=>{
             currentW=w;
             currentH=h;
-        },500);
+        },UseThemConfiguration.IMAGE_EDIT_ZOOM_RESPONSE_TIME);
     }
 }
 
