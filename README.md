@@ -106,6 +106,37 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version": "9.0.12"
+1. Image editor tag `ut-image-editor` and its worker `image-editor.js`.
+2. Pan and Zoom gesture detector using `ut-pan-zoom-detector`.
+  ```js
+  html`
+  <ut-pan-zoom-detector bloc="ZoomAndPanBloc" .blocBuilderConfig=${this.zapBlocBuilderConfig as any}>
+      <canvas class="output" width="300px" height="300px" id="output"></canvas>
+  </ut-pan-zoom-detector>`;
+  private get zapBlocBuilderConfig():BlocBuilderConfig<ZoomAndPanBloc,number>{
+        let imageEditorBloc=this.bloc;
+        return {
+            blocs_map:{
+                ZoomAndPanBloc: new class extends ZoomAndPanBloc{
+                    onZoom=(zoom: number): void=> {
+                        //Do something on zoom
+                    }
+                    onPan=(pan: XY): void =>{
+                        //Do something on panning
+                    }
+    
+                    protected _name: string="ZoomAndPanBloc";
+                    constructor(){
+                        super(0);
+                    }
+                }
+            }
+        }
+    }
+  ```
+3. `RangeSelector` better initialization using `FormMaker`.
+
 ### "version": "9.0.9"
 1. File picker external triggers
 
