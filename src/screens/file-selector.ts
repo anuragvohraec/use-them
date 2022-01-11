@@ -118,84 +118,94 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
         return b;
     }
 
-    abstract upOnFileSelection(filePicked:PickedFileInfoForOutPut[]):void;
+    abstract upOnFileSelection(filePicked:PickedFileInfoForOutPut[]):any;
 
     async postFileMessage(context: HTMLElement,picker_type:FilePickerType){
-        let output_type:string="image/webp";
-        
+        let result: PickedFileInfoForOutPut[] = await this._processFilePicked(picker_type);
+        this.upOnFileSelection(result);
+        this.closeFilePicker(context);
+    }
+
+    async postFileMessageAndReturnValue(context: HTMLElement,picker_type:FilePickerType){
+        let result: PickedFileInfoForOutPut[] = await this._processFilePicked(picker_type);
+        let t = await this.upOnFileSelection(result);
+        this.closeFilePicker(context);
+        return t;
+    }
+
+    private async _processFilePicked(picker_type: FilePickerType) {
+        let output_type: string = "image/webp";
+
         const snackBarBloc = this.getBloc<SnackBarBloc>("SnackBarBloc");
-        if(!snackBarBloc){
-            throw `Please make sure to provide SnackBarBloc and snack-bar for this to work properly`
+        if (!snackBarBloc) {
+            throw `Please make sure to provide SnackBarBloc and snack-bar for this to work properly`;
         }
-            
+
 
         //TODO: here you can save attachment to some cloud storage
         //and instead save media_link in media_attachment
-
         //TODO: analytics on attachment can be done here to create tags by using AI
-        
-        let result: PickedFileInfoForOutPut[]=[];
+        let result: PickedFileInfoForOutPut[] = [];
 
-        if(this.current_selected_files){
-            let noImageHashRequired:boolean = false;
+        if (this.current_selected_files) {
+            let noImageHashRequired: boolean = false;
             //let save the media attachments
-            for(let f of this.current_selected_files){
-                let compressed_file:Blob;
-                let file_hash:Blob;
-                switch(picker_type){
-                    case FilePickerType.IMAGE:{
-                        compressed_file=await this.convertImage({
-                            id:"dummy",
-                            file:f,
+            for (let f of this.current_selected_files) {
+                let compressed_file: Blob;
+                let file_hash: Blob;
+                switch (picker_type) {
+                    case FilePickerType.IMAGE: {
+                        compressed_file = await this.convertImage({
+                            id: "dummy",
+                            file: f,
                             max_length: 500,
-                            quality:0.80,
+                            quality: 0.80,
                             type: output_type
                         });
-                        file_hash=await this.createImageHash(f);
+                        file_hash = await this.createImageHash(f);
                         break;
                     }
-                    case FilePickerType.VIDEO:{
-                        compressed_file=f;
-                        file_hash=await this.createVideoHash(await Utils.getVideoCover(f));
+                    case FilePickerType.VIDEO: {
+                        compressed_file = f;
+                        file_hash = await this.createVideoHash(await Utils.getVideoCover(f));
                         break;
                     }
-                    case FilePickerType.AUDIO:{
-                        compressed_file=f;
-                        noImageHashRequired=true;
+                    case FilePickerType.AUDIO: {
+                        compressed_file = f;
+                        noImageHashRequired = true;
                         break;
                     }
-                    case FilePickerType.FILE:{
-                        compressed_file=f;
-                        noImageHashRequired=true;
+                    case FilePickerType.FILE: {
+                        compressed_file = f;
+                        noImageHashRequired = true;
                         break;
                     }
                     default:
-                            throw "Not defined yet";
+                        throw "Not defined yet";
                 }
-                const attachment_name:string =f.name;
-                let r : PickedFileInfoForOutPut = {
+                const attachment_name: string = f.name;
+                let r: PickedFileInfoForOutPut = {
                     fileBlob: compressed_file,
                     file_name: attachment_name,
-                }
-                if(!noImageHashRequired){
-                    const ab = await new Promise<Uint8Array>(res=>{
+                };
+                if (!noImageHashRequired) {
+                    const ab = await new Promise<Uint8Array>(res => {
                         const fr = new FileReader();
-                        fr.onloadend=()=>{
+                        fr.onloadend = () => {
                             let t = new Uint8Array(fr.result as ArrayBuffer);
                             res(t);
-                        }
+                        };
                         fr.readAsArrayBuffer(file_hash);
                     });
                     let t = Array.from(ab);
-                    r.fileHash=t;
-                    r.fileHashBlob=file_hash!;
+                    r.fileHash = t;
+                    r.fileHashBlob = file_hash!;
                 }
 
                 result.push(r);
             }
         }
-        this.upOnFileSelection(result);
-        this.closeFilePicker(context);
+        return result;
     }
 
     closeFilePicker(context:HTMLElement){
