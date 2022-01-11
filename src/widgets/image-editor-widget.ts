@@ -122,8 +122,15 @@ export class ImageEditorHideBloc extends HideBloc{
     }
 
     public onZoom(zoom:number){
+        let effectiveZoom:number=zoom;
+        if(zoom>1+UseThemConfiguration.IMAGE_EDIT_ZOOM_SENSITIVITY){
+            effectiveZoom=1+UseThemConfiguration.IMAGE_EDIT_ZOOM_SENSITIVITY;
+        }else if(zoom<1-UseThemConfiguration.IMAGE_EDIT_ZOOM_SENSITIVITY){
+            effectiveZoom=1-UseThemConfiguration.IMAGE_EDIT_ZOOM_SENSITIVITY;
+        }
+
         //TODO implement this
-        this.currentValue.zoom=zoom;
+        this.currentValue.zoom=effectiveZoom;
         this.currentValue.draw_purpose=IEDrawPurpose.ZOOM;
         this.draw(this.currentValue);
     }
