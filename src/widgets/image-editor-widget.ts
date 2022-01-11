@@ -44,8 +44,12 @@ export class ImageEditorHideBloc extends HideBloc{
     }
 
     private getInitValue():IEValue{
-        const max_dimension=300;
-
+        let t=UseThemConfiguration.IMAGE_EDIT_OP_DEFAULT_SIZE;
+        let p = this.hostElement.getAttribute("iesize");
+        if(p){
+            t= parseInt(p)??UseThemConfiguration.IMAGE_EDIT_OP_DEFAULT_SIZE;
+        }
+        const max_dimension=t;
         return {
             brightness:0,
             contrast:0,
@@ -176,6 +180,14 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
             }
         }
     }
+    
+    private get iesize():string{
+        let t = this.getAttribute("iesize");
+        if(!t){
+            t="300px";
+        }
+        return t;
+    }
 
     builder(state: boolean): TemplateResult {
         return html`
@@ -215,7 +227,7 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
                     <div class="title">${this.bloc?.fileName}</div>
                     <div class="opCont">
                         <ut-pan-zoom-detector bloc="ZoomAndPanBloc" .blocBuilderConfig=${this.zapBlocBuilderConfig as any}>
-                            <canvas class="output" width="300px" height="300px" id="output"></canvas>
+                            <canvas class="output" width=${this.iesize} height=${this.iesize} id="output"></canvas>
                         </ut-pan-zoom-detector>
                     </div>
                     <div class="padH20">

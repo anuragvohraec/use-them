@@ -284,6 +284,7 @@ export interface FilePickerConfig{
     max_file:number,
     bloc_config?: BlocBuilderConfig<FilePickerBloc,PickedFileInfo[]>;
     picker_config?:PickerConfig;
+    imageEditorOutPutSize?:string;
 }
 
 /**
@@ -501,6 +502,6 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                 </div>
             </lay-them>
         </backable-screen>
-        <ut-image-editor></ut-image-editor>`;
+        <ut-image-editor iesize=${this.config.imageEditorOutPutSize??"500px"}></ut-image-editor>`;
     }
 }

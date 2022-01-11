@@ -90,7 +90,7 @@ function draw(value:IEValue){
     value.pan.y=value.pan.y+offset_for_center.y;
 
     ctx.filter = `brightness(${value.brightness+100}%) contrast(${100+value.contrast}%)`;
-    ctx.rect(0, 0, 300, 300);
+    ctx.rect(0, 0, initConfig.opMaxLength, initConfig.opMaxLength);
     ctx.fillStyle = "white";
     ctx.fill();
     const w = currentW*value.zoom;
