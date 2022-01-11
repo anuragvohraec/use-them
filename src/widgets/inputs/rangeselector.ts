@@ -175,7 +175,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
        id="start-handle"
        cy="25"
        r="${this.handleRadius}"
-       @click=${this.hasTouched}
+       
        @touchstart=${this._drag_ON}
        @touchend=${this._drag_OFF}
        @touchmove=${this._start_dragHandler}
@@ -185,7 +185,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
        id="end-handle"
        cy="25"
        r="${this.handleRadius}"
-       @click=${this.hasTouched}
+       
        @touchstart=${this._drag_ON}
        @touchend=${this._drag_OFF}
        @touchmove=${this._end_dragHandler}/>
@@ -200,16 +200,18 @@ ${this.config.rangeSelectorConfig?.no_label?html``:html`<lay-them in="row" ma="s
     }
 
     
-    hasTouched=(e:Event)=>{
-      navigator.vibrate(UseThemConfiguration.PRESS_VIB);
-    }
+   //  hasTouched=(e:Event)=>{
+   //    navigator.vibrate(UseThemConfiguration.PRESS_VIB);
+   //  }
 
     _drag_ON= (e:TouchEvent)=>{
      this.isDraging=true;
+     navigator.vibrate(UseThemConfiguration.PRESS_VIB);
    }
 
    _drag_OFF=(e:TouchEvent)=>{
       this.isDraging=false;
+      navigator.vibrate(0);
    }
 
    _drag=(posX:number)=>{
@@ -223,6 +225,7 @@ ${this.config.rangeSelectorConfig?.no_label?html``:html`<lay-them in="row" ma="s
         }else if(posX>maxEx){
            posX = maxEx;
         }
+        navigator.vibrate(UseThemConfiguration.DRAG_VIB);
      }else{
         console.log("no drag on");
      }
