@@ -225,7 +225,6 @@ ${this.config.rangeSelectorConfig?.no_label?html``:html`<lay-them in="row" ma="s
         }else if(posX>maxEx){
            posX = maxEx;
         }
-        navigator.vibrate(UseThemConfiguration.DRAG_VIB);
      }else{
         console.log("no drag on");
      }
