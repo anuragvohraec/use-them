@@ -120,16 +120,20 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
 
     abstract upOnFileSelection(filePicked:PickedFileInfoForOutPut[]):any;
 
-    async postFileMessage(context: HTMLElement,picker_type:FilePickerType){
+    async postFileMessage(context: HTMLElement,picker_type:FilePickerType,doNotCloseFilePicker:boolean=false){
         let result: PickedFileInfoForOutPut[] = await this._processFilePicked(picker_type);
         this.upOnFileSelection(result);
-        this.closeFilePicker(context);
+        if(!doNotCloseFilePicker){
+            this.closeFilePicker(context);
+        }
     }
 
-    async postFileMessageAndReturnValue(context: HTMLElement,picker_type:FilePickerType){
+    async postFileMessageAndReturnValue(context: HTMLElement,picker_type:FilePickerType,doNotCloseFilePicker:boolean=false){
         let result: PickedFileInfoForOutPut[] = await this._processFilePicked(picker_type);
         let t = await this.upOnFileSelection(result);
-        this.closeFilePicker(context);
+        if(!doNotCloseFilePicker){
+            this.closeFilePicker(context);
+        }
         return t;
     }
 
