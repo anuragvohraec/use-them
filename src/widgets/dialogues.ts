@@ -28,6 +28,29 @@ export class HideBloc extends Bloc<boolean>{
         }
     }
 
+    show(){
+        if(this.overlay_id){
+            //if its hidden
+            if(this.state){
+                this.emit(false);
+                AppPageBloc.search<AppPageBloc>("AppPageBloc",this.hostElement)?.pushOverlayStack(this.overlay_id);
+            }
+        }else{
+            this.emit(false);
+        }
+    }
+
+    hide(){
+        if(this.overlay_id){
+            //if its showing
+            if(!this.state){
+                AppPageBloc.search<AppPageBloc>("AppPageBloc",this.hostElement)?.popOutOfCurrentPage();
+            }
+        }else{
+            this.emit(true);
+        }
+    }
+
 
     private overlayPageBloc?:OverlayPageBloc;
     private overlayPageBlocListenerId?:string;

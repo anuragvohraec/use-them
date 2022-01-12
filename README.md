@@ -106,6 +106,9 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version": "9.0.13"
+1. Added `show` and `hide` method in HideBloc
+
 ### "version": "9.0.12"
 1. Image editor tag `ut-image-editor` and its worker `image-editor.js`.
 2. Pan and Zoom gesture detector using `ut-pan-zoom-detector`.
