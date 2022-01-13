@@ -141,27 +141,33 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
 
     async postFileMessage(context: HTMLElement,picker_type:FilePickerType,doNotCloseFilePicker:boolean=false){
             const simulation_id = await this.simulateFasterProcessing();
-            this._processFilePicked(picker_type).then(result=>{
-                return this.upOnFileSelection(result,simulation_id);
-            }).then(r=>{
-                this.cleanUpAfterProcessing(simulation_id);
-            })
+
+            (async(files:File[])=>{
+               let result = await this._processFilePicked(picker_type,files!);
+               await this.upOnFileSelection(result,simulation_id);
+               await this.cleanUpAfterProcessing(simulation_id);
+            })(this.selectedFiles!);
+
+            this.current_selected_files=undefined;
+            this.emit([]);
             
             if(!doNotCloseFilePicker){
                 this.closeFilePicker(context);
             }
     }
 
-    async postFileMessageAndReturnValue(context: HTMLElement,picker_type:FilePickerType,doNotCloseFilePicker:boolean=false){
-        let result: PickedFileInfoForOutPut[] = await this._processFilePicked(picker_type);
-        let t = await this.upOnFileSelection(result);
-        if(!doNotCloseFilePicker){
-            this.closeFilePicker(context);
+    async postFileMessageAndReturnValue(context: HTMLInputElement,picker_type:FilePickerType,doNotCloseFilePicker:boolean=false){
+        if(context.files){
+            let result: PickedFileInfoForOutPut[] = await this._processFilePicked(picker_type,Array.from(context.files));
+            let t = await this.upOnFileSelection(result);
+            if(!doNotCloseFilePicker){
+                this.closeFilePicker(context);
+            }
+            return t;
         }
-        return t;
     }
 
-    private async _processFilePicked(picker_type: FilePickerType) {
+    private async _processFilePicked(picker_type: FilePickerType, files:File[]) {
         let output_type: string = "image/webp";
 
         const snackBarBloc = this.getBloc<SnackBarBloc>("SnackBarBloc");
@@ -175,10 +181,10 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
         //TODO: analytics on attachment can be done here to create tags by using AI
         let result: PickedFileInfoForOutPut[] = [];
 
-        if (this.current_selected_files) {
+        if (files) {
             let noImageHashRequired: boolean = false;
             //let save the media attachments
-            for (let f of this.current_selected_files) {
+            for (let f of files) {
                 let compressed_file: Blob;
                 let file_hash: Blob;
                 switch (picker_type) {
