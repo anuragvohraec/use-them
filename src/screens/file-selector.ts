@@ -118,7 +118,7 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
         return b;
     }
 
-    abstract upOnFileSelection(filePicked:PickedFileInfoForOutPut[]):any;
+    abstract upOnFileSelection(filePicked:PickedFileInfoForOutPut[], simulation_id?:string):any;
 
     /**
      * This function could be used for simulating faster processing.
@@ -142,7 +142,7 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
     async postFileMessage(context: HTMLElement,picker_type:FilePickerType,doNotCloseFilePicker:boolean=false){
             const simulation_id = await this.simulateFasterProcessing();
             this._processFilePicked(picker_type).then(result=>{
-                return this.upOnFileSelection(result);
+                return this.upOnFileSelection(result,simulation_id);
             }).then(r=>{
                 this.cleanUpAfterProcessing(simulation_id);
             })
