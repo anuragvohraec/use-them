@@ -120,12 +120,36 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
 
     abstract upOnFileSelection(filePicked:PickedFileInfoForOutPut[]):any;
 
+    /**
+     * This function could be used for simulating faster processing.
+     * Say a chat window can creat some cache items to show item is under upload.
+     * And is generally supported by some cache to store some temporary data.
+     * @returns simulation id, which is used by clean up later 
+     */
+    protected async simulateFasterProcessing():Promise<string>{
+        return "dummy";
+    }
+
+    /**
+     * Is used in conjunction with simulate faster processing, to clean up any resource after all things are processed
+     * @param simulation_id 
+     * @returns 
+     */
+    protected async cleanUpAfterProcessing(simulation_id:string):Promise<void>{
+        return ;
+    }
+
     async postFileMessage(context: HTMLElement,picker_type:FilePickerType,doNotCloseFilePicker:boolean=false){
-        let result: PickedFileInfoForOutPut[] = await this._processFilePicked(picker_type);
-        this.upOnFileSelection(result);
-        if(!doNotCloseFilePicker){
-            this.closeFilePicker(context);
-        }
+            const simulation_id = await this.simulateFasterProcessing();
+            this._processFilePicked(picker_type).then(result=>{
+                return this.upOnFileSelection(result);
+            }).then(r=>{
+                this.cleanUpAfterProcessing(simulation_id);
+            })
+            
+            if(!doNotCloseFilePicker){
+                this.closeFilePicker(context);
+            }
     }
 
     async postFileMessageAndReturnValue(context: HTMLElement,picker_type:FilePickerType,doNotCloseFilePicker:boolean=false){
