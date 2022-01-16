@@ -118,34 +118,34 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
         return b;
     }
 
-    abstract upOnFileSelection(filePicked:PickedFileInfoForOutPut[], simulation_id?:string, context?:HTMLElement):any;
+    abstract upOnFileSelection(filePicked:PickedFileInfoForOutPut[], simulation_ctx?:any):any;
 
     /**
      * This function could be used for simulating faster processing.
      * Say a chat window can creat some cache items to show item is under upload.
      * And is generally supported by some cache to store some temporary data.
-     * @returns simulation id, which is used by clean up later 
+     * @returns simulation_ctx which can be used by clean up later 
      */
-    protected async simulateFasterProcessing():Promise<string>{
+    protected async simulateFasterProcessing(context: HTMLElement):Promise<any>{
         return "dummy";
     }
 
     /**
      * Is used in conjunction with simulate faster processing, to clean up any resource after all things are processed
-     * @param simulation_id 
+     * @param simulation_ctx 
      * @returns 
      */
-    protected async cleanUpAfterProcessing(simulation_id:string):Promise<void>{
+    protected async cleanUpAfterProcessing(simulation_ctx:any):Promise<void>{
         return ;
     }
 
     async postFileMessage(context: HTMLElement,picker_type:FilePickerType,doNotCloseFilePicker:boolean=false){
-            const simulation_id = await this.simulateFasterProcessing();
+            const simulation_ctx = await this.simulateFasterProcessing(context);
 
             (async(files:File[])=>{
                let result = await this._processFilePicked(picker_type,files!);
-               await this.upOnFileSelection(result,simulation_id, context);
-               await this.cleanUpAfterProcessing(simulation_id);
+               await this.upOnFileSelection(result,simulation_ctx);
+               await this.cleanUpAfterProcessing(simulation_ctx);
             })(this.selectedFiles!);
 
             this.current_selected_files=undefined;
@@ -159,7 +159,7 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
     async postFileMessageAndReturnValue(context: HTMLInputElement,picker_type:FilePickerType,doNotCloseFilePicker:boolean=false){
         if(context.files){
             let result: PickedFileInfoForOutPut[] = await this._processFilePicked(picker_type,Array.from(context.files));
-            let t = await this.upOnFileSelection(result,undefined,context);
+            let t = await this.upOnFileSelection(result);
             if(!doNotCloseFilePicker){
                 this.closeFilePicker(context);
             }
