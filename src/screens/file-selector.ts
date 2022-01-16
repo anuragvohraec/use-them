@@ -118,7 +118,7 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
         return b;
     }
 
-    abstract upOnFileSelection(filePicked:PickedFileInfoForOutPut[], simulation_id?:string):any;
+    abstract upOnFileSelection(filePicked:PickedFileInfoForOutPut[], simulation_id?:string, context?:HTMLElement):any;
 
     /**
      * This function could be used for simulating faster processing.
@@ -144,7 +144,7 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
 
             (async(files:File[])=>{
                let result = await this._processFilePicked(picker_type,files!);
-               await this.upOnFileSelection(result,simulation_id);
+               await this.upOnFileSelection(result,simulation_id, context);
                await this.cleanUpAfterProcessing(simulation_id);
             })(this.selectedFiles!);
 
@@ -159,7 +159,7 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
     async postFileMessageAndReturnValue(context: HTMLInputElement,picker_type:FilePickerType,doNotCloseFilePicker:boolean=false){
         if(context.files){
             let result: PickedFileInfoForOutPut[] = await this._processFilePicked(picker_type,Array.from(context.files));
-            let t = await this.upOnFileSelection(result);
+            let t = await this.upOnFileSelection(result,undefined,context);
             if(!doNotCloseFilePicker){
                 this.closeFilePicker(context);
             }
@@ -533,12 +533,12 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                             </div>
                             <div>
                                 <circular-icon-button use="icon:done;" @click=${(e:Event)=>{  
-                                    this.bloc?.postFileMessage(e.target as HTMLElement,this.picker_config.type);
+                                    this.bloc?.postFileMessage(e.currentTarget as HTMLElement,this.picker_config.type);
                                 }}></circular-icon-button>
                             </div>
                             <div>
                                 <circular-icon-button use="icon:clear;" @click=${(e:Event)=>{
-                                    this.bloc?.closeFilePicker(e.target as HTMLElement);
+                                    this.bloc?.closeFilePicker(e.currentTarget as HTMLElement);
                                 }}></circular-icon-button>
                             </div>
                         </lay-them>
