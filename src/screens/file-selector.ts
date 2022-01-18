@@ -27,17 +27,21 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
 
     private current_selected_files?: File[];
     private _max_file_picker:number=-1;
-    private count:number=0;
-    private resolvers: Record<number,any>={};
-    private worker: Worker;
+    private static count:number=0;
+    private static resolvers: Record<number,any>={};
+    private static worker: Worker=FilePickerBloc.initializeWorker();
 
-    constructor(){
-        super([]);
-        this.worker = new Worker("/js/use-them/image-utils.js");
-        this.worker.onmessage=(e:MessageEvent<ImageCompressOutPut>)=>{
+    private static initializeWorker(){
+        let worker = new Worker("/js/use-them/image-utils.js");
+        worker.onmessage=(e:MessageEvent<ImageCompressOutPut>)=>{
             this.resolvers[e.data.id](e.data.file);
             delete this.resolvers[e.data.id];
         }
+        return worker;
+    }
+
+    constructor(){
+        super([]);
     }
 
     
@@ -93,14 +97,14 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
     }
 
     convertImage(req:IncomingRequest){
-        this.count++;
-        const id = this.count;
+        FilePickerBloc.count++;
+        const id = FilePickerBloc.count;
         //@ts-ignore
         req.id=id;
 
         return new Promise<Blob>(res=>{
-            this.resolvers[id]=res;
-            this.worker.postMessage(req);
+            FilePickerBloc.resolvers[id]=res;
+            FilePickerBloc.worker.postMessage(req);
         });
     }
 
@@ -189,13 +193,18 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
                 let file_hash: Blob;
                 switch (picker_type) {
                     case FilePickerType.IMAGE: {
-                        compressed_file = await this.convertImage({
-                            id: "dummy",
-                            file: f,
-                            max_length: 500,
-                            quality: 0.80,
-                            type: output_type
-                        });
+                        if(f.type==="image/gif"){
+                            compressed_file=f;
+                        }else{
+                            compressed_file = await this.convertImage({
+                                id: "dummy",
+                                file: f,
+                                max_length: 500,
+                                quality: 0.80,
+                                type: output_type
+                            });
+                        }
+                        
                         file_hash = await this.createImageHash(f);
                         break;
                     }

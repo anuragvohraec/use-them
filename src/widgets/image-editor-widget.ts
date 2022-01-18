@@ -67,7 +67,7 @@ export class ImageEditorHideBloc extends HideBloc{
     private imageEditorWorker= (()=>{
         let w = new Worker("/js/use-them/image-editor.js");
         w.onmessage=(e:MessageEvent<{blob:Blob}>)=>{
-            this.imageEditedListener(e.data.blob,4);
+            this.imageEditedListener(e.data.blob,this.blobIndex);
         }
         return w;
     })();;
