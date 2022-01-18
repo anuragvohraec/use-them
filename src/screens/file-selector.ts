@@ -3,7 +3,7 @@ import { html, nothing, TemplateResult } from "lit-html";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { repeat } from "lit-html/directives/repeat";
 import { IEMessage, IEMessageType, IEValue, IncomingRequest, InfoAboutAFile,PickedFileInfoForOutPut } from "../interfaces";
-import { BogusBloc, WidgetBuilder } from "../utils/blocs";
+import { BogusBloc, NoBlocWidgetBuilder, UtRegistryBloc, WidgetBuilder } from "../utils/blocs";
 import { Utils } from "../utils/utils";
 import { HideBloc } from "../widgets/dialogues";
 import { ImageEditorHideBloc } from "../widgets/image-editor-widget";
@@ -431,8 +431,8 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
         const t= e.currentTarget as HTMLElement;
         const index:number = parseInt(t.getAttribute("i")??"0");
         const ctx = this.shadowRoot?.querySelector("ut-image-editor") as HTMLElement;
-        if(ctx){
-            const ihb = ImageEditorHideBloc.search<ImageEditorHideBloc>("ImageEditorHideBloc",ctx);
+        if(true||ctx){
+            const ihb = UtRegistryBloc.get<ImageEditorHideBloc>("ImageEditorHideBloc");//ImageEditorHideBloc.search<ImageEditorHideBloc>("ImageEditorHideBloc",ctx);
             if(ihb && this.bloc?.selectedFiles?.[index]){
                 const fileName = this.bloc.selectedFiles[index].name;
                 ihb.editImage({
@@ -554,7 +554,17 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                     </image-picker-confirmation-box-container>
                 </div>
             </lay-them>
-        </backable-screen>
-        <ut-image-editor iesize=${this.config.imageEditorOutPutSize??"500px"}></ut-image-editor>`;
+        </backable-screen>`;
     }
 }
+
+
+class FilePickerFunctionalityProvider extends NoBlocWidgetBuilder{
+    builder(state: number): TemplateResult {
+        return html`<div style="width:100%;height:100%">
+        <slot></slot>
+        </div>
+        <ut-image-editor iesize=${this.getAttribute("iesize")??"500px"}></ut-image-editor>`;
+    }
+}
+customElements.define("ut-file-picker-editor",FilePickerFunctionalityProvider);

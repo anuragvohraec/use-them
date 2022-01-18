@@ -2,7 +2,7 @@ import { BlocBuilderConfig } from "bloc-them";
 import { html, TemplateResult } from "lit-html";
 import { UseThemConfiguration } from "../configs";
 import { IEDrawPurpose, IEMessage, IEMessageType, IEValue, XY } from "../interfaces";
-import { WidgetBuilder } from "../utils/blocs";
+import { UtRegistryBloc, WidgetBuilder } from "../utils/blocs";
 import { FormInputMaker } from "../utils/makers/form-input-maker";
 import { HideBloc } from "./dialogues";
 import { FormBloc, FormMessageBloc, PostValidationOnChangeFunction, ValidatorFunction } from "./forms";
@@ -149,6 +149,11 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
                 FormMessageBloc: new FormMessageBloc()
             }
         });
+    }
+
+    connectedCallback(){
+        super.connectedCallback();
+        UtRegistryBloc.add("ImageEditorHideBloc",this.configs!.blocs_map!["ImageEditorHideBloc"]);
     }
 
     hideEditor=(e:Event)=>{

@@ -56,3 +56,23 @@ export abstract class NoBlocNoStateWidget extends BlocsProvider{
         super({});
     }
 }
+
+/**
+ * The sole purpose of this bloc is to attach items and receive where ever needed.
+ */
+export class UtRegistryBloc extends Bloc<string>{
+    protected _name: string="UtRegistryBloc";
+    private static readonly registry: Record<string, any> = {};
+
+    private constructor(){
+        super("");
+    }
+
+    static add(key:string,item:any){
+        this.registry[key]=item;
+    }
+
+    static get<T>(key:string){
+        return this.registry[key] as T;
+    }
+}
