@@ -19,7 +19,7 @@ export interface ImageSize{
 export interface InfoAboutAFile{size:number,ext:string, name:string}
 
 
-export interface PickedFileInfoForOutPut{file_name:string, fileBlob:Blob, fileHashBlob?:Blob, fileHash?:number[]}
+export interface PickedFileInfoForOutPut{file_name:string, fileBlob:File, fileHashBlob?:Blob, fileHash?:number[]}
 
 /**
  * Image editor message type

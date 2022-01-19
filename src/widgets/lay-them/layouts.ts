@@ -95,6 +95,9 @@ export class LayThem extends BlocBuilder<LayThemBloc, any> {
             }
           })()};
       }
+      .container::-webkit-scrollbar {
+        display: none;
+      }
       
       ${(()=>{
         if(this.lay_them_in == "stack"){

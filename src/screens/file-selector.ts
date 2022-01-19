@@ -189,19 +189,23 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
             let noImageHashRequired: boolean = false;
             //let save the media attachments
             for (let f of files) {
-                let compressed_file: Blob;
+                let compressed_file: File;
                 let file_hash: Blob;
                 switch (picker_type) {
                     case FilePickerType.IMAGE: {
                         if(f.type==="image/gif"){
                             compressed_file=f;
                         }else{
-                            compressed_file = await this.convertImage({
+                            let fName=f.name;
+                            let b = await this.convertImage({
                                 id: "dummy",
                                 file: f,
                                 max_length: 500,
                                 quality: 0.80,
                                 type: output_type
+                            });
+                            compressed_file=new File([b],fName,{
+                                type:"image/webp"
                             });
                         }
                         
