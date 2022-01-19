@@ -503,10 +503,10 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
 
                                 return html`<lay-them in="column" ma="center">
                                 <div>${(()=>{
-                                    switch(this.title){
-                                        case "Upload Video": return html`<video controls class="video_item" src=${pickedFileInfo.url}></video>`;
-                                        case "Upload Audio": return html`<audio controls class="video_item" src=${pickedFileInfo.url}></audio>`;
-                                        case "Upload File": return html`<ut-picked-file-widget .info_abt_file=${(()=>{
+                                    switch(this.config.picker_config?.type){
+                                        case FilePickerType.VIDEO: return html`<video controls class="video_item" src=${pickedFileInfo.url}></video>`;
+                                        case FilePickerType.AUDIO: return html`<audio controls class="video_item" src=${pickedFileInfo.url}></audio>`;
+                                        case FilePickerType.FILE: return html`<ut-picked-file-widget .info_abt_file=${(()=>{
                                             return {size: pickedFileInfo.size, ext:pickedFileInfo.mime,name:pickedFileInfo.name};
                                         })()}></ut-picked-file-widget>`;
                                         default: return html`<lay-them in="stack">
