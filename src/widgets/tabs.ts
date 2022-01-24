@@ -227,6 +227,8 @@ export class TabController extends WidgetBuilder<BogusBloc,number>{
                 overflow: ${this.theme.tab_header_overflow};
                 box-shadow: ${this.theme.tab_header_bar_shadow};
                 z-index: ${this.theme.tab_header_zIndex};
+                box-sizing: border-box;
+                padding: ${this.theme.tab_header_padding};
             }
             .icon{
                 flex: 1;
@@ -235,6 +237,9 @@ export class TabController extends WidgetBuilder<BogusBloc,number>{
                 flex: 1;
                 height: 100%;
                 overflow-y: scroll;
+            }
+            .body::-webkit-scrollbar { 
+                display: none;  /* Safari and Chrome */
             }
         </style>
         <lay-them  ma="start">

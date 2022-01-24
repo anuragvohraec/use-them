@@ -55,6 +55,7 @@ export class Theme{
     public tab_header_zIndex="inherit";
     public tab_header_bar_shadow="none";
     public tab_header_height="50px";
+    public tab_header_padding="0px";
 
     public selector_item_selection_color=this.primaryColor;
 

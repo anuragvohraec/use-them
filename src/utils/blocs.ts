@@ -75,4 +75,8 @@ export class UtRegistryBloc extends Bloc<string>{
     static get<T>(key:string){
         return this.registry[key] as T;
     }
+
+    static remove(key:string){
+        delete this.registry[key];
+    }
 }
