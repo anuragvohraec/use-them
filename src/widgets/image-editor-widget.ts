@@ -90,7 +90,9 @@ export class ImageEditorHideBloc extends HideBloc{
 
     public initDraw(){
         ImageEditorFormBloc.search<ImageEditorFormBloc>("ImageEditorFormBloc",this.hostElement)?.resetForm();
-        this.draw(this.getInitValue(),IEMessageType.NEW_IMAGE);
+        let initValue = this.getInitValue();
+        this.draw(initValue,IEMessageType.NEW_IMAGE);
+        delete initValue.newImageConfig;
     }
 
     public editImage({index,blob,fileName,imageEditedListener}:{index:number,blob:Blob,fileName:string, imageEditedListener:ImageEditedListener}){
