@@ -137,6 +137,8 @@ export class ImageEditorHideBloc extends HideBloc{
 
         //TODO implement this
         this.currentValue.zoom=effectiveZoom;
+        this.currentValue.pan.x=effectiveZoom*this.currentValue.pan.x;
+        this.currentValue.pan.y=effectiveZoom*this.currentValue.pan.y;
         this.currentValue.draw_purpose=IEDrawPurpose.ZOOM;
         this.draw(this.currentValue);
     }
