@@ -226,9 +226,12 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
                 .padH20{
                     padding: 0px 20px;
                 }
+                .pad20{
+                    padding: 20px;
+                }
             </style>
             <div class="cont">
-                <lay-them in="column" ma="flex-start" ca="stretch">
+                <lay-them in="column" ma="space-between" ca="stretch">
                     <div class="title">${this.bloc?.fileName}</div>
                     <div class="opCont">
                         <ut-pan-zoom-detector bloc="ZoomAndPanBloc" .blocBuilderConfig=${this.zapBlocBuilderConfig as any}>
@@ -238,7 +241,7 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
                     <div class="padH20">
                         ${state?html``: html`<ut-ie-inputs style="--label-color:white;"></ut-ie-inputs>`}
                     </div>
-                    <div class="padH20">
+                    <div class="pad20">
                         <lay-them in="row" ma="space-between">
                             <circular-icon-button use="icon:done;primaryColor:white;" style="--bg-color:black;" @click=${this.acceptImage}></circular-icon-button>
                             <circular-icon-button use="icon:clear;primaryColor:white;" style="--bg-color:black;" @click=${this.hideEditor}></circular-icon-button>
