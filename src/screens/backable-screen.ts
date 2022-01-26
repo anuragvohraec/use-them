@@ -55,7 +55,7 @@ export class BackableScreen extends NoBlocWidgetBuilder{
     builder(state: number): TemplateResult {
         return html`<lay-them in="column" ma="flex-start" ca="stretch" overflow="hidden">
             <title-bar-with-back-button title=${this.title} use=${this.getAttribute("use")!} style="box-shadow: 0px 0px 4px;z-index: 2;"></title-bar-with-back-button>
-            <div class="body" style="flex: 1 1 auto;">
+            <div class="body" style="flex: 1 1 auto;overflow-y: auto;">
                 <slot></slot>
             </div>
         </lay-them>`;
