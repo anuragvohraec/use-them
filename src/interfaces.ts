@@ -57,7 +57,7 @@ export interface IEValue{
     brightness:number;
     contrast:number;
     zoom:number;
-    pan:{x:number,y:number};
+    pan:XY;
     draw_purpose:IEDrawPurpose;
     newImageConfig?:NewImageConfig
 }
