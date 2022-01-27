@@ -473,6 +473,8 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
         return Math.sqrt((p1.x-p2.x)**2+(p1.y-p2.y));
     }
 
+    private prevPan:XY={x:0,y:0};
+
     private handleMove={
         handleEvent:(e:TouchEvent)=>{
             e.stopPropagation();
@@ -489,8 +491,12 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
             }
             
             if(!touch2){
+                const p1={x:touch1.screenX,y:touch1.screenY};
                 //case for panning
-                this.bloc?.onPan({x:touch1.screenX,y:touch1.screenY},this.axis);
+                if(this.isNotEqual(p1,this.prevPan)){
+                    this.bloc?.onPan(p1,this.axis);
+                    this.prevPan=p1;
+                }
             }else{
                 const currentDistance = Math.abs(touch1.screenX-touch2.screenX);//this.calculateDistance({x:touch1.screenX,y:touch1.screenY},{x:touch2.screenX,y:touch2.screenY});
                 this.bloc?.onZoom(currentDistance/this.initDistance,this.axis);
@@ -506,6 +512,14 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
             return false;
         },
         capture:true
+    }
+
+    private isNotEqual(p1:XY,p2:XY){
+        if(p1.x===p2.x && p1.y===p2.y){
+            return false;
+        }else{
+            return true;
+        }
     }
 
     builder(state: number): TemplateResult {
