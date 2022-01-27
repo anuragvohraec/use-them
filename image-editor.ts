@@ -15,7 +15,7 @@ const opDim:XY={x:0,y:0};
 
 let currentWH:XY={x:0,y:0};
 let currentOffset:XY={x:0,y:0};
-let previousPos:XY={x:0,y:0};
+let previousPos:XY|undefined;
 
 async function process(msg:IEMessage){
     switch (msg.type) {
@@ -33,7 +33,7 @@ async function process(msg:IEMessage){
                     initConfig=value.newImageConfig!;
 
                     imageBitMap = await createImageBitmap(initConfig.origBlob);
-                    resetOutputDimension(value);
+                    resetOutputDimension();
 
                     res(true);
                 }else{
@@ -54,7 +54,7 @@ async function process(msg:IEMessage){
     }
 }
 
-function resetOutputDimension(ieInitValue:IEValue){
+function resetOutputDimension(){
     let vidw=0;
     let vidh=0;
 
@@ -74,19 +74,19 @@ function resetOutputDimension(ieInitValue:IEValue){
         x: Math.floor((canvas.width-opDim.x)/2),
         y: Math.floor((canvas.height-opDim.y)/2)
     };
+    previousPos=undefined;
 }
 
 function draw(value:IEValue){
     let diff:XY={x:0,y:0};
-    if(!previousPos){
-        previousPos=value.currentPos;
-    }else{
+    if(previousPos){
         diff.x=value.currentPos.x-previousPos.x;
         diff.y=value.currentPos.y-previousPos.y;
     }
     
     //offsetting to center
     currentOffset={x:currentOffset.x+diff.x,y:currentOffset.y+diff.y};
+    console.log(JSON.stringify(currentOffset));
     
     previousPos=value.currentPos;
 
