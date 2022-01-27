@@ -15,7 +15,7 @@ const opDim:XY={x:0,y:0};
 
 let currentWH:XY={x:0,y:0};
 let currentPos:XY={x:0,y:0};
-let currentPan:XY={x:0,y:0};
+let previousPos:XY={x:0,y:0};
 
 async function process(msg:IEMessage){
     switch (msg.type) {
@@ -77,9 +77,18 @@ function resetOutputDimension(ieInitValue:IEValue){
 }
 
 function draw(value:IEValue){
+    let diff:XY={x:0,y:0};
+    if(!previousPos){
+        previousPos=value.currentPos;
+    }else{
+        diff.x=value.currentPos.x-previousPos.x;
+        diff.y=value.currentPos.y-previousPos.y;
+    }
     //offsetting to center
-    currentPos.x=currentPos.x+value.currentPos.x-value.axis.x;
-    currentPos.y=currentPos.y+value.currentPos.y-value.axis.y;
+    currentPos.x=currentPos.x+diff.x;
+    currentPos.y=currentPos.y+diff.y;
+    
+    previousPos=value.currentPos;
 
     ctx.filter = `brightness(${value.brightness+100}%) contrast(${100+value.contrast}%)`;
     ctx.fillRect(0, 0, initConfig.opMaxLength, initConfig.opMaxLength);
