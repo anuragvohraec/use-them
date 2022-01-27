@@ -428,16 +428,15 @@ export abstract class HorizontalScrollLimitDetector extends BlocsProvider{
 }
 
 export abstract class ZoomAndPanBloc extends Bloc<number>{
-    abstract onZoom(zoom:number):void;
-    abstract onPan(pan:XY):void;
+    abstract onZoom(zoom:number,axis:XY):void;
+    abstract onPan(currentPos:XY,axis:XY):void;
 }
 
 class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
-    private currentXForPan:number=0;
-    private currentYForPan:number=0;
-
     private initDistance:number=0;
     private touch2PointerID?:number;
+
+    private axis:XY={x:0,y:0};
 
     /**
      * Used with zoom. If user holds a zoom, then this one solves that issue
@@ -452,10 +451,14 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
 
             if(!touch2){
                 //case of pan
-                this.currentXForPan=touch1.screenX;
-                this.currentYForPan=touch1.screenY;
+                this.axis.x=touch1.screenX;
+                this.axis.y=touch1.screenY;
                 this.touch2PointerID=undefined;
             }else{
+                let minX=Math.min(touch1.screenX,touch2.screenX);
+                let minY=Math.min(touch1.screenY,touch2.screenY)
+                this.axis={x:minX+Math.abs(touch1.screenX-touch2.screenX),y:minY+Math.abs(touch1.screenY-touch2.screenY)};
+
                 this.touch2PointerID=touch2.identifier;
                 //case of zoom
                 this.initDistance = Math.abs(touch1.screenX-touch2.screenX);//this.calculateDistance({x:touch1.screenX,y:touch1.screenY},{x:touch2.screenX,y:touch2.screenY});
@@ -487,12 +490,10 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
             
             if(!touch2){
                 //case for panning
-                this.bloc?.onPan({x:touch1.screenX-this.currentXForPan,y:touch1.screenY-this.currentYForPan});
-                this.currentXForPan=touch1.screenX;
-                this.currentYForPan=touch1.screenY;
+                this.bloc?.onPan({x:touch1.screenX,y:touch1.screenY},this.axis);
             }else{
                 const currentDistance = Math.abs(touch1.screenX-touch2.screenX);//this.calculateDistance({x:touch1.screenX,y:touch1.screenY},{x:touch2.screenX,y:touch2.screenY});
-                this.bloc?.onZoom(currentDistance/this.initDistance);
+                this.bloc?.onZoom(currentDistance/this.initDistance,this.axis);
                 if(this.takeSnapTimer){
                     clearTimeout(this.takeSnapTimer);
                     this.takeSnapTimer=undefined;

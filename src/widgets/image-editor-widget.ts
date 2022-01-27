@@ -53,7 +53,8 @@ export class ImageEditorHideBloc extends HideBloc{
         return {
             brightness:0,
             contrast:0,
-            pan:{x:0,y:0},
+            currentPos:{x:0,y:0},
+            axis:{x:0,y:0},
             zoom:1,
             newImageConfig:{
                 baseDimension:{x:max_dimension,y:max_dimension},
@@ -120,14 +121,15 @@ export class ImageEditorHideBloc extends HideBloc{
         this.imageEditorWorker.postMessage({type:IEMessageType.GIVE_IMAGE});
     }
 
-    public onPan(newValue:XY){
-        this.currentValue.pan.x+=newValue.x;
-        this.currentValue.pan.y+=newValue.y;
+    public onPan(newValue:XY,axis:XY){
+        this.currentValue.currentPos=newValue;
+        this.currentValue.axis=axis;
+
         this.currentValue.draw_purpose=IEDrawPurpose.PAN;
         this.draw(this.currentValue);
     }
 
-    public onZoom(zoom:number){
+    public onZoom(zoom:number,axis:XY){
         let effectiveZoom:number=zoom;
         if(zoom>1+UseThemConfiguration.IMAGE_EDIT_ZOOM_SENSITIVITY){
             effectiveZoom=1+UseThemConfiguration.IMAGE_EDIT_ZOOM_SENSITIVITY;
@@ -135,10 +137,9 @@ export class ImageEditorHideBloc extends HideBloc{
             effectiveZoom=1-UseThemConfiguration.IMAGE_EDIT_ZOOM_SENSITIVITY;
         }
 
-        //TODO implement this
         this.currentValue.zoom=effectiveZoom;
-        this.currentValue.pan.x=effectiveZoom*this.currentValue.pan.x;
-        this.currentValue.pan.y=effectiveZoom*this.currentValue.pan.y;
+        this.currentValue.axis=axis;
+
         this.currentValue.draw_purpose=IEDrawPurpose.ZOOM;
         this.draw(this.currentValue);
     }
@@ -174,11 +175,11 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
         return {
             blocs_map:{
                 ZoomAndPanBloc: new class extends ZoomAndPanBloc{
-                    onZoom=(zoom: number): void=> {
-                        imageEditorBloc?.onZoom(zoom);
+                    onZoom=(zoom: number,axis:XY): void=> {
+                        imageEditorBloc?.onZoom(zoom,axis);
                     }
-                    onPan=(pan: XY): void =>{
-                        imageEditorBloc?.onPan(pan);
+                    onPan=(pan: XY,axis:XY): void =>{
+                        imageEditorBloc?.onPan(pan,axis);
                     }
     
                     protected _name: string="ZoomAndPanBloc";

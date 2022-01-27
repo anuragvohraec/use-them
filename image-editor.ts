@@ -7,12 +7,15 @@ let initConfig:NewImageConfig;
 let canvas:OffscreenCanvas;
 let ctx:OffscreenCanvasRenderingContext2D;
 let imageBitMap:ImageBitmap;
-let opDim:XY={x:0,y:0};
-let offset_for_center:XY={x:0,y:0};
+
 let isInitialized:Promise<boolean>;
 let takeSnapTimer:any;
-let currentW:number=0;
-let currentH:number=0;
+
+const opDim:XY={x:0,y:0};
+
+let currentWH:XY={x:0,y:0};
+let currentPos:XY={x:0,y:0};
+let currentPan:XY={x:0,y:0};
 
 async function process(msg:IEMessage){
     switch (msg.type) {
@@ -28,21 +31,9 @@ async function process(msg:IEMessage){
                 let value = (msg.value as IEValue);
                 if(value.newImageConfig){
                     initConfig=value.newImageConfig!;
-                
-                    // initConfig.canvas.width=initConfig.baseDimension.x;
-                    // initConfig.canvas.height=initConfig.baseDimension.y;
 
                     imageBitMap = await createImageBitmap(initConfig.origBlob);
-                    resetOutputDimension();
-                    
-                    //center image
-                    if(opDim.x<canvas.width){
-                        offset_for_center.x=Math.floor((canvas.width-opDim.x)/2);
-                    }
-
-                    if(opDim.y<canvas.height){
-                        offset_for_center.y=Math.floor((canvas.height-opDim.y)/2);
-                    }
+                    resetOutputDimension(value);
 
                     res(true);
                 }else{
@@ -63,7 +54,7 @@ async function process(msg:IEMessage){
     }
 }
 
-function resetOutputDimension(){
+function resetOutputDimension(ieInitValue:IEValue){
     let vidw=0;
     let vidh=0;
 
@@ -78,32 +69,34 @@ function resetOutputDimension(){
     opDim.x=vidw;
     opDim.y=vidh;
     
-    currentH=vidh;
-    currentW=vidw;
-
-    offset_for_center={x:0,y:0};
+    currentWH={x:vidw,y:vidh};
+    currentPos={
+        x: Math.floor((canvas.width-opDim.x)/2),
+        y: Math.floor((canvas.height-opDim.y)/2)
+    };
 }
 
 function draw(value:IEValue){
     //offsetting to center
-    value.pan.x=value.pan.x+offset_for_center.x;
-    value.pan.y=value.pan.y+offset_for_center.y;
+    currentPos.x=currentPos.x+value.currentPos.x-value.axis.x;
+    currentPos.y=currentPos.y+value.currentPos.y-value.axis.y;
 
     ctx.filter = `brightness(${value.brightness+100}%) contrast(${100+value.contrast}%)`;
     ctx.fillRect(0, 0, initConfig.opMaxLength, initConfig.opMaxLength);
     ctx.fillStyle = "white";
     ctx.fill();
-    const w = currentW*value.zoom;
-    const h= currentH*value.zoom;
-    ctx.drawImage(imageBitMap,0,0,imageBitMap.width,imageBitMap.height,value.pan.x,value.pan.y,w,h);
+    
+    const w = currentWH.x*value.zoom;
+    const h= currentWH.y*value.zoom;
+
+    ctx.drawImage(imageBitMap,0,0,imageBitMap.width,imageBitMap.height,currentPos.x,currentPos.y,w,h);
     if(takeSnapTimer){
         clearTimeout(takeSnapTimer);
         takeSnapTimer=undefined;
     }
     if(value.draw_purpose===IEDrawPurpose.ZOOM){
         takeSnapTimer=setTimeout(()=>{
-            currentW=w;
-            currentH=h;
+            currentWH={x:w,y:h}
         },UseThemConfiguration.IMAGE_EDIT_ZOOM_RESPONSE_TIME);
     }
 }
