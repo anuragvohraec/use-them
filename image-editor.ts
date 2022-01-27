@@ -88,6 +88,8 @@ function draw(value:IEValue){
     currentPos.x=currentPos.x+diff.x;
     currentPos.y=currentPos.y+diff.y;
     
+    console.log(JSON.stringify(currentPos));
+    
     previousPos=value.currentPos;
 
     ctx.filter = `brightness(${value.brightness+100}%) contrast(${100+value.contrast}%)`;
