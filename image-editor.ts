@@ -84,9 +84,9 @@ function draw(value:IEValue){
         diff.x=value.currentPos.x-previousPos.x;
         diff.y=value.currentPos.y-previousPos.y;
     }
+    
     //offsetting to center
-    currentOffset.x=currentOffset.x+diff.x;
-    currentOffset.y=currentOffset.y+diff.y;
+    currentOffset={x:currentOffset.x+diff.x,y:currentOffset.y+diff.y};
     
     previousPos=value.currentPos;
 
