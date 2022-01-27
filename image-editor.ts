@@ -14,7 +14,7 @@ let takeSnapTimer:any;
 const opDim:XY={x:0,y:0};
 
 let currentWH:XY={x:0,y:0};
-let currentPos:XY={x:0,y:0};
+let currentOffset:XY={x:0,y:0};
 let previousPos:XY={x:0,y:0};
 
 async function process(msg:IEMessage){
@@ -70,7 +70,7 @@ function resetOutputDimension(ieInitValue:IEValue){
     opDim.y=vidh;
     
     currentWH={x:vidw,y:vidh};
-    currentPos={
+    currentOffset={
         x: Math.floor((canvas.width-opDim.x)/2),
         y: Math.floor((canvas.height-opDim.y)/2)
     };
@@ -85,10 +85,8 @@ function draw(value:IEValue){
         diff.y=value.currentPos.y-previousPos.y;
     }
     //offsetting to center
-    currentPos.x=currentPos.x+diff.x;
-    currentPos.y=currentPos.y+diff.y;
-    
-    console.log(JSON.stringify(currentPos));
+    currentOffset.x=currentOffset.x+diff.x;
+    currentOffset.y=currentOffset.y+diff.y;
     
     previousPos=value.currentPos;
 
@@ -100,7 +98,7 @@ function draw(value:IEValue){
     const w = currentWH.x*value.zoom;
     const h= currentWH.y*value.zoom;
 
-    ctx.drawImage(imageBitMap,0,0,imageBitMap.width,imageBitMap.height,currentPos.x,currentPos.y,w,h);
+    ctx.drawImage(imageBitMap,0,0,imageBitMap.width,imageBitMap.height,currentOffset.x,currentOffset.y,w,h);
     if(takeSnapTimer){
         clearTimeout(takeSnapTimer);
         takeSnapTimer=undefined;
