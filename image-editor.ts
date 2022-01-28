@@ -76,10 +76,9 @@ function resetOutputDimension(){
 }
 
 function draw(value:IEValue){
-    let diff:XY={x:value.currentPos.x-value.axis.x,y:value.currentPos.y-value.axis.y};
 
     //offsetting to center
-    let offset={x:baseOffset.x+diff.x,y:baseOffset.y+diff.y};
+    let offset={x:baseOffset.x+value.movement.x,y:baseOffset.y+value.movement.y};
 
     ctx.filter = `brightness(${value.brightness+100}%) contrast(${100+value.contrast}%)`;
     ctx.fillRect(0, 0, initConfig.opMaxLength, initConfig.opMaxLength);
@@ -96,7 +95,8 @@ function draw(value:IEValue){
     }
     if(value.draw_purpose===IEDrawPurpose.ZOOM){
         takeSnapTimer=setTimeout(()=>{
-            currentWH={x:w,y:h}
+            currentWH={x:w,y:h};
+            baseOffset=offset;
         },UseThemConfiguration.IMAGE_EDIT_ZOOM_RESPONSE_TIME);
     }
 }

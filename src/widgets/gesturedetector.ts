@@ -428,8 +428,17 @@ export abstract class HorizontalScrollLimitDetector extends BlocsProvider{
 }
 
 export abstract class ZoomAndPanBloc extends Bloc<number>{
+    /**
+     * Zoom percentage
+     * @param zoom 
+     * @param axis 
+     */
     abstract onZoom(zoom:number,axis:XY):void;
-    abstract onPan(currentPos:XY,axis:XY):void;
+    /**
+     * @param movement differential XY , signifying movement in PX 
+     * @param axis 
+     */
+    abstract onPan(movement:XY,axis:XY):void;
 }
 
 class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
@@ -438,10 +447,6 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
 
     private axis:XY={x:0,y:0};
 
-    /**
-     * Used with zoom. If user holds a zoom, then this one solves that issue
-     */
-    private takeSnapTimer:any;
 
     private handleStart={
         handleEvent:(e:TouchEvent)=>{
@@ -473,7 +478,24 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
         return Math.sqrt((p1.x-p2.x)**2+(p1.y-p2.y));
     }
 
-    private prevPan:XY={x:0,y:0};
+    private prevPan?:XY;
+
+    private handleEnd={
+        handleEvent:(e:TouchEvent)=>{
+           this.init(); 
+        },
+        capture:true
+    };
+
+    private init(){
+        this.initDistance=0;
+        this.prevPan=undefined;
+        this.touch2PointerID=undefined;
+        this.axis={x:0,y:0};
+        this.prevZoom=1;
+    }
+
+    private prevZoom:number=1;
 
     private handleMove={
         handleEvent:(e:TouchEvent)=>{
@@ -492,21 +514,24 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
             
             if(!touch2){
                 const p1={x:touch1.screenX,y:touch1.screenY};
-                //case for panning
-                if(this.isNotEqual(p1,this.prevPan)){
-                    this.bloc?.onPan(p1,this.axis);
+                if(!this.prevPan){
+                    this.prevPan=p1;
+                }
+
+                //if there is no movement there is no point in calling pan
+                if(this.isNotEqual(this.prevPan,p1)){
+                    //case for panning
+                    this.bloc?.onPan({x:p1.x-this.prevPan!.x,y:p1.y-this.prevPan!.y},this.axis);
                     this.prevPan=p1;
                 }
             }else{
                 const currentDistance = Math.abs(touch1.screenX-touch2.screenX);//this.calculateDistance({x:touch1.screenX,y:touch1.screenY},{x:touch2.screenX,y:touch2.screenY});
-                this.bloc?.onZoom(currentDistance/this.initDistance,this.axis);
-                if(this.takeSnapTimer){
-                    clearTimeout(this.takeSnapTimer);
-                    this.takeSnapTimer=undefined;
+                const zoom=currentDistance/this.initDistance;
+                //if zoom has not changed there is no point in calling on zoom
+                if(this.prevZoom!==zoom){
+                    this.bloc?.onZoom(zoom,this.axis);
+                    this.prevZoom=zoom;
                 }
-                this.takeSnapTimer=setTimeout(()=>{
-                    this.initDistance=currentDistance;
-                },UseThemConfiguration.IMAGE_EDIT_ZOOM_RESPONSE_TIME);
             }
             
             return false;
@@ -514,6 +539,12 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
         capture:true
     }
 
+    /**
+     * 
+     * @param p1 
+     * @param p2 
+     * @returns 
+     */
     private isNotEqual(p1:XY,p2:XY){
         if(p1.x===p2.x && p1.y===p2.y){
             return false;
@@ -523,7 +554,7 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
     }
 
     builder(state: number): TemplateResult {
-        return html`<div id="target" style="width:100%;height:100%;" @touchstart=${this.handleStart} @touchmove=${this.handleMove}><slot></slot></div>`;
+        return html`<div id="target" style="width:100%;height:100%;" @touchstart=${this.handleStart} @touchmove=${this.handleMove} @touchend=${this.handleEnd}><slot></slot></div>`;
     }
 }
 customElements.define("ut-pan-zoom-detector",ZoomAndPanWidget);

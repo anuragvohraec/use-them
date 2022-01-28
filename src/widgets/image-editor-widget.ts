@@ -53,7 +53,7 @@ export class ImageEditorHideBloc extends HideBloc{
         return {
             brightness:0,
             contrast:0,
-            currentPos:{x:0,y:0},
+            movement:{x:0,y:0},
             axis:{x:0,y:0},
             zoom:1,
             newImageConfig:{
@@ -121,8 +121,8 @@ export class ImageEditorHideBloc extends HideBloc{
         this.imageEditorWorker.postMessage({type:IEMessageType.GIVE_IMAGE});
     }
 
-    public onPan(newValue:XY,axis:XY){
-        this.currentValue.currentPos=newValue;
+    public onPan(movement:XY,axis:XY){
+        this.currentValue.movement=movement;
         this.currentValue.axis=axis;
 
         this.currentValue.draw_purpose=IEDrawPurpose.PAN;
@@ -137,6 +137,7 @@ export class ImageEditorHideBloc extends HideBloc{
             effectiveZoom=1-UseThemConfiguration.IMAGE_EDIT_ZOOM_SENSITIVITY;
         }
 
+        this.currentValue.movement={x:0,y:0};
         this.currentValue.zoom=effectiveZoom;
         this.currentValue.axis=axis;
 
@@ -178,8 +179,8 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
                     onZoom=(zoom: number,axis:XY): void=> {
                         imageEditorBloc?.onZoom(zoom,axis);
                     }
-                    onPan=(pan: XY,axis:XY): void =>{
-                        imageEditorBloc?.onPan(pan,axis);
+                    onPan=(movement: XY,axis:XY): void =>{
+                        imageEditorBloc?.onPan(movement,axis);
                     }
     
                     protected _name: string="ZoomAndPanBloc";
