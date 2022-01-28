@@ -106,6 +106,11 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version": "10.0.0"
+1. Updated ZoomAndPinchBloc. Now Panning gives movement (relative to previous position). And zoom gives an axis around which zoom is done.
+2. Couple of minor fixes.
+
+
 ### "version": "9.0.20"
 1. Optimized worker used by `use-them` handing.
 2. Wrap your `app-pages-container` with `ut-file-picker-editor` to access image editor
