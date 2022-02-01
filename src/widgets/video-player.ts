@@ -1,7 +1,9 @@
-import { Bloc, MultiBlocsReactiveWidget } from "bloc-them";
+import { Bloc, BlocBuilderConfig, MultiBlocsReactiveWidget } from "bloc-them";
 import { nothing, TemplateResult,html } from "lit-html";
+import { XY } from "../interfaces";
 import { BogusBloc } from "../utils/blocs";
 import { HideBloc } from "./dialogues";
+import { ZoomAndPanBloc } from "./gesturedetector";
 import { ProgressBloc } from "./loading-bar";
 
 interface State{
@@ -61,12 +63,18 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
     }
 
     private videoElement!:HTMLVideoElement;
+    private progressBarCont!:HTMLElement;
+    private progressBar!:HTMLElement;
 
     private VideoPlayerInView?:HideBloc;
+    private ProgressBarBloc?:PercentageBloc;
 
     connectedCallback(){
         super.connectedCallback();
         setTimeout(()=>{
+            this.progressBarCont= this.shadowRoot?.querySelector(".progress-bar-cont") as HTMLElement;
+            this.progressBar= this.shadowRoot?.querySelector(".progress") as HTMLElement;
+
             this.videoElement = this.shadowRoot?.querySelector(".video") as HTMLVideoElement;
             if(this.videoElement){
                 // We can only control playback without interaction if video is mute
@@ -153,11 +161,11 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
             align-items: center;
             flex-direction: column;
             box-sizing: border-box;
-            padding: 10px;
+            padding: 20px;
         }
         .progress-bar-cont{
             background-color: white;
-            height: 5px;
+            min-height: 5px;
             width: 100%;
             position: relative;
         }
@@ -178,22 +186,62 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
             width: 100%;
         }
         </style>
-        <div class="cont" @click=${this.toggleToolBar}>
-            <lay-them in="stack">
-                <video class="video" src=${src} preload="none"></video>
-                <div class="seek-bar-cont">
-                    <div class="progress-bar-cont">
-                        <div class="progress"></div>
+        <ut-pan-zoom-detector bloc="ZoomAndPanBloc" .blocBuilderConfig=${this.zapBlocBuilderConfig as any}>
+            <div class="cont" @click=${this.toggleToolBar}>
+                <lay-them in="stack">
+                    <video class="video" src=${src} preload="none"></video>
+                    <div class="seek-bar-cont">
+                        <div class="progress-bar-cont">
+                            <div class="progress"></div>
+                        </div>
+                        <div class="progress-stat">
+                            <lay-them in="row" ma="space-between">
+                                <div class="current_time">2:00</div>
+                                <div class="total_time">3:12</div>
+                            </lay-them>
+                        </div>
                     </div>
-                    <div class="progress-stat">
-                        <lay-them in="row" ma="space-between">
-                            <div class="current_time">2:00</div>
-                            <div class="total_time">3:12</div>
-                        </lay-them>
-                    </div>
-                </div>
-            </lay-them>
-        </div>`;
+                </lay-them>
+            </div>
+        </ut-pan-zoom-detector>`;
+    }
+
+    private get zapBlocBuilderConfig():BlocBuilderConfig<ZoomAndPanBloc,number>{
+        if(!this.ProgressBarBloc){
+            this.ProgressBarBloc=this.getBloc<PercentageBloc>("ProgressBarBloc");
+        }
+        let self=this;
+        return {
+            blocs_map:{
+                ZoomAndPanBloc: new class extends ZoomAndPanBloc{
+                    private _screenWidth:number=0;
+
+                    onZoom=(zoom: number,axis:XY): void=> {
+                        //TODO volume control
+                    }
+                    onPan=(movement: XY,axis:XY): void =>{
+                        //add progress to current progress
+                        //x movement
+                        let totalProgressWidth=self.progressBarCont.offsetWidth;
+                        let additionalProgress=100*movement.x/totalProgressWidth;
+                        if(self.ProgressBarBloc){
+                            let calcProgress=self.ProgressBarBloc.state+additionalProgress;
+                            if(calcProgress<=0){
+                                calcProgress=0;
+                            }else if(calcProgress>=100){
+                                calcProgress=100;
+                            }
+                            self.ProgressBarBloc.update(calcProgress);
+                        }
+                    }
+    
+                    protected _name: string="ZoomAndPanBloc";
+                    constructor(){
+                        super(0);
+                    }
+                }
+            }
+        }
     }
 
     toggleToolBar=(e:Event)=>{
