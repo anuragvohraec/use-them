@@ -188,7 +188,7 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
         }
         </style>
         <ut-pan-zoom-detector bloc="ZoomAndPanBloc" .blocBuilderConfig=${this.zapBlocBuilderConfig as any}>
-            <div class="cont" @click=${this.toggleToolBar}>
+            <div class="cont">
                 <lay-them in="stack">
                     <video class="video" src=${src} preload="none"></video>
                     <div class="seek-bar-cont">
@@ -219,12 +219,19 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
         return {
             blocs_map:{
                 ZoomAndPanBloc: new class extends ZoomAndPanBloc{
+                    private hideToolBarTimer:any;
+
                     onPointRelease(xy: XY): void {
-                        if(!self.HideToolBarBloc?.state){
-                            self.HideToolBarBloc?.hide();
-                        }
+                        this.hideToolBarTimer=setTimeout(()=>{
+                            if(!self.HideToolBarBloc?.state){
+                                self.HideToolBarBloc?.hide();
+                            }
+                        },2000);
                     }
                     onPointTouch(xy: XY): void {
+                        if(this.hideToolBarTimer){
+                            clearTimeout(this.hideToolBarTimer);
+                        }
                         //if hidden
                         if(self.HideToolBarBloc?.state){
                             self.HideToolBarBloc?.show();
@@ -259,9 +266,5 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
         }
     }
 
-    toggleToolBar=(e:Event)=>{
-        this.toggleMute(e);
-        this.getBloc<HideBloc>("HideToolBarBloc").toggle();
-    }
 }
 customElements.define("ut-on-view-video",OnViewPlayVideo);
