@@ -50,12 +50,13 @@ export class ScaffoldBloc extends Bloc<ScaffoldState>{
         }
     }
 
-    toggleMenu(pushOverlayStack:boolean=false) {
+    toggleMenu(pushOverlayStack:boolean=true) {
         navigator.vibrate(UseThemConfiguration.PRESS_VIB);
         let newState = { ...this.state };
         newState.showMenu = !newState.showMenu;
+        const appPageBloc=AppPageBloc.search<AppPageBloc>("AppPageBloc",this.hostElement);
         if(newState.showMenu && pushOverlayStack){
-            AppPageBloc.search<AppPageBloc>("AppPageBloc",this.hostElement)?.pushOverlayStack(this._name);
+            appPageBloc?.pushOverlayStack(this._name);
         }
         this.emit(newState);
     }

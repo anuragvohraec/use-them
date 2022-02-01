@@ -363,12 +363,17 @@ export abstract class VerticalScrollLimitDetector extends BlocsProvider{
     }
 
     builder(): TemplateResult {
+    let snap= this.hasAttribute("snap");
     return html`<style>
         .con{
             overflow-y:scroll;
             height:100%;
             width:100%;
             scroll-behavior:smooth;
+            scroll-snap-type: ${snap?"y mandatory":"none"};
+        }
+        .con::-webkit-scrollbar { 
+            display: none;  /* Safari and Chrome */
         }
     </style><div class="con" @scroll=${this._doListenScroll} @touchstart=${this._discardTouch}
         @touchend=${this._discardTouch}
@@ -413,6 +418,7 @@ export abstract class HorizontalScrollLimitDetector extends BlocsProvider{
     }
 
     builder(): TemplateResult {
+    let snap= this.hasAttribute("snap");
     return html`<style>
         .con{
             overflow-x:scroll;
@@ -420,6 +426,10 @@ export abstract class HorizontalScrollLimitDetector extends BlocsProvider{
             width:100%;
             display:flex;
             scroll-behavior:smooth;
+            scroll-snap-type: ${snap?"x mandatory":"none"};
+        }
+        .con::-webkit-scrollbar { 
+            display: none;  /* Safari and Chrome */
         }
     </style><div class="con" @scroll=${this._doListenScroll} @touchstart=${this._discardTouch}
         @touchend=${this._discardTouch}
