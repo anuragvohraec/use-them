@@ -1,16 +1,50 @@
-import { MultiBlocsReactiveWidget } from "bloc-them";
+import { Bloc, MultiBlocsReactiveWidget } from "bloc-them";
 import { nothing, TemplateResult,html } from "lit-html";
+import { BogusBloc } from "../utils/blocs";
 import { HideBloc } from "./dialogues";
+import { ProgressBloc } from "./loading-bar";
 
 interface State{
-    hideToolBar:boolean;    
+    /**
+     * hide or displays seeking bar
+     */
+    hideToolBar:boolean;
+    /**
+     * Video progress percentage
+     */
+    progress_percent:number;
+    /**
+     * Whether the current player is in view using Intersection Observer
+     */
+    playerInView:boolean;    
+}
+
+export class PercentageBloc extends Bloc<number>{
+    protected _name: string="PercentageBloc";
+
+    static calculatePercentage(value:number,max:number){
+        return 100*value/max;
+    }
+    constructor(protected percentConfig:{initState:number,max:number}){
+        super(PercentageBloc.calculatePercentage(percentConfig.initState,percentConfig.max));
+    }
+
+    set max(newValue:number){
+        this.percentConfig.max=newValue;
+    }
+
+    update(newValue:number){
+        this.emit(PercentageBloc.calculatePercentage(newValue,this.percentConfig.max)); 
+    }
 }
 
 export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
     convertSubscribedStatesToReactiveState(subscribed_states?: Record<string, any>): State | undefined {
         if(subscribed_states){
             return {
-                hideToolBar: subscribed_states["HideToolBarBloc"]
+                hideToolBar: subscribed_states["HideToolBarBloc"],
+                progress_percent: subscribed_states["ProgressBarBloc"],
+                playerInView: subscribed_states["VideoPlayerInView"]
             }
         }
     }
@@ -18,13 +52,17 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
     constructor(){
         super({
             blocs_map:{
-                HideToolBarBloc: new HideBloc()
+                HideToolBarBloc: new HideBloc(),
+                ProgressBarBloc: new PercentageBloc({initState:40,max:100}), //TODO set initState =0
+                VideoPlayerInView: new HideBloc(false), //assumes video player not in view
             },
-            subscribed_blocs:["HideToolBarBloc"]
+            subscribed_blocs:["HideToolBarBloc","ProgressBarBloc"]
         })
     }
 
     private videoElement!:HTMLVideoElement;
+
+    private VideoPlayerInView?:HideBloc;
 
     connectedCallback(){
         super.connectedCallback();
@@ -52,6 +90,13 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                                         },300);
                                     } else if (this.videoElement.paused) {
                                         this.videoElement.play();
+                                        
+                                        //video player in view
+                                        if(!this.VideoPlayerInView){
+                                            this.VideoPlayerInView=this.getBloc<HideBloc>("VideoPlayerInView");
+                                        }
+                                        this.VideoPlayerInView.emit(true);
+
                                         setTimeout(()=>{
                                             this.videoElement.muted=false;
                                         },300);
@@ -96,25 +141,63 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
         .video{
             width: var(--video-width,100%);
             height: var(--video-height,100%);
-            background-color: var(--video-bg-color,#00000047);
+            background-color: var(--video-bg-color,#0000008a);
         }
         .seek-bar-cont{
             position: absolute;
             bottom: 0px;
-            display: ${state.hideToolBar?"none":"block"};
+            display: ${state.hideToolBar?"none":"flex"};
+            width: 100%;
+            height: 50px;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            box-sizing: border-box;
+            padding: 10px;
+        }
+        .progress-bar-cont{
+            background-color: white;
+            height: 5px;
+            width: 100%;
+            position: relative;
+        }
+        .progress{
+            background-color: var(--theme-color,#ffcc00ff);
+            position: absolute;
+            left: 0px;
+            height: 5px;
+            width: ${state.progress_percent}%;
+        }
+        .current_time{
+            color: var(--theme-color,#ffcc00ff);
+        }
+        .total_time{
+            color: white;
+        }
+        .progress-stat{
+            width: 100%;
         }
         </style>
         <div class="cont" @click=${this.toggleToolBar}>
             <lay-them in="stack">
                 <video class="video" src=${src} preload="none"></video>
                 <div class="seek-bar-cont">
-                    <div>Hello world</div>
+                    <div class="progress-bar-cont">
+                        <div class="progress"></div>
+                    </div>
+                    <div class="progress-stat">
+                        <lay-them in="row" ma="space-between">
+                            <div class="current_time">2:00</div>
+                            <div class="total_time">3:12</div>
+                        </lay-them>
+                    </div>
                 </div>
             </lay-them>
         </div>`;
     }
 
     toggleToolBar=(e:Event)=>{
+        this.toggleMute(e);
         this.getBloc<HideBloc>("HideToolBarBloc").toggle();
     }
 }
