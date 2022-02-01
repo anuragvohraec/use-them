@@ -68,6 +68,7 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
 
     private VideoPlayerInView?:HideBloc;
     private ProgressBarBloc?:PercentageBloc;
+    private HideToolBarBloc?:HideBloc;
 
     connectedCallback(){
         super.connectedCallback();
@@ -210,11 +211,25 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
         if(!this.ProgressBarBloc){
             this.ProgressBarBloc=this.getBloc<PercentageBloc>("ProgressBarBloc");
         }
+        if(!this.HideToolBarBloc){
+            this.HideToolBarBloc=this.getBloc<HideBloc>("HideToolBarBloc");
+        }
+
         let self=this;
         return {
             blocs_map:{
                 ZoomAndPanBloc: new class extends ZoomAndPanBloc{
-                    private _screenWidth:number=0;
+                    onPointRelease(xy: XY): void {
+                        setTimeout(()=>{
+                            self.HideToolBarBloc?.hide();
+                        },1000);
+                    }
+                    onPointTouch(xy: XY): void {
+                        //if hidden
+                        if(self.HideToolBarBloc?.state){
+                            self.HideToolBarBloc?.show();
+                        }
+                    }
 
                     onZoom=(zoom: number,axis:XY): void=> {
                         //TODO volume control

@@ -439,6 +439,14 @@ export abstract class HorizontalScrollLimitDetector extends BlocsProvider{
 
 export abstract class ZoomAndPanBloc extends Bloc<number>{
     /**
+     * 
+     * @param xy Where a single pointing touch is done on screen
+     */
+    abstract onPointTouch(xy:XY):void;
+
+    abstract onPointRelease(xy:XY):void;
+
+    /**
      * Zoom percentage
      * @param zoom 
      * @param axis 
@@ -465,6 +473,8 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
             const touch2 = e.touches[1];
 
             if(!touch2){
+                this.bloc?.onPointTouch({x:touch1.screenX,y:touch1.screenY});
+
                 //case of pan
                 this.axis.x=touch1.screenX;
                 this.axis.y=touch1.screenY;
@@ -492,7 +502,11 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
 
     private handleEnd={
         handleEvent:(e:TouchEvent)=>{
-           this.init(); 
+           this.init();
+           if(e.changedTouches.length===1){
+               let touch1=e.changedTouches[0];
+               this.bloc?.onPointRelease({x:touch1.screenX,y:touch1.screenY});
+           }
         },
         capture:true
     };
