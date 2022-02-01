@@ -220,9 +220,9 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
             blocs_map:{
                 ZoomAndPanBloc: new class extends ZoomAndPanBloc{
                     onPointRelease(xy: XY): void {
-                        setTimeout(()=>{
+                        if(!self.HideToolBarBloc?.state){
                             self.HideToolBarBloc?.hide();
-                        },1000);
+                        }
                     }
                     onPointTouch(xy: XY): void {
                         //if hidden
