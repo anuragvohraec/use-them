@@ -314,6 +314,13 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
 
                             onZoom=(zoom: number,axis:XY): void=> {
                                 //TODO volume control
+                                if(zoom>1.8){
+                                    self.VideoPlayControl.video.volume=1;
+                                }else if(zoom<0.2){
+                                    self.VideoPlayControl.video.volume=0;
+                                }else{
+                                    self.VideoPlayControl.video.volume=zoom;
+                                }
                             }
 
                             private changeCurrentTimeTo:number=-1;
