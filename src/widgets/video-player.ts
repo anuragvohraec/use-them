@@ -55,7 +55,7 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
         super({
             blocs_map:{
                 HideToolBarBloc: new HideBloc(),
-                ProgressBarBloc: new PercentageBloc({initState:40,max:100}), //TODO set initState =0
+                ProgressBarBloc: new PercentageBloc({initState:0,max:100}),
                 VideoPlayerInView: new HideBloc(false), //assumes video player not in view
             },
             subscribed_blocs:["HideToolBarBloc","ProgressBarBloc"]
@@ -66,9 +66,28 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
     private progressBarCont!:HTMLElement;
     private progressBar!:HTMLElement;
 
-    private VideoPlayerInView?:HideBloc;
-    private ProgressBarBloc?:PercentageBloc;
-    private HideToolBarBloc?:HideBloc;
+    private _VideoPlayerInView!: HideBloc;
+    public get VideoPlayerInView(): HideBloc {
+        if(!this._VideoPlayerInView){
+            this._VideoPlayerInView=this.getBloc<HideBloc>("VideoPlayerInView");
+        }
+        return this._VideoPlayerInView;
+    }
+    private _ProgressBarBloc!: PercentageBloc;
+    public get ProgressBarBloc(): PercentageBloc {
+        if(!this._ProgressBarBloc){
+            this._ProgressBarBloc=this.getBloc<PercentageBloc>("ProgressBarBloc");
+        }
+        return this._ProgressBarBloc;
+    }
+
+    private _HideToolBarBloc!: HideBloc;
+    public get HideToolBarBloc(): HideBloc {
+        if(!this._HideToolBarBloc){
+            this._HideToolBarBloc=this.getBloc<HideBloc>("HideToolBarBloc");
+        }
+        return this._HideToolBarBloc;
+    }
 
     connectedCallback(){
         super.connectedCallback();
@@ -101,10 +120,7 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                                         this.videoElement.play();
                                         
                                         //video player in view
-                                        if(!this.VideoPlayerInView){
-                                            this.VideoPlayerInView=this.getBloc<HideBloc>("VideoPlayerInView");
-                                        }
-                                        this.VideoPlayerInView.emit(true);
+                                        this.VideoPlayerInView?.emit(true);
 
                                         setTimeout(()=>{
                                             this.videoElement.muted=false;
@@ -190,7 +206,7 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
         <ut-pan-zoom-detector bloc="ZoomAndPanBloc" .blocBuilderConfig=${this.zapBlocBuilderConfig as any}>
             <div class="cont">
                 <lay-them in="stack">
-                    <video class="video" src=${src} preload="none"></video>
+                    <video class="video" src=${src} preload="none" @timeupdate=${this.followVideoTime} @loadedmetadata=${this.metaDataAvailable}></video>
                     <div class="seek-bar-cont">
                         <div class="progress-bar-cont">
                             <div class="progress"></div>
@@ -207,14 +223,19 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
         </ut-pan-zoom-detector>`;
     }
 
-    private get zapBlocBuilderConfig():BlocBuilderConfig<ZoomAndPanBloc,number>{
-        if(!this.ProgressBarBloc){
-            this.ProgressBarBloc=this.getBloc<PercentageBloc>("ProgressBarBloc");
-        }
-        if(!this.HideToolBarBloc){
-            this.HideToolBarBloc=this.getBloc<HideBloc>("HideToolBarBloc");
-        }
+    private metaDataAvailable=(e:Event)=>{
+        this.videoElement=e.currentTarget as HTMLVideoElement;
+        this.ProgressBarBloc.max=this.videoElement.duration;
+    }
 
+    private followVideoTime=(e:Event)=>{
+        if(!this.videoElement){
+            this.videoElement=e.currentTarget as HTMLVideoElement;
+        }
+        this.ProgressBarBloc.update(this.videoElement.currentTime);
+    }
+
+    private get zapBlocBuilderConfig():BlocBuilderConfig<ZoomAndPanBloc,number>{
         let self=this;
         return {
             blocs_map:{
