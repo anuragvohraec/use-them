@@ -28,6 +28,14 @@ export class HideBloc extends Bloc<boolean>{
         }
     }
 
+    isHidden(){
+        return this.state;
+    }
+
+    isShowing(){
+        return !this.state;
+    }
+
     show(){
         if(this.overlay_id){
             //if its hidden

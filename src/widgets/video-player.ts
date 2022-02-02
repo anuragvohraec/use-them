@@ -84,6 +84,10 @@ class VideoPlayController extends HideBloc{
         return this.state;
     }
 
+    isNotPlaying(){
+        return !this.state;
+    }
+
     pause(){
         this.emit(false);
         this.video.pause();
@@ -182,7 +186,7 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                                     this.VideoPlayControl.isPlaying()
                                 ) {
                                     this.VideoPlayControl.pause();
-                                } else if (!this.VideoPlayControl.isPlaying()) {
+                                } else if (this.VideoPlayControl.isNotPlaying()) {
                                     this.VideoPlayControl.play();
                                     
                                     //video player in view
@@ -297,8 +301,15 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                                 }
                             }
                             onPointTouch(xy: XY): void {
-                                self.VideoPlayControl.pause();
-                                self.HideToolBarBloc?.show();
+                                if(self.HideToolBarBloc.isShowing() && self.VideoPlayControl.isNotPlaying()){
+                                    this.hideToolBarTimer=setTimeout(()=>{
+                                        self.VideoPlayControl.play();
+                                        self.HideToolBarBloc.hide();
+                                    },400);
+                                }else{
+                                    self.VideoPlayControl.pause();
+                                    self.HideToolBarBloc?.show();
+                                }
                             }
 
                             onZoom=(zoom: number,axis:XY): void=> {
@@ -308,6 +319,10 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                             private changeCurrentTimeTo:number=-1;
 
                             onPan=(movement: XY,axis:XY): void =>{
+                                if(this.hideToolBarTimer){
+                                    clearTimeout(this.hideToolBarTimer);
+                                    this.hideToolBarTimer=undefined;
+                                }
                                 //add progress to current progress
                                 //x movement
                                 let totalProgressWidth=self.progressBarCont.offsetWidth;
