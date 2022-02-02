@@ -144,5 +144,19 @@ export class Utils {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
 
+  private static readonly ONE_MINUTE=60*1000;
+  private static readonly ONE_HOUR=60*Utils.ONE_MINUTE;
 
+  static covertToPlayTime(time:number){
+      if(!time){
+        return `0:0`;
+      }
+      let et = Math.floor(time);//effective time
+      const h = Math.floor(et/this.ONE_HOUR);
+      const hr = et%this.ONE_HOUR;
+      const m = Math.floor(hr/this.ONE_MINUTE);
+      const mr=hr%this.ONE_MINUTE;
+      const s = mr%1000;
+      return `${h>0?`${h}`+":":""}${m}:${s}`;
+  }
 }

@@ -2,6 +2,7 @@ import { Bloc, BlocBuilderConfig, MultiBlocsReactiveWidget } from "bloc-them";
 import { nothing, TemplateResult,html } from "lit-html";
 import { XY } from "../interfaces";
 import { BogusBloc } from "../utils/blocs";
+import { Utils } from "../utils/utils";
 import { HideBloc } from "./dialogues";
 import { ZoomAndPanBloc } from "./gesturedetector";
 import { ProgressBloc } from "./loading-bar";
@@ -18,7 +19,17 @@ interface State{
     /**
      * Whether the current player is in view using Intersection Observer
      */
-    playerInView:boolean;    
+    playerInView:boolean;
+    
+    /**
+     * If true video plays
+     */
+    play:boolean;
+
+    /**
+     * Timings
+     */
+    timings:{total:string, elapsed:string}
 }
 
 export class PercentageBloc extends Bloc<number>{
@@ -35,10 +46,60 @@ export class PercentageBloc extends Bloc<number>{
         this.percentConfig.max=newValue;
     }
 
+    get max():number{
+        return this.percentConfig.max;
+    }
+
     update(newValue:number){
         this.emit(PercentageBloc.calculatePercentage(newValue,this.percentConfig.max)); 
     }
 }
+
+class VideoPlayController extends HideBloc{
+    constructor(){
+        super(false)
+    }
+
+    private _video!: HTMLVideoElement;
+    public get video(): HTMLVideoElement {
+        return this._video;
+    }
+
+    public set video(value: HTMLVideoElement) {
+        this._video = value;
+        // We can only control playback without interaction if video is mute
+        this.video.muted=true;
+    }
+
+    play(){
+        this.emit(true);
+        let r = this.video.play();
+        setTimeout(()=>{
+            this.video.muted=false;
+        },300);
+        return r;
+    }
+
+    isPlaying(){
+        return this.state;
+    }
+
+    pause(){
+        this.emit(false);
+        this.video.pause();
+        setTimeout(()=>{
+            this.video.muted=true;    
+        },300);
+    }
+
+    onDisconnection(){
+        if(this.video){
+            this.video.pause();
+            this.video.src="";
+        }
+    }
+}
+
 
 export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
     convertSubscribedStatesToReactiveState(subscribed_states?: Record<string, any>): State | undefined {
@@ -46,7 +107,12 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
             return {
                 hideToolBar: subscribed_states["HideToolBarBloc"],
                 progress_percent: subscribed_states["ProgressBarBloc"],
-                playerInView: subscribed_states["VideoPlayerInView"]
+                playerInView: subscribed_states["VideoPlayerInView"],
+                play: subscribed_states["VideoPlayControl"],
+                timings:{
+                    total: Utils.covertToPlayTime(this.ProgressBarBloc.max),
+                    elapsed: Utils.covertToPlayTime(this.ProgressBarBloc.state * this.ProgressBarBloc.max/100)
+                }
             }
         }
     }
@@ -57,15 +123,14 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                 HideToolBarBloc: new HideBloc(),
                 ProgressBarBloc: new PercentageBloc({initState:0,max:100}),
                 VideoPlayerInView: new HideBloc(false), //assumes video player not in view
+                VideoPlayControl: new VideoPlayController()
             },
             subscribed_blocs:["HideToolBarBloc","ProgressBarBloc"]
         })
     }
 
-    private videoElement!:HTMLVideoElement;
     private progressBarCont!:HTMLElement;
-    private progressBar!:HTMLElement;
-
+    
     private _VideoPlayerInView!: HideBloc;
     public get VideoPlayerInView(): HideBloc {
         if(!this._VideoPlayerInView){
@@ -89,67 +154,48 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
         return this._HideToolBarBloc;
     }
 
+    private _VideoPlayControl!: VideoPlayController;
+
+    public get VideoPlayControl(): VideoPlayController {
+        if(!this._VideoPlayControl){
+            this._VideoPlayControl=this.getBloc<VideoPlayController>("VideoPlayControl");
+            this._VideoPlayControl.video=this.shadowRoot?.querySelector(".video") as HTMLVideoElement;
+        }
+        return this._VideoPlayControl;
+    }
+    
+
     connectedCallback(){
         super.connectedCallback();
         setTimeout(()=>{
             this.progressBarCont= this.shadowRoot?.querySelector(".progress-bar-cont") as HTMLElement;
-            this.progressBar= this.shadowRoot?.querySelector(".progress") as HTMLElement;
 
-            this.videoElement = this.shadowRoot?.querySelector(".video") as HTMLVideoElement;
-            if(this.videoElement){
-                // We can only control playback without interaction if video is mute
-                this.videoElement.muted=true;
-
-                // Play is a promise so we need to check we have it
-                let playPromise = this.videoElement.play();
-                if (playPromise !== undefined) {
-                    playPromise.then((_) => {
-                        let observer = new IntersectionObserver(
-                            (entries) => {
-                                entries.forEach((entry) => {
-                                    if (
-                                        entry.intersectionRatio !== 1 &&
-                                        !this.videoElement.paused
-                                    ) {
-                                        this.videoElement.pause();
-                                        
-                                        setTimeout(()=>{
-                                            this.videoElement.muted=true;    
-                                        },300);
-                                    } else if (this.videoElement.paused) {
-                                        this.videoElement.play();
-                                        
-                                        //video player in view
-                                        this.VideoPlayerInView?.emit(true);
-
-                                        setTimeout(()=>{
-                                            this.videoElement.muted=false;
-                                        },300);
-                                    }
-                                });
-                            },
-                            { threshold: 1 }
-                        );
-                        observer.observe(this.videoElement);
-                    });
-                }
+            // Play is a promise so we need to check we have it
+            let playPromise = this.VideoPlayControl.play();
+            if (playPromise !== undefined) {
+                playPromise.then((_) => {
+                    let observer = new IntersectionObserver(
+                        (entries) => {
+                            entries.forEach((entry) => {
+                                if (
+                                    entry.intersectionRatio !== 1 &&
+                                    this.VideoPlayControl.isPlaying()
+                                ) {
+                                    this.VideoPlayControl.pause();
+                                } else if (!this.VideoPlayControl.isPlaying()) {
+                                    this.VideoPlayControl.play();
+                                    
+                                    //video player in view
+                                    this.VideoPlayerInView?.emit(true);
+                                }
+                            });
+                        },
+                        { threshold: 1 }
+                    );
+                    observer.observe(this);
+                });
             }
         },100)
-    }
-
-    disconnectedCallback(){
-        if(this.videoElement){
-            this.videoElement.pause();
-            this.videoElement.src="";
-        }
-        super.disconnectedCallback();
-    }
-
-    private muted:boolean=true;
-
-    toggleMute=(e:Event)=>{
-        this.muted=!this.muted;
-        this.videoElement.muted=this.muted;
     }
 
     build(state?: State): TemplateResult {
@@ -213,8 +259,8 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                         </div>
                         <div class="progress-stat">
                             <lay-them in="row" ma="space-between">
-                                <div class="current_time">2:00</div>
-                                <div class="total_time">3:12</div>
+                                <div class="current_time">${state.timings.elapsed}</div>
+                                <div class="total_time">${state.timings.total}</div>
                             </lay-them>
                         </div>
                     </div>
@@ -224,15 +270,11 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
     }
 
     private metaDataAvailable=(e:Event)=>{
-        this.videoElement=e.currentTarget as HTMLVideoElement;
-        this.ProgressBarBloc.max=this.videoElement.duration;
+        this.ProgressBarBloc.max=this.VideoPlayControl.video.duration;
     }
 
     private followVideoTime=(e:Event)=>{
-        if(!this.videoElement){
-            this.videoElement=e.currentTarget as HTMLVideoElement;
-        }
-        this.ProgressBarBloc.update(this.videoElement.currentTime);
+        this.ProgressBarBloc.update(this.VideoPlayControl.video.currentTime);
     }
 
     private get zapBlocBuilderConfig():BlocBuilderConfig<ZoomAndPanBloc,number>{
@@ -252,6 +294,11 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                     onPointTouch(xy: XY): void {
                         if(this.hideToolBarTimer){
                             clearTimeout(this.hideToolBarTimer);
+                        }
+                        if(self.VideoPlayControl.isPlaying()){
+                            self.VideoPlayControl.pause();
+                        }else{
+                            self.VideoPlayControl.play();
                         }
                         //if hidden
                         if(self.HideToolBarBloc?.state){
