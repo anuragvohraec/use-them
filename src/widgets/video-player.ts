@@ -70,7 +70,7 @@ class VideoPlayController extends HideBloc{
         // We can only control playback without interaction if video is mute
         this.video.muted=true;
     }
-
+    
     play(){
         this.emit(true);
         let r = this.video.play();
