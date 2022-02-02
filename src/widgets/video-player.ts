@@ -196,7 +196,7 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                         },
                         { threshold: 1 }
                     );
-                    observer.observe(this);
+                    observer.observe(this.VideoPlayControl.video);
                 });
             }
         },100)
