@@ -157,6 +157,6 @@ export class Utils {
       const m = Math.floor(hr/this.ONE_MINUTE);
       const mr=hr%this.ONE_MINUTE;
       const s = mr%1000;
-      return `${h>0?`${h}`+":":""}${m}:${s}`;
+      return `${h>0?`${h}`+":":""}${("0"+m).slice(-2)}:${("0"+s).slice(-2)}`;
   }
 }
