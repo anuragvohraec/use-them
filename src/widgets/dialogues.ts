@@ -88,6 +88,7 @@ export class HideBloc extends Bloc<boolean>{
         if(this.overlay_id && this.overlayPageBloc && this.overlayPageBlocListenerId){
             this.overlayPageBloc._unsubscribe(this.overlayPageBlocListenerId);
         }
+        super.onDisconnection();
     }
 
 }
