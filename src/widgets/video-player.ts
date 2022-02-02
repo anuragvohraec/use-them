@@ -1,11 +1,10 @@
 import { Bloc, BlocBuilderConfig, MultiBlocsReactiveWidget } from "bloc-them";
 import { nothing, TemplateResult,html } from "lit-html";
 import { XY } from "../interfaces";
-import { BogusBloc } from "../utils/blocs";
+
 import { Utils } from "../utils/utils";
 import { HideBloc } from "./dialogues";
 import { ZoomAndPanBloc } from "./gesturedetector";
-import { ProgressBloc } from "./loading-bar";
 
 interface State{
     /**
