@@ -106,6 +106,12 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version": "10.0.1"
+1. Added video player `ut-on-view-video`. Player best suited for Stories. Auto plays when video in focus.
+  ```
+  <ut-on-view-video src="/video/1.mp4"></ut-on-view-video>
+  ```
+2. Updated bloc them
 ### "version": "10.0.0"
 1. Updated ZoomAndPinchBloc. Now Panning gives movement (relative to previous position). And zoom gives an axis around which zoom is done.
 2. Couple of minor fixes.
