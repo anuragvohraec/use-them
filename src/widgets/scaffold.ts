@@ -48,6 +48,7 @@ export class ScaffoldBloc extends Bloc<ScaffoldState>{
         if(this.overlayPageBloc && this.overlayPageBlocListenerId){
             this.overlayPageBloc._unsubscribe(this.overlayPageBlocListenerId);
         }
+        super.onDisconnection();
     }
 
     toggleMenu(pushOverlayStack:boolean=true) {
