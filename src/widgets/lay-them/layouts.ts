@@ -17,7 +17,9 @@ export class LayThem extends BlocBuilder<LayThemBloc, any> {
 
   constructor(){
     super("LayThemBloc", {
-      useThisBloc: new LayThemBloc()
+      blocs_map:{
+        LayThemBloc: new LayThemBloc()
+    }
     });
     let _in  = this.getAttribute("in");
     if(_in){

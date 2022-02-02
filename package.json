@@ -28,7 +28,7 @@
     "typescript": "~4.0.3"
   },
   "dependencies": {
-    "bloc-them": "^5.0.13",
+    "bloc-them": "^6.0.0",
     "lit-html": "^1.4.1"
   }
 }

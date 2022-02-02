@@ -281,9 +281,9 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
         this.ProgressBarBloc.update(this.VideoPlayControl.video.currentTime);
     }
 
-    private _zapBlocBuilderConfig!:BlocBuilderConfig<ZoomAndPanBloc,number>;
+    private _zapBlocBuilderConfig!:BlocBuilderConfig<number>;
 
-    private get zapBlocBuilderConfig():BlocBuilderConfig<ZoomAndPanBloc,number>{
+    private get zapBlocBuilderConfig():BlocBuilderConfig<number>{
         if(!this._zapBlocBuilderConfig){
             let self=this;
             this._zapBlocBuilderConfig={

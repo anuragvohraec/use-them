@@ -117,8 +117,8 @@ class DatePickerBloc extends Bloc<DatePickerState>{
         t.setDate(this.state.date);
         t.setMonth(this.state.month);
         t.setFullYear(this.state.year);
-        let fm = BlocsProvider.of<FormMessageBloc>("FormMessageBloc",context);
-        let fb = BlocsProvider.of<FormBloc>(this.config.formBlocName,context);
+        let fm = FormMessageBloc.search<FormMessageBloc>("FormMessageBloc",context);
+        let fb = FormBloc.search<FormBloc>(this.config.formBlocName,context);
         fb!.delegateChangeTo(this.config.nameForThisInForm,t.getTime(),fm!);
         this.emit(this.convertDateToState(t));
     }
@@ -284,7 +284,7 @@ customElements.define("date-picker-body",_DatePickerModalBody);
 
 class DatePickerOKButton extends RaisedButton<HideBloc,boolean>{
     onPress(): void {
-        const t= BlocsProvider.of<DatePickerBloc>("DatePickerBloc",this);
+        const t= DatePickerBloc.search<DatePickerBloc>("DatePickerBloc",this);
         t?.postDateToForm(this);
         this.bloc?.toggle();
     }
@@ -385,7 +385,7 @@ class DatePickerInput extends WidgetBuilder<DatePickerBloc,DatePickerState>{
     builder(state: DatePickerState): TemplateResult {
        return html`<div style="width: 100%; height:100%;" @click=${()=>{
             navigator.vibrate(UseThemConfiguration.PRESS_VIB);
-           let t = BlocsProvider.of<HideBloc>("HideBloc",this);
+           let t = HideBloc.search<HideBloc>("HideBloc",this);
            t?.toggle();
        }}>${(()=>{
            if(!state || !this.bloc?.isDirty) {

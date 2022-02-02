@@ -159,7 +159,7 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
 
     connectedCallback(){
         super.connectedCallback();
-        UtRegistryBloc.add("ImageEditorHideBloc",this.configs!.blocs_map!["ImageEditorHideBloc"]);
+        UtRegistryBloc.add("ImageEditorHideBloc",this.blocBuilderConfig!.blocs_map!["ImageEditorHideBloc"]);
     }
 
     hideEditor=(e:Event)=>{
@@ -171,7 +171,7 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
         this.bloc?.toggle();
     }
 
-    private get zapBlocBuilderConfig():BlocBuilderConfig<ZoomAndPanBloc,number>{
+    private get zapBlocBuilderConfig():BlocBuilderConfig<number>{
         let imageEditorBloc=this.bloc;
         return {
             blocs_map:{

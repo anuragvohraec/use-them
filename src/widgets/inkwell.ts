@@ -12,7 +12,9 @@ export class InkWell extends WidgetBuilder<BogusBloc,number>{
     private ripple_color:string;
 
     constructor(){
-        super("BogusBloc",{useThisBloc:new BogusBloc()});
+        super("BogusBloc",{blocs_map:{
+            BogusBloc: new BogusBloc()
+        }});
 
         let bgColor = "#000";
         if(this.useAttribute){

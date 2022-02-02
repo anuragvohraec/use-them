@@ -33,7 +33,7 @@ customElements.define("test-file-picker",TestFilePicker);
 Then whenever we need file picker we will need to navigate to that page
 ```html
 <div @click=${function(){
-    let routeBloc = BlocsProvider.of("AppPageBloc",this);
+    let routeBloc = BlocsProvider.search("AppPageBloc",this);
     routeBloc.goToPage("/#/file-picker");
 }}>Go to File picker page</div>
 ```
@@ -87,10 +87,10 @@ class StateSelectorBloc extends SelectorBloc<string>{
 
     onchange(selectedItems: Set<string>, context: HTMLElement): void {
         if(!this.formBloc){
-            this.formBloc=BlocsProvider.of<SignUpFormBloc,any>("SignUpFormBloc",context);
+            this.formBloc=BlocsProvider.search<SignUpFormBloc,any>("SignUpFormBloc",context);
         }
         if(!this.formMsgBloc){
-            this.formMsgBloc=BlocsProvider.of<FormMessageBloc,any>("FormMessageBloc",context);
+            this.formMsgBloc=BlocsProvider.search<FormMessageBloc,any>("FormMessageBloc",context);
         }
 
         const cv=Array.from(selectedItems)[0];
@@ -136,7 +136,7 @@ class StateSelectorLabel extends WidgetBuilder<SignUpFormBloc,FormState>{
         const cnt = state["state"]?state["state"]:"State";
 
         return html`<div style="height:40px; width: 100%;" @click=${()=>{
-            const hb = BlocsProvider.of<HideBloc,any>("HideBloc",this);
+            const hb = BlocsProvider.search<HideBloc,any>("HideBloc",this);
             hb.toggle();
         }}>
         <lay-them in="row" ma="flex-start" ca="center">

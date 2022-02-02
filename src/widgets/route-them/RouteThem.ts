@@ -6,6 +6,7 @@ import {Utils} from '../../utils/utils';
 import { UseThemConfiguration } from '../../configs';
 import { OverlayPageBloc } from './overlays';
 import { FilePickerExternalTriggers } from '../../screens/file-selector';
+import { BogusBloc } from '../../utils/blocs';
 
 export interface RouteState{
   url_path: string;
@@ -54,7 +55,7 @@ export class RouteThemBloc extends Bloc<RouteState>{
 
   public get navHooks(): RouteThemNavigationHookBloc | undefined {
     if(!this._navHooksBlocSearchedOnce && !this._navHooks && this.hostElement){
-      this._navHooks = BlocsProvider.of<RouteThemNavigationHookBloc>("RouteThemNavigationHookBloc",this.hostElement);
+      this._navHooks = RouteThemNavigationHookBloc.search<RouteThemNavigationHookBloc>("RouteThemNavigationHookBloc",this.hostElement);
       this._navHooksBlocSearchedOnce=true;
     }
     return this._navHooks;
@@ -199,27 +200,22 @@ export class RouteThemController extends BlocsProvider{
 }
 
 
-class _BogusBloc extends Bloc<number>{
-  protected _name: string="_BogusBloc";
-  constructor(){
-    super(0);
-  }
-}
-
 /**
  * At first this may seems redundant, but its required to encapsulate pages.
  * Without this man content will be visible uncontrollably.
  */
-export class RouteThem extends BlocBuilder<_BogusBloc,number>{
+export class RouteThem extends BlocBuilder<BogusBloc,number>{
   constructor(private pageTagName: string = "a-page", private routeBlocName: string="RouteThemBloc"){
-    super("_BogusBloc", {
-      useThisBloc: new _BogusBloc()
+    super("BogusBloc", {
+      blocs_map:{
+          BogusBloc: new BogusBloc()
+      }
     });
   }
   
   connectedCallback(){
     super.connectedCallback();
-    let routeBloc = BlocsProvider.of<RouteThemBloc>(this.routeBlocName,this);
+    let routeBloc = RouteThemBloc.search<RouteThemBloc>(this.routeBlocName,this);
     
     this.querySelectorAll(this.pageTagName).forEach(e=>{
       let r = e.getAttribute("route");

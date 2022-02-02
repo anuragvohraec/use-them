@@ -80,7 +80,7 @@ export abstract class RaisedButton<B extends Bloc<S>, S> extends WidgetBuilder<B
     }
     
 
-    constructor(blocName: string,  configs?: BlocBuilderConfig<B, S>,private shades:number[]=[20,80],){
+    constructor(blocName: string,  configs?: BlocBuilderConfig<S>,private shades:number[]=[20,80],){
         super(blocName, configs);
     }
 
@@ -156,7 +156,9 @@ if(!customElements.get("circular-icon-button")){
 export abstract class NoBlocRaisedButton extends RaisedButton<BogusBloc,number>{
     constructor(){
         super("BogusBloc",{
-            useThisBloc: new BogusBloc()
+            blocs_map:{
+                BogusBloc: new BogusBloc()
+            }
         })
     }
 }

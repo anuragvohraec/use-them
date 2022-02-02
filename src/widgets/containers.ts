@@ -4,7 +4,9 @@ import { TemplateResult, html } from 'lit-html';
 export class Expanded extends WidgetBuilder<BogusBloc,number>{
     constructor(){
         super("BogusBloc", {
-            useThisBloc: new BogusBloc()
+            blocs_map:{
+                BogusBloc: new BogusBloc()
+            }
         });
     }
     builder(state: number): TemplateResult {

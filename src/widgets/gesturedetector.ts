@@ -131,7 +131,9 @@ export class GestureDetectorBloc extends Bloc<GESTURE>{
 export abstract class GestureDetectorBuilder extends WidgetBuilder<GestureDetectorBloc,GESTURE>{
     constructor(private drag_sensitivity:number = 1, private minDistanceInPx:number=100, private doubleTapTimer:number=300){
         super("GestureDetectorBloc",{
-            useThisBloc: new GestureDetectorBloc(drag_sensitivity, minDistanceInPx, doubleTapTimer),
+            blocs_map:{
+                GestureDetectorBloc:new GestureDetectorBloc(drag_sensitivity, minDistanceInPx, doubleTapTimer)
+            },
             buildWhen:(o,n)=>{
                 if(n === GESTURE.NO_ACTION){
                     return false;
@@ -175,7 +177,9 @@ export abstract class GestureDetectorBuilder extends WidgetBuilder<GestureDetect
 export class GestureDetector extends WidgetBuilder<GestureDetectorBloc,GESTURE>{
     constructor(private drag_sensitivity:number = 1, private minDistanceInPx:number=100, private doubleTapTimer:number=300){
         super("GestureDetectorBloc",{
-            useThisBloc: new GestureDetectorBloc(drag_sensitivity, minDistanceInPx, doubleTapTimer),
+            blocs_map:{
+                GestureDetectorBloc: new GestureDetectorBloc(drag_sensitivity, minDistanceInPx, doubleTapTimer)
+            },
             buildWhen:(o,n)=>{
                 if(n === GESTURE.NO_ACTION){
                     return false;
@@ -287,7 +291,7 @@ class SliderGestureDetector extends GestureDetector{
     
     public get circularCounterBloc() : CircularCounterBloc {
         if(!this._circularCounterBloc){
-            this._circularCounterBloc = BlocsProvider.of<CircularCounterBloc>("CircularCounterBloc",this);
+            this._circularCounterBloc = CircularCounterBloc.search<CircularCounterBloc>("CircularCounterBloc",this);
         }
         return this._circularCounterBloc!;
     }

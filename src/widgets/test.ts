@@ -176,7 +176,9 @@ class MyDialogueButton extends RaisedButton<HideBloc,boolean>{
     }
 
     constructor(){
-        super("HideBloc",{useThisBloc: new HideBloc(true,"ddf")},[40,100])
+        super("HideBloc",{blocs_map:{
+            HideBloc: new HideBloc(true,"ddf")
+        }},[40,100])
     }
 }
 

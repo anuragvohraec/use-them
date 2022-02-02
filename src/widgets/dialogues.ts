@@ -78,7 +78,7 @@ export class HideBloc extends Bloc<boolean>{
                     }
                 };
                 t._ln_name=this._name;
-                this.overlayPageBlocListenerId = this.overlayPageBloc._listen(t);
+                this.overlayPageBlocListenerId = this.overlayPageBloc._subscribe(t);
             }
         }
     }
@@ -86,7 +86,7 @@ export class HideBloc extends Bloc<boolean>{
     onDisconnection(){
         //stop listening to overlay bloc events
         if(this.overlay_id && this.overlayPageBloc && this.overlayPageBlocListenerId){
-            this.overlayPageBloc._stopListening(this.overlayPageBlocListenerId);
+            this.overlayPageBloc._unsubscribe(this.overlayPageBlocListenerId);
         }
     }
 

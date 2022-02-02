@@ -118,7 +118,7 @@ import { Range } from './inputs/rangeselector';
 
     checkAllValidationPassed(){
         //check there are no validation messages
-        let msgBloc = BlocsProvider.of<FormMessageBloc>(this.formMessageBlocName,this.hostElement);
+        let msgBloc = BlocsProvider.search<FormMessageBloc>(this.formMessageBlocName,this.hostElement);
         let msgState = JSON.parse(JSON.stringify(msgBloc!.state));
         if(Object.keys(msgState).length>0){
             return false;

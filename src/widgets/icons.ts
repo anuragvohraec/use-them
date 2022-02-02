@@ -15,7 +15,9 @@ export class UtIcon extends WidgetBuilder<BogusBloc,number>{
 
     constructor(){
         super("BogusBloc",{
-            useThisBloc: new BogusBloc()
+            blocs_map:{
+                BogusBloc: new BogusBloc()
+            }
         })
     }
 

@@ -19,7 +19,7 @@ export class BogusBloc extends ActionBloc<number>{
 export abstract class WidgetBuilder<B extends Bloc<S>, S> extends BlocBuilder<B,S>{
     protected _theme : Theme;
     
-    constructor(blocName: string, configs?: BlocBuilderConfig<B, S>){
+    constructor(blocName: string, configs?: BlocBuilderConfig<S>){
         super(blocName, configs);
         let theme: Theme = (<any>document).useThemTheme; 
         this._theme={...theme,...this.useAttribute};
@@ -47,7 +47,11 @@ export abstract class WidgetBuilder<B extends Bloc<S>, S> extends BlocBuilder<B,
 
 export abstract class NoBlocWidgetBuilder extends WidgetBuilder<BogusBloc,number>{
     constructor(){
-        super("BogusBloc", {useThisBloc: new BogusBloc()})
+        super("BogusBloc", {
+            blocs_map:{
+                BogusBloc: new BogusBloc()
+            }
+        })
     }
 }
 

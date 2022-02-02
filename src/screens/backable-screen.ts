@@ -25,7 +25,7 @@ class TitleBarWithBackButton extends WidgetBuilder<AppPageBloc,RouteState>{
             <div style="width:100%;height:100%;">
                 <lay-them in="row" ma="flex-start" ca="stretch">
                     <div @click=${()=>{
-                        let routeBloc = BlocsProvider.of<AppPageBloc>("AppPageBloc",this);
+                        let routeBloc = AppPageBloc.search<AppPageBloc>("AppPageBloc",this);
                         routeBloc!.popOutOfCurrentPage();
                     }}>
                         <lay-them ma="center" ca="center">

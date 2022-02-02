@@ -121,7 +121,7 @@ class _TabsGestureDetector extends GestureDetector{
 
     connectedCallback(){
         super.connectedCallback();
-        let t = BlocsProvider.of<TabRouterBloc>("TabRouterBloc", this);
+        let t = BlocsProvider.search<TabRouterBloc>("TabRouterBloc", this);
         if(!t){
             throw `No TabRouterBloc found for gesture detector for tabs`;
         }else{

@@ -67,7 +67,7 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
     
     async fileSelected(context:HTMLInputElement){
         this.revokeAllObjectURL();
-        const snackBar = BlocsProvider.of<SnackBarBloc>("SnackBarBloc",context);
+        const snackBar = SnackBarBloc.search<SnackBarBloc>("SnackBarBloc",context);
         if(!snackBar){
             throw `Please make sure to provide SnackBarBloc and snack-bar for this to work properly`
         }
@@ -256,7 +256,7 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
     }
 
     closeFilePicker(context:HTMLElement){
-        const appPageBloc = BlocsProvider.of<AppPageBloc>("AppPageBloc",context);
+        const appPageBloc = AppPageBloc.search<AppPageBloc>("AppPageBloc",context);
         appPageBloc?.popOutOfCurrentPage();
     }
 
@@ -272,7 +272,9 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
 export class ImageConfirmationToolBoxContainer extends WidgetBuilder<HideBloc,boolean>{
     constructor(){
         super("HideBloc",{
-            useThisBloc: new HideBloc()
+            blocs_map:{
+                HideBloc:new HideBloc()
+            }
         });
     }
 
@@ -339,7 +341,7 @@ interface PickerConfig{
 export interface FilePickerConfig{
     bloc_name:string,
     max_file:number,
-    bloc_config?: BlocBuilderConfig<FilePickerBloc,PickedFileInfo[]>;
+    bloc_config?: BlocBuilderConfig<PickedFileInfo[]>;
     picker_config?:PickerConfig;
     imageEditorOutPutSize?:string;
 }

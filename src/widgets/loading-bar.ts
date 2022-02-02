@@ -72,7 +72,11 @@ export abstract class ProgressBarBuilder extends WidgetBuilder<ProgressBloc,numb
 
     constructor(progressBloc : ProgressBloc, progressBlocName:string){
         super(progressBlocName, {
-            useThisBloc: progressBloc
+            blocs_map:(()=>{
+                let a:any={};
+                a[progressBlocName]=progressBloc;
+                return a;
+            })()
         });
     }
 

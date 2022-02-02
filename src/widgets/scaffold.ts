@@ -39,14 +39,14 @@ export class ScaffoldBloc extends Bloc<ScaffoldState>{
                 }
             };
             t._ln_name=this._name;
-            this.overlayPageBlocListenerId = this.overlayPageBloc._listen(t);
+            this.overlayPageBlocListenerId = this.overlayPageBloc._subscribe(t);
         }
     }
 
     onDisconnection(){
         //stop listening to overlay bloc events
         if(this.overlayPageBloc && this.overlayPageBlocListenerId){
-            this.overlayPageBloc._stopListening(this.overlayPageBlocListenerId);
+            this.overlayPageBloc._unsubscribe(this.overlayPageBlocListenerId);
         }
     }
 
@@ -84,7 +84,9 @@ export class ScaffoldBloc extends Bloc<ScaffoldState>{
 export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
     constructor() {
         super("ScaffoldBloc", {
-            useThisBloc: new ScaffoldBloc()
+            blocs_map:{
+                ScaffoldBloc: new ScaffoldBloc()
+            }
         });
     }
 
