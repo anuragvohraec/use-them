@@ -185,6 +185,7 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                                     this.VideoPlayControl.isPlaying()
                                 ) {
                                     this.VideoPlayControl.pause();
+                                    this.VideoPlayerInView?.emit(false);
                                 } else if (this.VideoPlayControl.isNotPlaying()) {
                                     this.VideoPlayControl.play();
                                     
