@@ -297,7 +297,7 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                                     self.VideoPlayControl.video.currentTime=this.changeCurrentTimeTo;
                                     this.changeCurrentTimeTo=-1;
                                     self.HideToolBarBloc?.hide();
-                                    self.VideoPlayControl.play();
+                                    self.VideoPlayControl.pause();
                                 }
                             }
                             onPointTouch(xy: XY): void {
