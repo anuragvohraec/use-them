@@ -277,61 +277,62 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
         this.ProgressBarBloc.update(this.VideoPlayControl.video.currentTime);
     }
 
+    private _zapBlocBuilderConfig!:BlocBuilderConfig<ZoomAndPanBloc,number>;
+
     private get zapBlocBuilderConfig():BlocBuilderConfig<ZoomAndPanBloc,number>{
-        let self=this;
-        return {
-            blocs_map:{
-                ZoomAndPanBloc: new class extends ZoomAndPanBloc{
-                    private hideToolBarTimer:any;
+        if(!this._zapBlocBuilderConfig){
+            let self=this;
+            this._zapBlocBuilderConfig={
+                    blocs_map:{
+                        ZoomAndPanBloc: new class extends ZoomAndPanBloc{
+                            private hideToolBarTimer:any;
 
-                    onPointRelease(xy: XY): void {
-                        this.hideToolBarTimer=setTimeout(()=>{
-                            if(!self.HideToolBarBloc?.state){
-                                self.HideToolBarBloc?.hide();
+                            onPointRelease(xy: XY): void {
+                                if(this.changeCurrentTimeTo>=0){
+                                    //seek video in here
+                                    self.VideoPlayControl.video.currentTime=this.changeCurrentTimeTo;
+                                    this.changeCurrentTimeTo=-1;
+                                    self.HideToolBarBloc?.hide();
+                                    self.VideoPlayControl.play();
+                                }
                             }
-                        },2000);
-                    }
-                    onPointTouch(xy: XY): void {
-                        if(this.hideToolBarTimer){
-                            clearTimeout(this.hideToolBarTimer);
-                        }
-                        if(self.VideoPlayControl.isPlaying()){
-                            self.VideoPlayControl.pause();
-                        }else{
-                            self.VideoPlayControl.play();
-                        }
-                        //if hidden
-                        if(self.HideToolBarBloc?.state){
-                            self.HideToolBarBloc?.show();
-                        }
-                    }
+                            onPointTouch(xy: XY): void {
+                                self.VideoPlayControl.pause();
+                                self.HideToolBarBloc?.show();
+                            }
 
-                    onZoom=(zoom: number,axis:XY): void=> {
-                        //TODO volume control
-                    }
-                    onPan=(movement: XY,axis:XY): void =>{
-                        //add progress to current progress
-                        //x movement
-                        let totalProgressWidth=self.progressBarCont.offsetWidth;
-                        let additionalProgress=100*movement.x/totalProgressWidth;
-                        if(self.ProgressBarBloc){
-                            let calcProgress=self.ProgressBarBloc.state+additionalProgress;
-                            if(calcProgress<=0){
-                                calcProgress=0;
-                            }else if(calcProgress>=100){
-                                calcProgress=100;
+                            onZoom=(zoom: number,axis:XY): void=> {
+                                //TODO volume control
                             }
-                            self.ProgressBarBloc.update(calcProgress);
+
+                            private changeCurrentTimeTo:number=-1;
+
+                            onPan=(movement: XY,axis:XY): void =>{
+                                //add progress to current progress
+                                //x movement
+                                let totalProgressWidth=self.progressBarCont.offsetWidth;
+                                let additionalProgress=100*movement.x/totalProgressWidth;
+                                if(self.ProgressBarBloc){
+                                    let calcProgress=self.ProgressBarBloc.state+additionalProgress;
+                                    if(calcProgress<=0){
+                                        calcProgress=0;
+                                    }else if(calcProgress>=100){
+                                        calcProgress=100;
+                                    }
+                                    this.changeCurrentTimeTo=calcProgress*self.VideoPlayControl.video.duration/100
+                                    self.ProgressBarBloc.update(this.changeCurrentTimeTo);
+                                }
+                            }
+            
+                            protected _name: string="ZoomAndPanBloc";
+                            constructor(){
+                                super(0);
+                            }
                         }
-                    }
-    
-                    protected _name: string="ZoomAndPanBloc";
-                    constructor(){
-                        super(0);
                     }
                 }
-            }
         }
+        return this._zapBlocBuilderConfig;
     }
 
 }
