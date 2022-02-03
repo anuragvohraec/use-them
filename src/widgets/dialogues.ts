@@ -59,6 +59,22 @@ export class HideBloc extends Bloc<boolean>{
         }
     }
 
+    isTrue(){
+        return this.state;
+    }
+
+    ifNotTrue(){
+        return !this.state;
+    }
+
+    setTrue(){
+        this.hide();
+    }
+
+    setFalse(){
+        this.show();
+    }
+
 
     private overlayPageBloc?:OverlayPageBloc;
     private overlayPageBlocListenerId?:string;

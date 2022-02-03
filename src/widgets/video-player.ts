@@ -30,7 +30,9 @@ interface State{
     /**
      * Timings
      */
-    timings:{total:string, elapsed:string}
+    timings:{total:string, elapsed:string};
+
+    isNotFullScreen:boolean;
 }
 
 export class PercentageBloc extends Bloc<number>{
@@ -118,7 +120,8 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                     total: Utils.covertToPlayTime(this.ProgressBarBloc.max),
                     elapsed: Utils.covertToPlayTime(this.ProgressBarBloc.state * this.ProgressBarBloc.max/100)
                 },
-                isBuffering:subscribed_states["IsVideoBuffering"]
+                isBuffering:subscribed_states["IsVideoBuffering"],
+                isNotFullScreen: subscribed_states["IsNotFullScreen"]
             }
         }
     }
@@ -130,10 +133,11 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                 ProgressBarBloc: new PercentageBloc({initState:0,max:100}),
                 VideoPlayerInView: new HideBloc(false), //assumes video player not in view
                 VideoPlayControl: new VideoPlayController(),
-                IsVideoBuffering: new HideBloc()
+                IsVideoBuffering: new HideBloc(),
+                IsNotFullScreen: new HideBloc()
             },
             subscribed_blocs:["HideToolBarBloc","ProgressBarBloc","IsVideoBuffering","VideoPlayerInView","VideoPlayControl"]
-        })
+        });
     }
 
     private progressBarCont!:HTMLElement;
@@ -255,6 +259,9 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
         .progress-stat{
             width: 100%;
         }
+        .fullscreen{
+            min-width: 50px;
+        }
         </style>
         <ut-pan-zoom-detector bloc="ZoomAndPanBloc" .blocBuilderConfig=${this.zapBlocBuilderConfig as any}>
             <div class="cont">
@@ -267,6 +274,11 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                         <div class="progress-stat">
                             <lay-them in="row" ma="space-between">
                                 <div class="current_time">${state.timings.elapsed}</div>
+                                <div class="fullscreen" @click=${this.toggleFullScreen}>
+                                    <ink-well>
+                                        ${state.isNotFullScreen?html`<ut-icon icon="fullscreen" use="icon_inactive:white;"></ut-icon>`:html`<ut-icon icon="fullscreen-exit" use="icon_inactive:white;"></ut-icon>`}
+                                    </ink-well>
+                                </div>
                                 <div class="total_time">${state.timings.total}</div>
                             </lay-them>
                         </div>
@@ -277,6 +289,22 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                 </lay-them>
             </div>
         </ut-pan-zoom-detector>`;
+    }
+
+    private toggleFullScreen=(e:Event)=>{
+        if (document.fullscreenElement) {
+            this.getBloc<HideBloc>("IsNotFullScreen").setTrue();
+            document.exitFullscreen();
+            setTimeout(()=>{
+                screen.orientation.lock('portrait');
+            },100);
+        }else{
+            this.getBloc<HideBloc>("IsNotFullScreen").setFalse();
+            this.shadowRoot!.querySelector(".cont")?.requestFullscreen();
+            setTimeout(()=>{
+                screen.orientation.lock('landscape');
+            },100);
+        }
     }
 
     private _IsVideoBuffering!:HideBloc;
