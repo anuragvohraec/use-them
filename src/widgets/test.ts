@@ -14,7 +14,7 @@ import {CreateSearchableSelector, SelectorBloc, SelectorWidget} from './selector
 import { BlocsProvider } from 'bloc-them';
 import { DatePicker } from './inputs/date-picker';
 import { CircularCounterBloc , GESTURE, GestureDetectorBloc, GestureDetector, GestureDetectorBuilder, VerticalScrollLimitDetector, HorizontalScrollLimitDetector} from './gesturedetector';
-import { FilePickerBloc,FilePickerScreen } from '../screens/file-selector';
+import { FilePickerBloc,FilePickerScreen, FilePickerType } from '../screens/file-selector';
 import { PickedFileInfoForOutPut } from '../interfaces';
 import { ConfirmationDialogue } from './confirmation-dialogue';
 import { QrCodeListenerBloc, QrCodeScannerConfig, QrResult } from './qr-code-scanner';
@@ -366,6 +366,9 @@ class TestFilePicker extends FilePickerScreen{
                 blocs_map:{
                     TestFilePickerBloc: new TestFilePickerBloc()
                 }
+            },
+            picker_config:{
+                type: FilePickerType.AUDIO
             }
         })
     }

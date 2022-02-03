@@ -31,6 +31,38 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
     private static resolvers: Record<number,any>={};
     private static worker: Worker=FilePickerBloc.initializeWorker();
 
+    private _coverPic?: File | undefined;
+    public get coverPic(): File | undefined {
+        return this._coverPic;
+    }
+
+    public coverPicUrl?:string;
+    
+    public setCoverPic(value: File | undefined, max_length:number) {
+        this._coverPic = value;
+        if(this.coverPicUrl){
+            URL.revokeObjectURL(this.coverPicUrl);
+            this.coverPicUrl=undefined;
+        }
+        if(value){
+            this.convertImage({
+                id:"dummy",
+                file: value,
+                max_length,
+                quality:90,
+                type:"image/webp"
+            }).then(e=>{
+                if(e){
+                    this._coverPic=new File([e],"cover.webp",{type:"image/webp"});
+                    this.coverPicUrl=URL.createObjectURL(this._coverPic);
+                    this.emit([...this.state]);
+                }
+            })  
+        }else{
+            this.emit([...this.state]);
+        }
+    }
+
     private static initializeWorker(){
         let worker = new Worker("/js/use-them/image-utils.js");
         worker.onmessage=(e:MessageEvent<ImageCompressOutPut>)=>{
@@ -266,6 +298,9 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
                 URL.revokeObjectURL(fn.url);
             }
         }
+        if(this.coverPicUrl){
+            URL.revokeObjectURL(this.coverPicUrl);
+        }
     }
 }
 
@@ -323,6 +358,10 @@ interface PickerConfig{
     capture?:"user"|"environment";
     type: FilePickerType;
     accept?: string;
+    /**
+     * A value less than 1 means no cover pic will be created
+     */
+    coverPicSizeInPX?:number;
 }
 
 /**
@@ -397,7 +436,8 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
 
         this.picker_config ={
             accept:"*/*",
-            type: FilePickerType.FILE
+            type: FilePickerType.FILE,
+            coverPicSizeInPX:300
         };
         if(config.picker_config){
             this.picker_config={...this.picker_config,...config.picker_config};
@@ -431,6 +471,25 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
         const t= e.currentTarget as HTMLElement;
         const index:number = parseInt(t.getAttribute("i")??"0");
         this.bloc?.removeFile(index);
+    }
+
+    editCoverPic=(e:Event)=>{
+        const t = e.currentTarget as HTMLElement;
+        const imageSize=parseInt(t.getAttribute("size")!);
+        const index=0;
+        if(this.bloc?.coverPic){
+            const ihb = UtRegistryBloc.get<ImageEditorHideBloc>("ImageEditorHideBloc");
+            let fileName="cover.webp";
+            ihb.editImage({
+                index,
+                fileName,
+                blob: this.bloc.coverPic!,
+                imageEditedListener:(blob:Blob,index)=>{
+                    this.bloc?.setCoverPic(new File([blob],fileName,{type:"image/webp"}),imageSize)
+                }
+            });
+            ihb.toggle();
+        }
     }
 
     editIndex=(e:Event)=>{
@@ -495,12 +554,36 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                 width:50px;
                 height:50px;
             }
+            .addCoverButton{
+                position:fixed;
+                top: 10px;
+                right: 10px;
+                z-index: 10;
+            }
         </style>
         <backable-screen title=${title}>
             <lay-them in="column" ca="stretch" ma="space-between">
                 <div style="flex-grow: 1;height:0px;overflow-y: auto;padding: 10px;">
                     ${state.length===0?html`<lay-them ma="center" ca="center"><ut-p>no_file_selected</ut-p></lay-them>`:html`
                         <div class="image_grid">
+                            ${this.bloc?.coverPicUrl?html`<lay-them in="stack">
+                                            <img class="image_item" src=${this.bloc.coverPicUrl}>
+                                            <div style="bottom:0px;width:100%;height:50px;background-color: #00000094;">
+                                                <lay-them in="row" ma="space-between" ma="center">
+                                                    <div class="edit-button"  @click=${this.editCoverPic} size=${this.picker_config.coverPicSizeInPX!}>
+                                                        <ink-well>
+                                                            <ut-icon icon="edit" use="icon_inactive:white;"></ut-icon>
+                                                        </ink-well>
+                                                    </div>
+                                                    <div class="edit-button" @click=${this.selectedACoverPic}>
+                                                        <ink-well>
+                                                            <ut-icon icon="clear" use="icon_inactive:white;"></ut-icon>
+                                                        </ink-well>
+                                                    </div>
+                                                </lay-them>
+                                            </div>
+                                        </lay-them>`:nothing as TemplateResult}
+
                             ${repeat(state,(item)=>item.name,(pickedFileInfo,index)=>{
 
                                 return html`<lay-them in="column" ma="center">
@@ -560,7 +643,21 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                     </image-picker-confirmation-box-container>
                 </div>
             </lay-them>
+            ${((this.picker_config.type===FilePickerType.IMAGE)&&(!this.picker_config.coverPicSizeInPX))?nothing as HTMLElement: html`
+            <label for="cover-pic">
+                <div class="addCoverButton">
+                    <labeled-icon-button icon="add" label="cover" use="color:white;"></labeled-icon-button>
+                </div>
+                <input id="cover-pic" type="file" accept="image/*" @change=${this.selectedACoverPic}>
+            </label>`}
         </backable-screen>`;
+    }
+
+    selectedACoverPic=(e:InputEvent)=>{
+        let coverInput = e.currentTarget as HTMLInputElement;
+        if(this.bloc){
+            this.bloc.setCoverPic(coverInput?.files?.[0]??undefined,this.picker_config.coverPicSizeInPX!);
+        }
     }
 }
 

@@ -123,7 +123,7 @@ export class LabeledIconButton extends NoBlocWidgetBuilder{
         <ink-well>
             <lay-them ca="center" ma="center">
                 <ut-icon icon="${this.icon}" use="icon_inactive: ${color}"></ut-icon>
-                <ut-h5 use="color: ${color};">${this.label}</ut-h5>
+                <ut-h5 use="color: ${color};" .key=${this.label??""}></ut-h5>
             </lay-them>
         </ink-well>
         <slot></slot>
