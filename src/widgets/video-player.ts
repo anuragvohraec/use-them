@@ -171,7 +171,6 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
         return this._VideoPlayControl;
     }
     
-
     connectedCallback(){
         super.connectedCallback();
         setTimeout(()=>{
@@ -190,7 +189,7 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                                 ) {
                                     this.VideoPlayControl.pause();
                                     this.VideoPlayerInView?.emit(false);
-                                } else if (this.VideoPlayControl.isNotPlaying()) {
+                                } else if (entry.intersectionRatio === 1 && this.VideoPlayControl.isNotPlaying()) {
                                     this.VideoPlayControl.play();
                                     
                                     //video player in view
@@ -311,6 +310,10 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
             this._zapBlocBuilderConfig={
                     blocs_map:{
                         ZoomAndPanBloc: new class extends ZoomAndPanBloc{
+                            onDoublePointTouch(xy: XY): void {
+                                self.VideoPlayControl.play();
+                                self.HideToolBarBloc.hide();
+                            }
                             private hideToolBarTimer:any;
 
                             onPointRelease(xy: XY): void {
@@ -318,20 +321,13 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                                     //seek video in here
                                     self.VideoPlayControl.video.currentTime=this.changeCurrentTimeTo;
                                     this.changeCurrentTimeTo=-1;
-                                    self.HideToolBarBloc?.hide();
+                                    self.HideToolBarBloc?.show();
                                     self.VideoPlayControl.pause();
                                 }
                             }
                             onPointTouch(xy: XY): void {
-                                if(self.HideToolBarBloc.isShowing() && self.VideoPlayControl.isNotPlaying()){
-                                    this.hideToolBarTimer=setTimeout(()=>{
-                                        self.VideoPlayControl.play();
-                                        self.HideToolBarBloc.hide();
-                                    },400);
-                                }else{
-                                    self.VideoPlayControl.pause();
-                                    self.HideToolBarBloc?.show();
-                                }
+                                self.VideoPlayControl.pause();
+                                self.HideToolBarBloc?.show();
                             }
 
                             onZoom=(zoom: number,axis:XY): void=> {
@@ -352,6 +348,7 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                                     clearTimeout(this.hideToolBarTimer);
                                     this.hideToolBarTimer=undefined;
                                 }
+
                                 //add progress to current progress
                                 //x movement
                                 let totalProgressWidth=self.progressBarCont.offsetWidth;

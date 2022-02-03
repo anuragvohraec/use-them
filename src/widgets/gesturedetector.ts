@@ -444,6 +444,12 @@ export abstract class HorizontalScrollLimitDetector extends BlocsProvider{
 export abstract class ZoomAndPanBloc extends Bloc<number>{
     /**
      * 
+     * @param xy point where double click is done
+     */
+    abstract onDoublePointTouch(xy:XY):void;
+
+    /**
+     * 
      * @param xy Where a single pointing touch is done on screen
      */
     abstract onPointTouch(xy:XY):void;
@@ -469,6 +475,7 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
 
     private axis:XY={x:0,y:0};
 
+    private tapedOnceTimer:any;
 
     private handleStart={
         handleEvent:(e:TouchEvent)=>{
@@ -477,7 +484,17 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
             const touch2 = e.touches[1];
 
             if(!touch2){
-                this.bloc?.onPointTouch({x:touch1.screenX,y:touch1.screenY});
+                if(!this.tapedOnceTimer) {
+                    this.tapedOnceTimer=setTimeout( ()=>{
+                        this.tapedOnceTimer=undefined;
+                        this.bloc?.onPointTouch({x:touch1.screenX,y:touch1.screenY});
+                    }, 300 );
+                }else{
+                    clearTimeout(this.tapedOnceTimer);
+                    this.tapedOnceTimer=undefined;
+                    this.bloc?.onDoublePointTouch({x:touch1.screenX,y:touch1.screenY});
+                }
+                
 
                 //case of pan
                 this.axis.x=touch1.screenX;

@@ -176,6 +176,9 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
         return {
             blocs_map:{
                 ZoomAndPanBloc: new class extends ZoomAndPanBloc{
+                    onDoublePointTouch(xy: XY): void {
+                        
+                    }
                     onPointRelease(xy: XY): void {
                          //do nothing
                     }
