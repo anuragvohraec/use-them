@@ -287,7 +287,7 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                     ${state.isBuffering?html`<circular-progress-indicator use="primaryColor:white;"></circular-progress-indicator>`:nothing as TemplateResult}
                     </div>
                     <div class="pauseIndicator">
-                        ${state.play?nothing as TemplateResult:html`<circular-icon-button use="icon:pause;primaryColor: white;radius: 50px;"></circular-icon-button>`}
+                        ${state.play?nothing as TemplateResult:html`<circular-icon-button use="icon:play;primaryColor: white;radius: 50px;"></circular-icon-button>`}
                     </div>
                 </lay-them>
             </div>
