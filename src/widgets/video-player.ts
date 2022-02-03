@@ -25,6 +25,8 @@ interface State{
      */
     play:boolean;
 
+    isBuffering: boolean;
+
     /**
      * Timings
      */
@@ -115,7 +117,8 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                 timings:{
                     total: Utils.covertToPlayTime(this.ProgressBarBloc.max),
                     elapsed: Utils.covertToPlayTime(this.ProgressBarBloc.state * this.ProgressBarBloc.max/100)
-                }
+                },
+                isBuffering:subscribed_states["IsVideoBuffering"]
             }
         }
     }
@@ -126,9 +129,10 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                 HideToolBarBloc: new HideBloc(),
                 ProgressBarBloc: new PercentageBloc({initState:0,max:100}),
                 VideoPlayerInView: new HideBloc(false), //assumes video player not in view
-                VideoPlayControl: new VideoPlayController()
+                VideoPlayControl: new VideoPlayController(),
+                IsVideoBuffering: new HideBloc()
             },
-            subscribed_blocs:["HideToolBarBloc","ProgressBarBloc"]
+            subscribed_blocs:["HideToolBarBloc","ProgressBarBloc","IsVideoBuffering","VideoPlayerInView","VideoPlayControl"]
         })
     }
 
@@ -256,7 +260,7 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
         <ut-pan-zoom-detector bloc="ZoomAndPanBloc" .blocBuilderConfig=${this.zapBlocBuilderConfig as any}>
             <div class="cont">
                 <lay-them in="stack">
-                    <video class="video" src=${src} preload="none" @timeupdate=${this.followVideoTime} @loadedmetadata=${this.metaDataAvailable}></video>
+                    <video class="video" src=${src} preload="none" @timeupdate=${this.followVideoTime} @loadedmetadata=${this.metaDataAvailable} @waiting=${this.isBuffering} @playing=${this.isPlaying}></video>
                     <div class="seek-bar-cont">
                         <div class="progress-bar-cont">
                             <div class="progress"></div>
@@ -268,9 +272,27 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                             </lay-them>
                         </div>
                     </div>
+                    <div class="buffering">
+                    ${state.isBuffering?html`<circular-progress-indicator use="primaryColor:white;"></circular-progress-indicator>`:nothing as TemplateResult}
+                    </div>
                 </lay-them>
             </div>
         </ut-pan-zoom-detector>`;
+    }
+
+    private _IsVideoBuffering!:HideBloc;
+    private get IsVideoBuffering():HideBloc{
+        if(!this._IsVideoBuffering){
+            this._IsVideoBuffering=this.getBloc<HideBloc>("IsVideoBuffering");
+        }
+        return this._IsVideoBuffering;
+    }
+
+    private isBuffering=(e:Event)=>{
+        this.IsVideoBuffering.hide();
+    }
+    private isPlaying=(e:Event)=>{
+        this.IsVideoBuffering.show();
     }
 
     private metaDataAvailable=(e:Event)=>{
