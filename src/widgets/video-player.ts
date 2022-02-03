@@ -286,6 +286,9 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                     <div class="buffering">
                     ${state.isBuffering?html`<circular-progress-indicator use="primaryColor:white;"></circular-progress-indicator>`:nothing as TemplateResult}
                     </div>
+                    <div class="pauseIndicator">
+                        ${state.play?nothing as TemplateResult:html`<circular-icon-button use="icon:pause;primaryColor: white;radius: 50px;"></circular-icon-button>`}
+                    </div>
                 </lay-them>
             </div>
         </ut-pan-zoom-detector>`;
@@ -316,10 +319,10 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
     }
 
     private isBuffering=(e:Event)=>{
-        this.IsVideoBuffering.hide();
+        this.IsVideoBuffering.setTrue();
     }
     private isPlaying=(e:Event)=>{
-        this.IsVideoBuffering.show();
+        this.IsVideoBuffering.setFalse();
     }
 
     private metaDataAvailable=(e:Event)=>{
