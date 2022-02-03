@@ -106,6 +106,9 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version": "10.0.3"
+1. Cover pics can be added to non image file using file picker 
+
 ### "version": "10.0.1"
 1. Added video player `ut-on-view-video`. Player best suited for Stories. Auto plays when video in focus.
   ```
