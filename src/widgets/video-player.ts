@@ -1,5 +1,6 @@
 import { Bloc, BlocBuilderConfig, MultiBlocsReactiveWidget } from "bloc-them";
 import { nothing, TemplateResult,html } from "lit-html";
+import { ifDefined } from "lit-html/directives/if-defined";
 import { XY } from "../interfaces";
 
 import { Utils } from "../utils/utils";
@@ -180,31 +181,36 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
         setTimeout(()=>{
             this.progressBarCont= this.shadowRoot?.querySelector(".progress-bar-cont") as HTMLElement;
 
-            // Play is a promise so we need to check we have it
-            let playPromise = this.VideoPlayControl.play();
-            if (playPromise !== undefined) {
-                playPromise.then((_) => {
-                    let observer = new IntersectionObserver(
-                        (entries) => {
-                            entries.forEach((entry) => {
-                                if (
-                                    entry.intersectionRatio !== 1 &&
-                                    this.VideoPlayControl.isPlaying()
-                                ) {
-                                    this.VideoPlayControl.pause();
-                                    this.VideoPlayerInView?.emit(false);
-                                } else if (entry.intersectionRatio === 1 && this.VideoPlayControl.isNotPlaying()) {
-                                    this.VideoPlayControl.play();
-                                    
-                                    //video player in view
-                                    this.VideoPlayerInView?.emit(true);
-                                }
-                            });
-                        },
-                        { threshold: 1 }
-                    );
-                    observer.observe(this.VideoPlayControl.video);
-                });
+            /**
+             * if no autoplay attibute is given the intersection observer is not attached and no auto play is done
+             */
+            if(!this.getAttribute("noautoplay")){
+                // Play is a promise so we need to check we have it
+                let playPromise = this.VideoPlayControl.play();
+                if (playPromise !== undefined) {
+                    playPromise.then((_) => {
+                        let observer = new IntersectionObserver(
+                            (entries) => {
+                                entries.forEach((entry) => {
+                                    if (
+                                        entry.intersectionRatio !== 1 &&
+                                        this.VideoPlayControl.isPlaying()
+                                    ) {
+                                        this.VideoPlayControl.pause();
+                                        this.VideoPlayerInView?.emit(false);
+                                    } else if (entry.intersectionRatio === 1 && this.VideoPlayControl.isNotPlaying()) {
+                                        this.VideoPlayControl.play();
+                                        
+                                        //video player in view
+                                        this.VideoPlayerInView?.emit(true);
+                                    }
+                                });
+                            },
+                            { threshold: 1 }
+                        );
+                        observer.observe(this.VideoPlayControl.video);
+                    });
+                }
             }
         },100)
     }
@@ -213,6 +219,11 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
         let src = this.getAttribute("src");
         if(!src || !state){
             return nothing as TemplateResult;
+        }
+
+        let poster:string|undefined = this.getAttribute("poster") as any;
+        if(!poster){
+            poster=undefined;
         }
         
         return html`<style>
@@ -266,7 +277,7 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
         <ut-pan-zoom-detector bloc="ZoomAndPanBloc" .blocBuilderConfig=${this.zapBlocBuilderConfig as any}>
             <div class="cont">
                 <lay-them in="stack">
-                    <video class="video" src=${src} preload="none" @timeupdate=${this.followVideoTime} @loadedmetadata=${this.metaDataAvailable} @waiting=${this.isBuffering} @playing=${this.isPlaying}></video>
+                    <video class="video" poster=${ifDefined(poster)} src=${src} preload="none" @timeupdate=${this.followVideoTime} @loadedmetadata=${this.metaDataAvailable} @waiting=${this.isBuffering} @playing=${this.isPlaying}></video>
                     <div class="seek-bar-cont">
                         <div class="progress-bar-cont">
                             <div class="progress"></div>

@@ -303,6 +303,7 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
         }
         if(this.coverPicUrl){
             URL.revokeObjectURL(this.coverPicUrl);
+            this.coverPicUrl=undefined;
         }
     }
 }
@@ -451,6 +452,8 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
         super.connectedCallback();
         if(this.bloc){
             this.bloc.max_file_picker=this.config.max_file;
+            this.bloc.revokeAllObjectURL();
+            this.bloc.emit([]);
         }
         setTimeout(()=>{
             FilePickerExternalTriggers.search<FilePickerExternalTriggers>("FilePickerExternalTriggers",this)?.register(this);   
