@@ -37,7 +37,8 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
     }
 
     public coverPicUrl?:string;
-    
+    private coverPicIsNotEditing?:Promise<any>;
+
     public setCoverPic(value: File | undefined, max_length:number) {
         this._coverPic = value;
         if(this.coverPicUrl){
@@ -45,7 +46,7 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
             this.coverPicUrl=undefined;
         }
         if(value){
-            this.convertImage({
+            this.coverPicIsNotEditing=this.convertImage({
                 id:"dummy",
                 file: value,
                 max_length,
@@ -57,7 +58,7 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
                     this.coverPicUrl=URL.createObjectURL(this._coverPic);
                     this.emit([...this.state]);
                 }
-            })  
+            });  
         }else{
             this.emit([...this.state]);
         }
@@ -154,7 +155,7 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
         return b;
     }
 
-    abstract upOnFileSelection(filePicked:PickedFileInfoForOutPut[], simulation_ctx?:any):any;
+    abstract upOnFileSelection(filePicked:PickedFileInfoForOutPut[], simulation_ctx?:any,coverPic?:File):any;
 
     /**
      * This function could be used for simulating faster processing.
@@ -176,13 +177,15 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
     }
 
     async postFileMessage(context: HTMLElement,picker_type:FilePickerType,doNotCloseFilePicker:boolean=false){
+            await this.coverPicIsNotEditing;
+            const coverPic=this.coverPic;
             const simulation_ctx = await this.simulateFasterProcessing(context);
 
-            (async(files:File[])=>{
+            (async(files:File[],coverPic?:File)=>{
                let result = await this._processFilePicked(picker_type,files!);
-               await this.upOnFileSelection(result,simulation_ctx);
+               await this.upOnFileSelection(result,simulation_ctx,coverPic);
                await this.cleanUpAfterProcessing(simulation_ctx);
-            })(this.selectedFiles!);
+            })(this.selectedFiles!,coverPic);
 
             this.current_selected_files=undefined;
             this.emit([]);
