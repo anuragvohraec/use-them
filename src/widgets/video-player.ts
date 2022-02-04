@@ -184,7 +184,7 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
             /**
              * if no autoplay attibute is given the intersection observer is not attached and no auto play is done
              */
-            if(!this.getAttribute("noautoplay")){
+            if(!this.hasAttribute("noautoplay")){
                 // Play is a promise so we need to check we have it
                 let playPromise = this.VideoPlayControl.play();
                 if (playPromise !== undefined) {

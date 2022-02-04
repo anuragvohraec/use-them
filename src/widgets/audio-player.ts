@@ -291,7 +291,7 @@ class AudioPlayer extends MultiBlocsReactiveWidget<State>{
                         setTimeout(()=>{
                             ctx.progressBarCont= ctx.shadowRoot?.querySelector(".cont") as HTMLElement;
 
-                            if(!ctx.getAttribute("noautoplay")){
+                            if(!ctx.hasAttribute("noautoplay")){
                                 let playPromise = ctx.AudioPlayController.play();
                                 if (playPromise !== undefined) {
                                     playPromise.then((_) => {
