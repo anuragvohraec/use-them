@@ -289,7 +289,7 @@ class AudioPlayer extends MultiBlocsReactiveWidget<State>{
                     onConnection=(ctx:AudioPlayer)=>{
                         super.onConnection(ctx);
                         setTimeout(()=>{
-                            ctx.progressBarCont= ctx.shadowRoot?.querySelector(".progress-bar-cont") as HTMLElement;
+                            ctx.progressBarCont= ctx.shadowRoot?.querySelector(".cont") as HTMLElement;
 
                             if(!ctx.getAttribute("noautoplay")){
                                 let playPromise = ctx.AudioPlayController.play();
@@ -310,7 +310,7 @@ class AudioPlayer extends MultiBlocsReactiveWidget<State>{
                                             },
                                             { threshold: 1 }
                                         );
-                                        observer.observe(ctx.AudioPlayController.audio);
+                                        observer.observe(ctx.progressBarCont);
                                     });
                                 }
                             }
