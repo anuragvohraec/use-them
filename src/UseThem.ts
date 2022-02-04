@@ -41,9 +41,10 @@ export * from './widgets/smart-tabs.js';
 export * from './widgets/vertical-tabs.js';
 
 export * from './widgets/video-player.js';
+export * from './widgets/audio-player.js';
 
 export * from './utils/makers/form-input-maker.js';
 
 export * from './interfaces.js';
 
-// export * from './widgets/test.js';
+export * from './widgets/test.js';

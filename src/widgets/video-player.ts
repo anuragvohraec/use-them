@@ -253,6 +253,7 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
             min-height: 5px;
             width: 100%;
             position: relative;
+            box-shadow:0px 2px 3px #00000026;
         }
         .progress{
             background-color: var(--theme-color,#ffcc00ff);
@@ -298,7 +299,7 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                     ${state.isBuffering?html`<circular-progress-indicator use="primaryColor:white;"></circular-progress-indicator>`:nothing as TemplateResult}
                     </div>
                     <div class="pauseIndicator">
-                        ${state.play?nothing as TemplateResult:html`<circular-icon-button use="icon:play-arrow;primaryColor: white;radius: 50px;"></circular-icon-button>`}
+                        ${state.play?nothing as TemplateResult:html`<circular-icon-button use="icon:play-arrow;primaryColor: white;radius: 50px;" style="--bg-color:#00000085;"></circular-icon-button>`}
                     </div>
                 </lay-them>
             </div>
