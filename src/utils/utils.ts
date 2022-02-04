@@ -149,14 +149,18 @@ export class Utils {
 
   static covertToPlayTime(time:number){
       if(!time){
-        return `0:0`;
+          return `0:0`;
       }
+      if(time===Infinity){
+          return `Streaming...`;
+      }
+      time*=1000;
       let et = Math.floor(time);//effective time
       const h = Math.floor(et/this.ONE_HOUR);
       const hr = et%this.ONE_HOUR;
       const m = Math.floor(hr/this.ONE_MINUTE);
       const mr=hr%this.ONE_MINUTE;
-      const s = mr%1000;
+      const s = Math.floor(mr/1000);
       return `${h>0?`${h}`+":":""}${("0"+m).slice(-2)}:${("0"+s).slice(-2)}`;
   }
 }
