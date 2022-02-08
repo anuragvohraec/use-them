@@ -134,7 +134,7 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                 ProgressBarBloc: new PercentageBloc({initState:0,max:100}),
                 VideoPlayerInView: new HideBloc(false), //assumes video player not in view
                 VideoPlayControl: new VideoPlayController(),
-                IsVideoBuffering: new HideBloc(),
+                IsVideoBuffering: new HideBloc(false),
                 IsNotFullScreen: new HideBloc()
             },
             subscribed_blocs:["HideToolBarBloc","ProgressBarBloc","IsVideoBuffering","VideoPlayerInView","VideoPlayControl"]
