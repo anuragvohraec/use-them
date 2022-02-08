@@ -175,7 +175,7 @@ export abstract class GestureDetectorBuilder extends WidgetBuilder<GestureDetect
 }
 
 export class GestureDetector extends WidgetBuilder<GestureDetectorBloc,GESTURE>{
-    constructor(private drag_sensitivity:number = 1, private minDistanceInPx:number=100, private doubleTapTimer:number=300){
+    constructor(private drag_sensitivity:number = 1, private minDistanceInPx:number=100, private doubleTapTimer:number=300,private capture:boolean=false){
         super("GestureDetectorBloc",{
             blocs_map:{
                 GestureDetectorBloc: new GestureDetectorBloc(drag_sensitivity, minDistanceInPx, doubleTapTimer)
@@ -196,7 +196,7 @@ export class GestureDetector extends WidgetBuilder<GestureDetectorBloc,GESTURE>{
             this.bloc?.onStart(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
             e.stopPropagation();
         },
-        capture: false
+        capture: this.capture
     }
 
     private _onTouchEnd = {
@@ -204,7 +204,7 @@ export class GestureDetector extends WidgetBuilder<GestureDetectorBloc,GESTURE>{
             this.bloc?.onEnd(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
             e.stopPropagation();
         },
-        capture: false
+        capture: this.capture
     }
 
     private _onTouchMove = {
@@ -212,7 +212,7 @@ export class GestureDetector extends WidgetBuilder<GestureDetectorBloc,GESTURE>{
             this.bloc?.onMove(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
             e.stopPropagation();
         },
-        capture: false
+        capture: this.capture
     }
 
     builder(state: GESTURE): TemplateResult {

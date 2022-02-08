@@ -564,7 +564,7 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                 position:fixed;
                 top: 10px;
                 right: 10px;
-                z-index: 10;
+                z-index: 3;
             }
         </style>
         <backable-screen title=${title}>
@@ -649,7 +649,7 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                     </image-picker-confirmation-box-container>
                 </div>
             </lay-them>
-            ${((this.picker_config.type===FilePickerType.IMAGE)&&(!this.picker_config.coverPicSizeInPX))?nothing as HTMLElement: html`
+            ${((this.picker_config.type===FilePickerType.IMAGE)||(!this.picker_config.coverPicSizeInPX))?nothing as HTMLElement: html`
             <label for="cover-pic">
                 <div class="addCoverButton">
                     <labeled-icon-button icon="add" label="cover" use="color:white;"></labeled-icon-button>

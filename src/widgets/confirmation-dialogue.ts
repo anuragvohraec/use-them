@@ -1,5 +1,5 @@
 import { Bloc, BlocsProvider } from "bloc-them";
-import { html, TemplateResult } from "lit-html";
+import { html, nothing, TemplateResult } from "lit-html";
 import {unsafeHTML} from 'lit-html/directives/unsafe-html';
 import { UseThemConfiguration } from "../configs";
 import { WidgetBuilder } from "../utils/blocs";
@@ -81,7 +81,7 @@ export abstract class ConfirmationDialogue extends WidgetBuilder<HideBloc,boolea
 
     builder(state: boolean): TemplateResult {
         if(state){
-            return html``;
+            return nothing as TemplateResult;
         }else{
             return html`
             <style>
@@ -99,8 +99,18 @@ export abstract class ConfirmationDialogue extends WidgetBuilder<HideBloc,boolea
                     background-color: ${this.theme.input_bg_color};border-radius: ${this.theme.cornerRadius};
                     resize: none;width: 100%;height:100%;box-sizing: border-box; min-height: 100px;border:none;outline: none;
                 }
+                .fullscreenGlass{
+                    position:fixed;
+                    width:100%;
+                    height: 100%;
+                    background-color: ${this.theme.dialogue_bg};
+                    z-index: 10;
+                    top: 0;
+                    left: 0;
+                    backdrop-filter: blur(3px);
+                }
             </style>
-            <ut-dialogue>
+            <div class="fullscreenGlass">
                 <div style="width: 100%; height: 100%;">
                     <lay-them ma="center" ca="center">
                         <div class="cont">
@@ -125,7 +135,7 @@ export abstract class ConfirmationDialogue extends WidgetBuilder<HideBloc,boolea
                         </div>
                     </lay-them>
                 </div>
-            </ut-dialogue>`;
+            </div>`;
         }
         
     }
