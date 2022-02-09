@@ -246,7 +246,7 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
             </style>
             <div class="cont">
                 <lay-them in="column" ma="space-between" ca="stretch">
-                    <div class="title">${this.bloc?.fileName}</div>
+                    <!-- <div class="title">${this.bloc?.fileName}</div> -->
                     <div class="opCont">
                         <ut-pan-zoom-detector bloc="ZoomAndPanBloc" .blocBuilderConfig=${this.zapBlocBuilderConfig as any}>
                             <canvas class="output" width=${this.iesize} height=${this.iesize} id="output"></canvas>
