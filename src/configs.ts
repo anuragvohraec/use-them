@@ -5,4 +5,6 @@ export class UseThemConfiguration{
     static IMAGE_EDIT_ZOOM_SENSITIVITY=0.05;
     static IMAGE_EDIT_ZOOM_RESPONSE_TIME=200;
     static IMAGE_EDIT_OP_DEFAULT_SIZE=300;
+
+    static PinchZoomBlocDoubleTapTime=500;
 }

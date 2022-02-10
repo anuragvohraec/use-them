@@ -488,7 +488,7 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
                     this.tapedOnceTimer=setTimeout( ()=>{
                         this.tapedOnceTimer=undefined;
                         this.bloc?.onPointTouch({x:touch1.screenX,y:touch1.screenY});
-                    }, 300 );
+                    }, UseThemConfiguration.PinchZoomBlocDoubleTapTime );
                 }else{
                     clearTimeout(this.tapedOnceTimer);
                     this.tapedOnceTimer=undefined;
