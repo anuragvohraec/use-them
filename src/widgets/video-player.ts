@@ -74,10 +74,20 @@ class VideoPlayController extends HideBloc{
         // We can only control playback without interaction if video is mute
         this.video.muted=true;
     }
+
+
+    private _HideToolBarBloc!: HideBloc;
+    public get HideToolBarBloc(): HideBloc {
+        if(!this._HideToolBarBloc){
+            this._HideToolBarBloc=this.getBloc<HideBloc>("HideToolBarBloc");
+        }
+        return this._HideToolBarBloc;
+    }
     
     play(){
         this.emit(true);
         let r = this.video.play();
+        this.HideToolBarBloc.setTrue();
         setTimeout(()=>{
             this.video.muted=false;
         },300);
@@ -95,6 +105,7 @@ class VideoPlayController extends HideBloc{
     pause(){
         this.emit(false);
         this.video.pause();
+        this.HideToolBarBloc.setFalse();
         setTimeout(()=>{
             this.video.muted=true;    
         },300);
@@ -158,13 +169,6 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
         return this._ProgressBarBloc;
     }
 
-    private _HideToolBarBloc!: HideBloc;
-    public get HideToolBarBloc(): HideBloc {
-        if(!this._HideToolBarBloc){
-            this._HideToolBarBloc=this.getBloc<HideBloc>("HideToolBarBloc");
-        }
-        return this._HideToolBarBloc;
-    }
 
     private _VideoPlayControl!: VideoPlayController;
 
@@ -354,7 +358,6 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                         ZoomAndPanBloc: new class extends ZoomAndPanBloc{
                             onDoublePointTouch(xy: XY): void {
                                 self.VideoPlayControl.play();
-                                self.HideToolBarBloc.hide();
                             }
                             private hideToolBarTimer:any;
 
@@ -363,13 +366,11 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                                     //seek video in here
                                     self.VideoPlayControl.video.currentTime=this.changeCurrentTimeTo;
                                     this.changeCurrentTimeTo=-1;
-                                    self.HideToolBarBloc?.show();
                                     self.VideoPlayControl.pause();
                                 }
                             }
                             onPointTouch(xy: XY): void {
                                 self.VideoPlayControl.pause();
-                                self.HideToolBarBloc?.show();
                             }
 
                             onZoom=(zoom: number,axis:XY): void=> {
