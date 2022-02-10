@@ -291,7 +291,7 @@ class AudioPlayer extends MultiBlocsReactiveWidget<State>{
                         setTimeout(()=>{
                             ctx.progressBarCont= ctx.shadowRoot?.querySelector(".cont") as HTMLElement;
 
-                            if(!ctx.hasAttribute("noautoplay")){
+                            
                                 let playPromise = ctx.AudioPlayController.play();
                                 if (playPromise !== undefined) {
                                     playPromise.then((_) => {
@@ -304,7 +304,9 @@ class AudioPlayer extends MultiBlocsReactiveWidget<State>{
                                                     ) {
                                                         ctx.AudioPlayController.pause();
                                                     } else if (entry.intersectionRatio === 1 && ctx.AudioPlayController.isNotPlaying()) {
-                                                        ctx.AudioPlayController.play();
+                                                        if(!ctx.hasAttribute("noautoplay")){
+                                                            ctx.AudioPlayController.play();
+                                                        }
                                                     }
                                                 });
                                             },
@@ -313,7 +315,7 @@ class AudioPlayer extends MultiBlocsReactiveWidget<State>{
                                         observer.observe(ctx.progressBarCont);
                                     });
                                 }
-                            }
+                            
                         },100);  
                     }
                 }()
