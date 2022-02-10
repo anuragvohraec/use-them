@@ -16,7 +16,7 @@ export default [{
         "bloc-them":"/js/bloc-them/index.js"
     },
   },
-  plugins: [typescript(),terser()],
+  plugins: [typescript()],
   external:["lit-html","bloc-them"]
 },
 {

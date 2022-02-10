@@ -310,7 +310,7 @@ class AudioPlayer extends MultiBlocsReactiveWidget<State>{
                                                     }
                                                 });
                                             },
-                                            { threshold: 1 }
+                                            { threshold: [0,1] }
                                         );
                                         observer.observe(ctx.progressBarCont);
                                     });
