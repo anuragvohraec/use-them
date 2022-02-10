@@ -180,11 +180,6 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
         super.connectedCallback();
         setTimeout(()=>{
             this.progressBarCont= this.shadowRoot?.querySelector(".progress-bar-cont") as HTMLElement;
-
-            /**
-             * if no autoplay attibute is given the intersection observer is not attached and no auto play is done
-             */
-            if(!this.hasAttribute("noautoplay")){
                 // Play is a promise so we need to check we have it
                 let playPromise = this.VideoPlayControl.play();
                 if (playPromise !== undefined) {
@@ -199,10 +194,14 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                                         this.VideoPlayControl.pause();
                                         this.VideoPlayerInView?.emit(false);
                                     } else if (entry.intersectionRatio === 1 && this.VideoPlayControl.isNotPlaying()) {
-                                        this.VideoPlayControl.play();
-                                        
+                                        /**
+                                         * if no autoplay attribute is given the intersection observer is not attached and no auto play is done
+                                         */
+                                        if(!this.hasAttribute("noautoplay")){
+                                            this.VideoPlayControl.play();  
+                                        }
                                         //video player in view
-                                        this.VideoPlayerInView?.emit(true);
+                                        this.VideoPlayerInView?.emit(true);  
                                     }
                                 });
                             },
@@ -211,7 +210,7 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                         observer.observe(this.VideoPlayControl.video);
                     });
                 }
-            }
+            
         },100)
     }
 
