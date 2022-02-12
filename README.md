@@ -106,6 +106,9 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version": "10.0.9"
+Bug fixes
+
 ### "version": "10.0.5"
 1. Added Audio player too, with a cover pic support
 
