@@ -144,7 +144,7 @@ export class RouteThemBloc extends Bloc<RouteState>{
     }
   }
 
-  pushOverlayStack(overlay_id:string){
+  pushOverlayStack(overlay_id:string,clearData:boolean=false){
     let url_path = this.state.url_path;
     let newRouteState= this.state;
     if(!newRouteState){
@@ -153,6 +153,11 @@ export class RouteThemBloc extends Bloc<RouteState>{
     if(!newRouteState.data){
       newRouteState.data={};
     }
+
+    if(clearData){
+      newRouteState.data={};
+    }
+
     newRouteState.data.overlay_id=overlay_id;
 
     let t = this._convertUrlToPath(url_path);

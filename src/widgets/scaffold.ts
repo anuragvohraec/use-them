@@ -34,7 +34,7 @@ export class ScaffoldBloc extends Bloc<ScaffoldState>{
             let t:any =(newState:OverlayStatus)=>{
                 if(newState && newState.overlay_id === this._name && !newState.show){
                     if(this.state.showMenu){
-                        this.toggleMenu();
+                        this.hideMenu();
                     }
                 }
             };
@@ -51,13 +51,19 @@ export class ScaffoldBloc extends Bloc<ScaffoldState>{
         super.onDisconnection();
     }
 
+    private hideMenu(){
+        this.emit({...this.state, showMenu: false});
+    }
+
     toggleMenu(pushOverlayStack:boolean=true) {
         navigator.vibrate(UseThemConfiguration.PRESS_VIB);
         let newState = { ...this.state };
         newState.showMenu = !newState.showMenu;
         const appPageBloc=AppPageBloc.search<AppPageBloc>("AppPageBloc",this.hostElement);
         if(newState.showMenu && pushOverlayStack){
-            appPageBloc?.pushOverlayStack(this._name);
+            appPageBloc?.pushOverlayStack(this._name,true);
+        }else if(!newState.showMenu && pushOverlayStack){
+            appPageBloc?.popOutOfCurrentPage();
         }
         this.emit(newState);
     }
