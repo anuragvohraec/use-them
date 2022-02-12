@@ -41,6 +41,16 @@ export interface ConfirmationDialogueInfo{
  * A confirmation dialogue can be created by extending this class. **Do override its constructor.**
  */
 export abstract class ConfirmationDialogue extends WidgetBuilder<HideBloc,boolean>{
+    public get confirmationInfo(): ConfirmationDialogueInfo {
+        return this._confirmationInfo;
+    }
+
+    public set confirmationInfo(value: ConfirmationDialogueInfo) {
+        if(value){
+            this._confirmationInfo = value;
+            this.bloc?.emit(this.bloc.state);
+        }
+    }
     protected user_msg?:string;
 
     /**
@@ -48,10 +58,10 @@ export abstract class ConfirmationDialogue extends WidgetBuilder<HideBloc,boolea
      * @param blocName This will be name of the HideBloc
      * @param confirmationInfo 
      */
-    constructor(blocName:string, protected confirmationInfo:ConfirmationDialogueInfo){
+    constructor(blocName:string, private _confirmationInfo: ConfirmationDialogueInfo){
         super(blocName,{
             blocs_map:{
-                ...confirmationInfo.blocs_map,
+                ..._confirmationInfo.blocs_map,
                 ProgressBloc: new HideBloc(),
             }
         });
