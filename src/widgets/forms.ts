@@ -85,6 +85,7 @@ import { Range } from './inputs/rangeselector';
             if(!newValue){
                 let t = {...this.state};
                 delete  t[nameOfInput];
+                this.emit(t);
             }else{
                 this.state[nameOfInput]=newValue;
                 this.emit({...this.state});
