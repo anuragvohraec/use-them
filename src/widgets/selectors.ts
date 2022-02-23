@@ -252,6 +252,7 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
         search_placeholder:string,
         itemBuilderFunction(item: I, index: number, isSelected: boolean): TemplateResult,
         onChangeFunction(selectedItems: Set<I>, context: HTMLElement): void,
+        onAccept?:Function
     }, backable_screen_config?:{
         title:string,
         onAccept:Function,
@@ -356,7 +357,8 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
 
             private acceptSelection=(e:Event)=>{
                 let s = BlocsProvider.search<ISelectorBloc>("ISelectorBloc",this);
-                if(!backable_screen_config){    
+                if(!backable_screen_config){ 
+                    config.onAccept?.(s?.selectedItems,this);  
                     this.bloc?.toggle();
                 }else{
                     backable_screen_config.onAccept(s?.selectedItems,this);   
