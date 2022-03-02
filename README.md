@@ -106,6 +106,9 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version" : "10.0.12": IN PROGRESS
+1. Now Searchable Selector: has a property items to change its items list at runtime.
+
 ### "version" : "10.0.11"
 1. Searchable Selector: now can create Searchable Selector with custom search logic. Now `CreateSearchableSelector.create` method accepts and argument `filterFunctionForSearchSelector` for providing a custom filter logic.
 2. Searchable Selector: now can add custom input mode for text field in searchable selector.

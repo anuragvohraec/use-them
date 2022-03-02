@@ -47,14 +47,17 @@ export abstract class SelectorBloc extends Bloc<SelectorState>{
             listOfItems:[],
             status: SelectorStatus.LOADING
         });
+
         setTimeout(()=>{
-            this._initialize();
+            this.loadItems().then(e=>{
+                this.initialize(e);
+            });
         })
     }
 
-    private async _initialize(){
+    initialize(items:I[]){
         try{
-            this.fullListOfItemLoadedInitially = await this.loadItems();
+            this.fullListOfItemLoadedInitially = items;
             this.currentListOfItems=this.fullListOfItemLoadedInitially;
             this.emit({listOfItems:this.currentListOfItems,status: SelectorStatus.LOADED});
             return true;
@@ -359,6 +362,17 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
         }
 
         class SearchableSelector extends WidgetBuilder<HideBloc,boolean>{
+            private _items?: I[] | undefined;
+            public get items(): I[] | undefined {
+                return this._items;
+            }
+            public set items(value: I[] | undefined) {
+                this._items = value;
+                if(value){
+                    (this.blocBuilderConfig.blocs_map?.["ISelectorBloc"] as ISelectorBloc).initialize(value)
+                }
+            }
+            
             constructor(){
                 super(config.selector_hide_bloc_name,{
                     blocs_map:{
