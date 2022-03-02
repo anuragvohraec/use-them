@@ -22,6 +22,10 @@ interface SelectorState{
     last_item_interactedWith?:I;
 }
 
+export interface FilterFunctionForSearchSelector{
+    (fullListOfItemLoadedInitially: I[], search: string, key: string): I[]
+}
+
 export abstract class SelectorBloc extends Bloc<SelectorState>{
     private _selectedItems : Set<I>=new Set<I>();
     protected fullListOfItemLoadedInitially?: I[];
@@ -38,7 +42,7 @@ export abstract class SelectorBloc extends Bloc<SelectorState>{
      */
     protected abstract maxNumberOfSelect:number;
 
-    constructor(protected call_onchange_on_selection:boolean=true){
+    constructor(protected call_onchange_on_selection:boolean=true, private filterFunctionForSearchSelector:FilterFunctionForSearchSelector=SelectorBloc.SearchItemByStringMatch){
         super({
             listOfItems:[],
             status: SelectorStatus.LOADING
@@ -128,9 +132,16 @@ export abstract class SelectorBloc extends Bloc<SelectorState>{
         if(!search || search.trim().length===0){
             this.emit({...this.state,listOfItems: this.fullListOfItemLoadedInitially!})
         }else{
-            let r = new RegExp(search,"i");
-            this.emit({...this.state, listOfItems: this.fullListOfItemLoadedInitially?.filter(e=>r.test(e[key] as string))??[]});
+            let listOfItems = this.filterFunctionForSearchSelector(this.fullListOfItemLoadedInitially??[],search,key);
+
+            this.emit({...this.state, listOfItems});
         }
+    }
+
+    static SearchItemByStringMatch(fullListOfItemLoadedInitially:I[], search: string, key: string) {
+        let r = new RegExp(search, "i");
+        let listOfItems = fullListOfItemLoadedInitially?.filter(e => r.test(e[key] as string)) ?? [];
+        return listOfItems;
     }
 }
 
@@ -252,7 +263,9 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
         search_placeholder:string,
         itemBuilderFunction(item: I, index: number, isSelected: boolean): TemplateResult,
         onChangeFunction(selectedItems: Set<I>, context: HTMLElement): void,
-        onAccept?:Function
+        onAccept?:Function,
+        filterFunctionForSearchSelector?:FilterFunctionForSearchSelector,
+        inputmode?:"none"|"decimal"|"numeric"|"tel"|"search"|"email"|"url",
     }, backable_screen_config?:{
         title:string,
         onAccept:Function,
@@ -265,7 +278,7 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
             onchange=config.onChangeFunction;
 
             constructor(){
-                super(false);
+                super(false,config.filterFunctionForSearchSelector);
             }
 
             protected _name: string="ISelectorBloc"
@@ -335,7 +348,8 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
                     name:"search_string",
                     clearable:true,
                     icon: "search",
-                    placeholder: config.search_placeholder
+                    placeholder: config.search_placeholder,
+                    inputmode: config.inputmode
                 })
             }
         }
