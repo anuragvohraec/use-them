@@ -181,11 +181,11 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
             const coverPic=this.coverPic;
             const simulation_ctx = await this.simulateFasterProcessing(context);
 
-            (async(files:File[],coverPic?:File)=>{
+            (async(simulation_ctx:any, files:File[],coverPic?:File)=>{
                let result = await this._processFilePicked(picker_type,files!);
                await this.upOnFileSelection(result,simulation_ctx,coverPic);
                await this.cleanUpAfterProcessing(simulation_ctx);
-            })(this.selectedFiles!,coverPic);
+            })(simulation_ctx,this.selectedFiles!,coverPic);
 
             this.current_selected_files=undefined;
             this.emit([]);
