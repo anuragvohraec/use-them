@@ -158,6 +158,15 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
     abstract upOnFileSelection(filePicked:PickedFileInfoForOutPut[], simulation_ctx?:any,coverPic?:File):any;
 
     /**
+     * Extends this function for no simulation processing
+     * @param filePicked 
+     * @param data 
+     */
+    async upOnFileSelectionNoSimulationProcessing(filePicked:PickedFileInfoForOutPut[],data?:any):Promise<any>{
+
+    }
+
+    /**
      * This function could be used for simulating faster processing.
      * Say a chat window can creat some cache items to show item is under upload.
      * And is generally supported by some cache to store some temporary data.
@@ -195,10 +204,10 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
             }
     }
 
-    async postFileMessageAndReturnValue(context: HTMLInputElement,picker_type:FilePickerType,doNotCloseFilePicker:boolean=false){
+    async postFileMessageAndReturnValue({context,picker_type,doNotCloseFilePicker=false,data}:{context: HTMLInputElement,picker_type:FilePickerType,doNotCloseFilePicker:boolean,data?:any}){
         if(context.files){
             let result: PickedFileInfoForOutPut[] = await this._processFilePicked(picker_type,Array.from(context.files));
-            let t = await this.upOnFileSelection(result);
+            let t = await this.upOnFileSelectionNoSimulationProcessing(result,data);
             if(!doNotCloseFilePicker){
                 this.closeFilePicker(context);
             }
