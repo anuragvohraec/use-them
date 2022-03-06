@@ -277,6 +277,10 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
         .fullscreen{
             min-width: 50px;
         }
+        .pauseIndicator{
+            width: 100%;
+            height: 100%;
+        }
         </style>
         <ut-pan-zoom-detector bloc="ZoomAndPanBloc" .blocBuilderConfig=${this.zapBlocBuilderConfig as any}>
             <div class="cont">
@@ -302,7 +306,10 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                     ${state.isBuffering?html`<circular-progress-indicator use="primaryColor:white;"></circular-progress-indicator>`:nothing as TemplateResult}
                     </div>
                     <div class="pauseIndicator">
-                        ${state.play?nothing as TemplateResult:html`<circular-icon-button use="icon:play-arrow;primaryColor: white;radius: 50px;" style="--bg-color:#00000085;"></circular-icon-button>`}
+                        ${state.play?nothing as TemplateResult:html`<lay-them in="stack">
+                            ${poster?html`<div><img src="${poster}" style="width:100%;height:100%;"></div>`:nothing}
+                            <div><circular-icon-button use="icon:play-arrow;primaryColor: white;radius: 50px;" style="--bg-color:#00000085;"></circular-icon-button></div>
+                        </lay-them>`}
                     </div>
                 </lay-them>
             </div>
