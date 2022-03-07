@@ -7,4 +7,7 @@ export class UseThemConfiguration{
     static IMAGE_EDIT_OP_DEFAULT_SIZE=300;
 
     static PinchZoomBlocDoubleTapTime=500;
+
+    static IMAGE_RESIZE_SIZE_FILE_PICKER=1000;
+    static IMAGE_RESIZE_QUALITY_FILE_PICKER=0.8;
 }

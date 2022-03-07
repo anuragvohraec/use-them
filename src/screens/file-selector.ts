@@ -2,6 +2,7 @@ import { Bloc, BlocBuilderConfig, BlocsProvider } from "bloc-them";
 import { html, nothing, TemplateResult } from "lit-html";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { repeat } from "lit-html/directives/repeat";
+import { UseThemConfiguration } from "../configs";
 import { IEMessage, IEMessageType, IEValue, IncomingRequest, InfoAboutAFile,PickedFileInfoForOutPut } from "../interfaces";
 import { BogusBloc, NoBlocWidgetBuilder, UtRegistryBloc, WidgetBuilder } from "../utils/blocs";
 import { Utils } from "../utils/utils";
@@ -244,8 +245,8 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
                             let b = await this.convertImage({
                                 id: "dummy",
                                 file: f,
-                                max_length: 500,
-                                quality: 0.80,
+                                max_length: UseThemConfiguration.IMAGE_RESIZE_SIZE_FILE_PICKER,
+                                quality: UseThemConfiguration.IMAGE_RESIZE_QUALITY_FILE_PICKER,
                                 type: output_type
                             });
                             compressed_file=new File([b],fName,{
