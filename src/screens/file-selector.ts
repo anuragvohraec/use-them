@@ -683,7 +683,7 @@ class FilePickerFunctionalityProvider extends NoBlocWidgetBuilder{
         return html`<div style="width:100%;height:100%">
         <slot></slot>
         </div>
-        <ut-image-editor iesize=${this.getAttribute("iesize")??"500px"}></ut-image-editor>`;
+        <ut-image-editor iesize=${this.getAttribute("iesize")??"800px"}></ut-image-editor>`;
     }
 }
 customElements.define("ut-file-picker-editor",FilePickerFunctionalityProvider);
