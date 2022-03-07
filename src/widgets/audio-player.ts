@@ -189,12 +189,13 @@ class AudioPlayer extends MultiBlocsReactiveWidget<State>{
             bottom: 0px;
             display: flex;
             width: 100%;
-            height: 50px;
-            justify-content: center;
+            height: 80px;
+            justify-content: flex-end;
             align-items: center;
             flex-direction: column;
             box-sizing: border-box;
-            padding: 20px;
+            padding: 5px 20px;
+            left:0px;
         }
         .progress-bar-cont{
             background-color: white;
@@ -227,28 +228,37 @@ class AudioPlayer extends MultiBlocsReactiveWidget<State>{
                 height:100%;
             }
         </style>
-        <ut-pan-zoom-detector bloc="ZoomAndPanBloc" .blocBuilderConfig=${this.zapBlocBuilderConfig as any}>
+        
             <div class="cont">
                 <lay-them in="stack">
-                    ${poster?html`<div class="cover"><img class="full" src=${poster}></div>`:html``}
+                    ${poster?html`<div class="cover" @click=${this.pauseAudio}><img class="full" src=${poster}></div>`:html``}
                     <audio class="audio" src=${src} preload="none" @timeupdate=${this.followAudioTime} @loadedmetadata=${this.metaDataAvailable}></audio>
-                    <div class="seek-bar-cont">
-                        <div class="progress-bar-cont">
-                            <div class="progress"></div>
+                    <ut-pan-zoom-detector bloc="ZoomAndPanBloc" .blocBuilderConfig=${this.zapBlocBuilderConfig as any}>
+                        <div class="seek-bar-cont">
+                            <div class="progress-bar-cont">
+                                <div class="progress"></div>
+                            </div>
+                            <div class="progress-stat">
+                                <lay-them in="row" ma="space-between">
+                                    <div class="current_time">${state.timings.elapsed}</div>
+                                    <div class="total_time">${state.timings.total}</div>
+                                </lay-them>
+                            </div>
                         </div>
-                        <div class="progress-stat">
-                            <lay-them in="row" ma="space-between">
-                                <div class="current_time">${state.timings.elapsed}</div>
-                                <div class="total_time">${state.timings.total}</div>
-                            </lay-them>
-                        </div>
-                    </div>
+                    </ut-pan-zoom-detector>
                     <div class="pauseIndicator">
-                        ${state.play?nothing as TemplateResult:html`<circular-icon-button use="icon:play-arrow;primaryColor: white;radius: 50px;" style="--bg-color:#00000085;"></circular-icon-button>`}
+                        ${state.play?nothing as TemplateResult:html`<circular-icon-button @click=${this.playAudio} use="icon:play-arrow;primaryColor: white;radius: 50px;" style="--bg-color:#00000085;"></circular-icon-button>`}
                     </div>
                 </lay-them>
-            </div>
-        </ut-pan-zoom-detector>`;
+            </div>`;
+    }
+
+    private playAudio=(e:Event)=>{
+        this.AudioPlayController.play();
+    }
+
+    private pauseAudio=(e:Event)=>{
+        this.AudioPlayController.pause();
     }
 
     private _ProgressBarBloc!: PercentageBloc;
