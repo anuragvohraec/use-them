@@ -100,7 +100,7 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
     }
 
     moveUp(index:number){
-        if(this.state && this.state.length>0){
+        if(this.state && this.state.length>0 && this.current_selected_files && this.current_selected_files.length>0){
             let effectiveNewIndex = 0;
             if(index === 0){
                 effectiveNewIndex = this.state.length-1;
@@ -108,16 +108,25 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
                 effectiveNewIndex = index-1;
             }
             //swap
-            let t = this.state[index];
-            this.state[index]=this.state[effectiveNewIndex];
-            this.state[effectiveNewIndex]=t;
+            {
+                let t = this.state[index];
+                this.state[index]=this.state[effectiveNewIndex];
+                this.state[effectiveNewIndex]=t;    
+            }
+            {
+                let t = this.current_selected_files[index];
+                this.current_selected_files[index]=this.current_selected_files[effectiveNewIndex];
+                this.current_selected_files[effectiveNewIndex]=t;
+
+                this.current_selected_files=[...this.current_selected_files];
+            }
 
             this.emit([...this.state]);
         }
     }
 
     moveDown(index:number){
-        if(this.state && this.state.length>0){
+        if(this.state && this.state.length>0 && this.current_selected_files && this.current_selected_files.length>0){
             let effectiveNewIndex = 0;
             if(index === this.state.length-1){
                 effectiveNewIndex = 0;
@@ -125,9 +134,19 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
                 effectiveNewIndex = index+1;
             }
             //swap
-            let t = this.state[index];
-            this.state[index]=this.state[effectiveNewIndex];
-            this.state[effectiveNewIndex]=t;
+            {
+                let t = this.state[index];
+                this.state[index]=this.state[effectiveNewIndex];
+                this.state[effectiveNewIndex]=t;
+            }
+
+            {
+                let t = this.current_selected_files[index];
+                this.current_selected_files[index]=this.current_selected_files[effectiveNewIndex];
+                this.current_selected_files[effectiveNewIndex]=t;
+
+                this.current_selected_files=[...this.current_selected_files];
+            }
 
             this.emit([...this.state]);
         }
