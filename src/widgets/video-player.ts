@@ -244,12 +244,13 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
             bottom: 0px;
             display: ${state.hideToolBar?"none":"flex"};
             width: 100%;
-            height: 50px;
-            justify-content: center;
+            height: 80px;
+            justify-content: flex-end;
             align-items: center;
             flex-direction: column;
             box-sizing: border-box;
-            padding: 20px;
+            padding: 5px 20px;
+            left:0px;
         }
         .progress-bar-cont{
             background-color: white;
@@ -282,39 +283,45 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
             height: 100%;
         }
         </style>
-        <ut-pan-zoom-detector bloc="ZoomAndPanBloc" .blocBuilderConfig=${this.zapBlocBuilderConfig as any}>
+        
             <div class="cont">
                 <lay-them in="stack">
-                    <video class="video" poster=${ifDefined(poster)} src=${src} preload="none" @timeupdate=${this.followVideoTime} @loadedmetadata=${this.metaDataAvailable} @waiting=${this.isBuffering} @playing=${this.isPlaying}></video>
-                    <div class="seek-bar-cont">
-                        <div class="progress-bar-cont">
-                            <div class="progress"></div>
+                    <video class="video" @click=${this.pauseVideo} poster=${ifDefined(poster)} src=${src} preload="none" @timeupdate=${this.followVideoTime} @loadedmetadata=${this.metaDataAvailable} @waiting=${this.isBuffering} @playing=${this.isPlaying}></video>
+                    <ut-pan-zoom-detector bloc="ZoomAndPanBloc" .blocBuilderConfig=${this.zapBlocBuilderConfig as any}>
+                        <div class="seek-bar-cont">
+                            <div class="progress-bar-cont">
+                                <div class="progress"></div>
+                            </div>
+                            <div class="progress-stat">
+                                <lay-them in="row" ma="space-between">
+                                    <div class="current_time">${state.timings.elapsed}</div>
+                                    <div class="fullscreen" @click=${this.toggleFullScreen}>
+                                        <ink-well>
+                                            ${state.isNotFullScreen?html`<ut-icon icon="fullscreen" use="icon_inactive:white;"></ut-icon>`:html`<ut-icon icon="fullscreen-exit" use="icon_inactive:white;"></ut-icon>`}
+                                        </ink-well>
+                                    </div>
+                                    <div class="total_time">${state.timings.total}</div>
+                                </lay-them>
+                            </div>
                         </div>
-                        <div class="progress-stat">
-                            <lay-them in="row" ma="space-between">
-                                <div class="current_time">${state.timings.elapsed}</div>
-                                <div class="fullscreen" @click=${this.toggleFullScreen}>
-                                    <ink-well>
-                                        ${state.isNotFullScreen?html`<ut-icon icon="fullscreen" use="icon_inactive:white;"></ut-icon>`:html`<ut-icon icon="fullscreen-exit" use="icon_inactive:white;"></ut-icon>`}
-                                    </ink-well>
-                                </div>
-                                <div class="total_time">${state.timings.total}</div>
-                            </lay-them>
-                        </div>
-                    </div>
+                    </ut-pan-zoom-detector>
                     <div class="buffering">
                     ${state.isBuffering?html`<circular-progress-indicator use="primaryColor:white;"></circular-progress-indicator>`:nothing as TemplateResult}
                     </div>
-                    <div class="pauseIndicator">
-                        ${state.play?nothing as TemplateResult:html`<lay-them in="stack">
-                            ${poster?html`<div><img src="${poster}" style="width:100%;height:100%;"></div>`:nothing}
-                            <div><circular-icon-button use="icon:play-arrow;primaryColor: white;radius: 50px;" style="--bg-color:#00000085;"></circular-icon-button></div>
-                        </lay-them>`}
-                    </div>
+                    ${state.play?nothing as TemplateResult:html`${poster?html`<div><img src="${poster}" style="width:100%;height:100%;"></div>`:nothing}
+                            <div><circular-icon-button @click=${this.playVideo} use="icon:play-arrow;primaryColor: white;radius: 50px;" style="--bg-color:#00000085;"></circular-icon-button></div>`}
                 </lay-them>
-            </div>
-        </ut-pan-zoom-detector>`;
+            </div>`;
     }
+
+    private playVideo=(e:Event)=>{
+        this.VideoPlayControl.play();
+    }
+
+    private pauseVideo=(e:Event)=>{
+        this.VideoPlayControl.pause();
+    }
+
 
     private toggleFullScreen=(e:Event)=>{
         if (document.fullscreenElement) {
@@ -364,7 +371,7 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                     blocs_map:{
                         ZoomAndPanBloc: new class extends ZoomAndPanBloc{
                             onDoublePointTouch(xy: XY): void {
-                                self.VideoPlayControl.play();
+                                // self.VideoPlayControl.play();
                             }
                             private hideToolBarTimer:any;
 
@@ -377,7 +384,7 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                                 }
                             }
                             onPointTouch(xy: XY): void {
-                                self.VideoPlayControl.pause();
+                                // self.VideoPlayControl.pause();
                             }
 
                             onZoom=(zoom: number,axis:XY): void=> {
