@@ -98,6 +98,41 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
     public get selectedFiles(): File[]|undefined{
         return this.current_selected_files;
     }
+
+    moveUp(index:number){
+        if(this.state && this.state.length>0){
+            let effectiveNewIndex = 0;
+            if(index === 0){
+                effectiveNewIndex = this.state.length-1;
+            }else{
+                effectiveNewIndex = index-1;
+            }
+            //swap
+            let t = this.state[index];
+            this.state[index]=this.state[effectiveNewIndex];
+            this.state[effectiveNewIndex]=t;
+
+            this.emit([...this.state]);
+        }
+    }
+
+    moveDown(index:number){
+        if(this.state && this.state.length>0){
+            let effectiveNewIndex = 0;
+            if(index === this.state.length-1){
+                effectiveNewIndex = 0;
+            }else{
+                effectiveNewIndex = index+1;
+            }
+            //swap
+            let t = this.state[index];
+            this.state[index]=this.state[effectiveNewIndex];
+            this.state[effectiveNewIndex]=t;
+
+            this.emit([...this.state]);
+        }
+    }
+    
     
     async fileSelected(context:HTMLInputElement){
         this.revokeAllObjectURL();
@@ -536,6 +571,18 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
         }
     }
 
+    moveUp=(e:Event)=>{
+        const t= e.currentTarget as HTMLElement;
+        const index:number = parseInt(t.getAttribute("i")??"0");
+        this.bloc?.moveUp(index);
+    }
+
+    moveDown=(e:Event)=>{
+        const t= e.currentTarget as HTMLElement;
+        const index:number = parseInt(t.getAttribute("i")??"0");
+        this.bloc?.moveDown(index);
+    }
+
     builder(state: PickedFileInfo[]): TemplateResult {
         let title="attach";
         if(this.title && this.title.trim().length>0){
@@ -602,7 +649,16 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
 
                             ${repeat(state,(item)=>item.name,(pickedFileInfo,index)=>{
 
-                                return html`<lay-them in="column" ma="center">
+                                return html`
+                                <style>
+                                    .arrangeIcon{
+                                        width: 50px;
+                                        height: 50px;
+                                        background-color: #00000094;
+                                        overflow: hidden;
+                                    }
+                                </style>
+                                <lay-them in="column" ma="center">
                                 <div>${(()=>{
                                     switch(this.config.picker_config?.type){
                                         case FilePickerType.VIDEO: return html`<video controls class="video_item" src=${pickedFileInfo.url}></video>`;
@@ -611,6 +667,14 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                                             return {size: pickedFileInfo.size, ext:pickedFileInfo.mime,name:pickedFileInfo.name};
                                         })()}></ut-picked-file-widget>`;
                                         default: return html`<lay-them in="stack">
+                                            <div style="top:0px;width:100%;height:50px;display:flex;align-items:center;justify-content:space-between">
+                                                <div class="arrangeIcon" i=${index} @click=${this.moveUp}>
+                                                    <ink-well><ut-icon icon="chevron-up" use="icon_inactive:white;"></ut-icon></ink-well>
+                                                </div>
+                                                <div class="arrangeIcon" i=${index} @click=${this.moveDown}>
+                                                    <ink-well><ut-icon icon="chevron-down" use="icon_inactive:white;"></ut-icon></ink-well>
+                                                </div>
+                                            </div>
                                             <img class="image_item" src=${pickedFileInfo.url}>
                                             <div style="bottom:0px;width:100%;height:50px;background-color: #00000094;">
                                                 <lay-them in="row" ma="space-between" ma="center">
