@@ -204,7 +204,7 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
     private get iesize():string{
         let t = this.getAttribute("iesize");
         if(!t){
-            t="300px";
+            t="800px";
         }
         return t;
     }
