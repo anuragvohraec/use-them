@@ -507,7 +507,7 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
 
                 this.touch2PointerID=touch2.identifier;
                 //case of zoom
-                this.initDistance = Math.abs(touch1.screenX-touch2.screenX);//this.calculateDistance({x:touch1.screenX,y:touch1.screenY},{x:touch2.screenX,y:touch2.screenY});
+                this.initDistance = Math.abs(touch1.screenY-touch2.screenY);//this.calculateDistance({x:touch1.screenX,y:touch1.screenY},{x:touch2.screenX,y:touch2.screenY});
             }
 
             return false;
@@ -570,7 +570,7 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
                     this.prevPan=p1;
                 }
             }else{
-                const currentDistance = Math.abs(touch1.screenX-touch2.screenX);//this.calculateDistance({x:touch1.screenX,y:touch1.screenY},{x:touch2.screenX,y:touch2.screenY});
+                const currentDistance = Math.abs(touch1.screenY-touch2.screenY);//this.calculateDistance({x:touch1.screenX,y:touch1.screenY},{x:touch2.screenX,y:touch2.screenY});
                 const zoom=currentDistance/this.initDistance;
                 //if zoom has not changed there is no point in calling on zoom
                 if(this.prevZoom!==zoom){

@@ -1,6 +1,7 @@
 import { Bloc, BlocBuilderConfig, MultiBlocsReactiveWidget } from "bloc-them";
 import { nothing, TemplateResult,html } from "lit-html";
 import { ifDefined } from "lit-html/directives/if-defined";
+import { UseThemConfiguration } from "../configs";
 import { XY } from "../interfaces";
 
 import { Utils } from "../utils/utils";
@@ -192,12 +193,12 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
                             (entries) => {
                                 entries.forEach((entry) => {
                                     if (
-                                        entry.intersectionRatio !== 1 &&
+                                        entry.intersectionRatio < UseThemConfiguration.PLAYER_INTERSECTION_RATIO_FOR_PAUSE &&
                                         this.VideoPlayControl.isPlaying()
                                     ) {
                                         this.VideoPlayControl.pause();
                                         this.VideoPlayerInView?.emit(false);
-                                    } else if (entry.intersectionRatio === 1 && this.VideoPlayControl.isNotPlaying()) {
+                                    } else if (entry.intersectionRatio >= UseThemConfiguration.PLAYER_INTERSECTION_RATIO_FOR_PLAY && this.VideoPlayControl.isNotPlaying()) {
                                         /**
                                          * if no autoplay attribute is given the intersection observer is not attached and no auto play is done
                                          */
@@ -281,6 +282,10 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
         .pauseIndicator{
             width: 100%;
             height: 100%;
+        }
+        .buffering{
+            top: 25px;
+            right: 25px;
         }
         </style>
         
