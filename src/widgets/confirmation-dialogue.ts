@@ -51,7 +51,7 @@ export abstract class ConfirmationDialogue extends WidgetBuilder<HideBloc,boolea
             this.bloc?.emit(this.bloc.state);
         }
     }
-    protected user_msg?:string;
+    protected user_msg?:any;
 
     /**
      * 
@@ -119,6 +119,26 @@ export abstract class ConfirmationDialogue extends WidgetBuilder<HideBloc,boolea
                     left: 0;
                     backdrop-filter: blur(3px);
                 }
+                input{
+                    width: 100%;
+                    min-height: 40px;
+                    border-radius: 4px;
+                    background: transparent;
+                    border: none;
+                    font-size: 1em;
+                    caret-color: black;
+                    color: #000000;
+                    padding: 5px 10px;
+                    box-sizing: border-box;
+                    font-weight: normal;
+                    background-color: ${this.theme.input_bg_color};
+                }
+                input:focus{
+                    outline-width: 0;
+                }
+                input::placeholder{
+                    color: ${this.theme.input_place_holder_color};
+                }
             </style>
             <div class="fullscreenGlass">
                 <div style="width: 100%; height: 100%;">
@@ -128,9 +148,11 @@ export abstract class ConfirmationDialogue extends WidgetBuilder<HideBloc,boolea
                                 <div style="padding: 10px;color:white;font-size:${this.theme.H2_font_size};background-color:${this.theme.primaryColor};background-image:${this.theme.confirmation_dialogue_title_bar_image};">${this.confirmationInfo?.title}</div>
                                 <div style="padding: 10px;">${unsafeHTML(this.confirmationInfo?.msg)}</div>
                                 <slot></slot>
-                                ${this.confirmationInfo.user_comments_msg? html`<div style="padding: 10px;">
+                                ${this.confirmationInfo.user_comments_msg? (this.hasAttribute("type")?html`<div style="padding: 10px;">
+                                    <input class="sli-bg" type=${this.getAttribute("type")as any??"text"} placeholder=${this.confirmationInfo.user_comments_msg} @focus=${()=>{navigator.vibrate(UseThemConfiguration.PRESS_VIB);}} @change=${this.user_msg_changed}>
+                                </div>`:html`<div style="padding: 10px;">
                                     <textarea class="textAreaBG" @focus=${()=>{navigator.vibrate(UseThemConfiguration.PRESS_VIB);}} placeholder=${this.confirmationInfo.user_comments_msg} @keyup=${this.user_msg_changed} type="text"></textarea>
-                                </div>`:html``}
+                                </div>`):html``}
                                 <ut-confirmation-dialogue-progress-indicator>
                                     <lay-them in="row" ma="flex-start" ca="stretch" overflow="hidden">
                                         <div style="flex:1;" class="button" @click=${this.yesAction}>

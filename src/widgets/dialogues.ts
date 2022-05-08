@@ -132,6 +132,7 @@ export class Dialogue extends WidgetBuilder<HideBloc,boolean>{
             z-index: 10;
             top: 0;
             left: 0;
+            backdrop-filter: blur(4px);
         }
         </style><div class="fullscreenGlass" @click=${(e:Event)=>{  
             e.stopPropagation();

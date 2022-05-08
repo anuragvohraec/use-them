@@ -69,7 +69,7 @@ export abstract class _I18NText extends WidgetBuilder<I18NBloc,LanguagePack>{
 
     
     public get color() : string {
-        let c = this.getAttribute("color");
+        let c = this.style.color??this.getAttribute("color");
         return c||this.theme.color;
     }
     
@@ -159,3 +159,11 @@ export class UtTextH6 extends _I18NText{
 
 customElements.define("ut-h6", UtTextH6);
 
+
+export class UtTextFree extends _I18NText{
+    constructor(){
+        super();
+        this.font_size=this.useAttribute?.["font_size"]??this.theme.P_font_size;
+    }
+}
+customElements.define("ut-txt", UtTextFree);
