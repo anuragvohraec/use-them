@@ -345,7 +345,7 @@ export abstract class VerticalScrollLimitDetector extends BlocsProvider{
         handleEvent: (e:Event)=>{
             //@ts-ignore
             let element:HTMLElement = e.target;
-            if (element.offsetHeight + element.scrollTop === element.scrollHeight){
+            if (element.offsetHeight + element.scrollTop >= element.scrollHeight){
                 navigator.vibrate(UseThemConfiguration.PRESS_VIB);
                 this.bottomLimitReached();
             }else if(element.scrollTop===0){
