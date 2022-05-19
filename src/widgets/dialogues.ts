@@ -11,6 +11,14 @@ import { AppPageBloc } from "./route-them/RouteThem";
 export class HideBloc extends Bloc<boolean>{
     protected _name: string="HideBloc";
 
+    private _data: any;
+    public get data(): any {
+        return this._data;
+    }
+    public set data(value: any) {
+        this._data = value;
+    }
+
     constructor(initState:boolean=true,private overlay_id?:string){
         super(initState);
     }
