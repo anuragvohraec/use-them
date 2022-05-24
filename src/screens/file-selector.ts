@@ -90,6 +90,7 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
 
     removeFile(index:number){
         if(this.state[index]){
+            this.current_selected_files?.splice(index,1);
             this.state.splice(index,1);
             this.emit([...this.state]);
         }
@@ -152,6 +153,38 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
         }
     }
     
+    async addFiles(context:HTMLInputElement){
+        let snackBar = SnackBarBloc.search<SnackBarBloc>("SnackBarBloc",this.hostElement);
+        if(!snackBar){
+            throw `Please make sure to provide SnackBarBloc and snack-bar for this to work properly`
+        }
+
+        if(!context.files){
+            return snackBar.postMessage({
+                msg: "no_file_selected_msg"
+            })
+        }
+
+        const max_files = this._max_file_picker;
+        if(context.files.length + this.state.length>max_files){
+            snackBar.postMessage({
+                msg: `Max: ${max_files} files only!`
+            })
+        }
+
+        this.revokeAllObjectURL();
+
+        if(context.files.length > 0){
+            const j = Array.from(context.files);
+            if(!this.current_selected_files){
+                this.current_selected_files=[];
+            }
+            this.current_selected_files = this.current_selected_files.concat(j);
+            this.emit(this.current_selected_files.slice(0,max_files).map(f=>{
+                return {name: f.name, url: URL.createObjectURL(f),mime:f.type, size:f.size}
+            }));
+        }
+    }
     
     async fileSelected(context:HTMLInputElement){
         this.revokeAllObjectURL();
@@ -241,6 +274,11 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
     }
 
     async postFileMessage(context: HTMLElement,picker_type:FilePickerType,doNotCloseFilePicker:boolean=false){
+            let snackBarBloc = SnackBarBloc.search<SnackBarBloc>("SnackBarBloc",this.hostElement);
+            if(!this.current_selected_files?.length){
+                return snackBarBloc?.postMessage({msg:"no_file_selected_msg"}); 
+            }
+
             await this.coverPicIsNotEditing;
             const coverPic=this.coverPic;
             const simulation_ctx = await this.simulateFasterProcessing(context);
@@ -496,7 +534,11 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
     fileChanged=(e:InputEvent)=>{
         //@ts-ignore
         const t: HTMLInputElement = e.target;
-        this.bloc?.fileSelected(t);
+        if(t.id === "file-upload"){
+            this.bloc?.fileSelected(t);
+        }else if(t.id =="file-add"){
+            this.bloc?.addFiles(t);
+        }
     }
 
     constructor(protected config:FilePickerConfig){
@@ -728,6 +770,14 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                                 </label>
                                 <input id="file-upload" type="file" @change=${this.fileChanged} multiple accept=${this.picker_config.accept??"*/*"}  capture=${ifDefined(this.picker_config.capture)}>
                             </div>
+
+                            <div>
+                                <label for="file-add">
+                                    <circular-icon-button use="icon:add"></circular-icon-button>
+                                </label>
+                                <input id="file-add" type="file" @change=${this.fileChanged} multiple accept=${this.picker_config.accept??"*/*"}  capture=${ifDefined(this.picker_config.capture)}>
+                            </div>
+                            
                             <div>
                                 <circular-icon-button use="icon:done;" @click=${(e:Event)=>{  
                                     this.bloc?.postFileMessage(e.currentTarget as HTMLElement,this.picker_config.type);
