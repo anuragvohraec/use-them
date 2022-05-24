@@ -1,6 +1,7 @@
 // rollup.config.js
 import typescript from '@rollup/plugin-typescript';
 import { terser } from "rollup-plugin-terser";
+import minifyHTML from 'rollup-plugin-minify-html-literals';
 import resolve from '@rollup/plugin-node-resolve';
 
 export default [{
@@ -16,7 +17,7 @@ export default [{
         "bloc-them":"/js/bloc-them/index.js"
     },
   },
-  plugins: [typescript()],
+  plugins: [typescript(),minifyHTML(),terser({ format: { comments: false } })],
   external:["lit-html","bloc-them"]
 },
 {
