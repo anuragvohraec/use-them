@@ -231,6 +231,7 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
                 .output{
                     width: 300px;
                     height: 300px;
+                    border: 1px solid #ffffff54;
                 }
                 .opCont{
                     display: flex;

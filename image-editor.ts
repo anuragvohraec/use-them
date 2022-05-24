@@ -81,9 +81,10 @@ function draw(value:IEValue){
     baseOffset={x:baseOffset.x+value.movement.x,y:baseOffset.y+value.movement.y};
 
     ctx.filter = `brightness(${value.brightness+100}%) contrast(${100+value.contrast}%)`;
-    ctx.fillRect(0, 0, initConfig.opMaxLength, initConfig.opMaxLength);
-    ctx.fillStyle = "white";
-    ctx.fill();
+    ctx.clearRect(0,0,initConfig.opMaxLength, initConfig.opMaxLength);
+    // ctx.fillRect(0, 0, initConfig.opMaxLength, initConfig.opMaxLength);
+    // // ctx.fillStyle = "white";
+    // // ctx.fill();
     
     const w = currentWH.x*value.zoom;
     const h= currentWH.y*value.zoom;
