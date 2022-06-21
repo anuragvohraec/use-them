@@ -82,7 +82,7 @@ import { Range } from './inputs/rangeselector';
 
     _basicOnChange(nameOfInput:string):OnChangeFunction<any>|undefined{
         return (newValue: any)=>{
-            if(!newValue){
+            if(newValue===undefined || newValue === null){
                 let t = {...this.state};
                 delete  t[nameOfInput];
                 this.emit(t);
