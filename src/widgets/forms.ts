@@ -2,7 +2,7 @@
  * Inputs must be unware of form existense.
  */
 
-import { Bloc, BlocsProvider } from 'bloc-them'
+import { Bloc, BlocBuilderConfig, BlocsProvider } from 'bloc-them'
 import { WidgetBuilder } from '../utils/blocs';
 import { TemplateResult, html, nothing } from 'lit-html';
 import { Range } from './inputs/rangeselector';
@@ -178,8 +178,8 @@ import { Range } from './inputs/rangeselector';
      }
      
 
-     constructor( protected config: InputBuilderConfig){
-         super(config.bloc_name);
+     constructor( protected config: InputBuilderConfig, protected blocConfig?:BlocBuilderConfig<FormState>){
+         super(config.bloc_name,blocConfig);
      }
 
      connectedCallback(){

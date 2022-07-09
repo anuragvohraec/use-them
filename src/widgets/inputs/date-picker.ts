@@ -343,14 +343,13 @@ class DatePickerModal extends WidgetBuilder<DatePickerBloc,DatePickerState>{
                 z-index: 10;
                 padding: 10px;
                 background-color: ${this.theme.primaryColor};
-                border-radius: ${this.theme.cornerRadius} ${this.theme.cornerRadius} 0px 0px;
                 color: white;
                 font-size: 1.2em;
                 box-shadow: 0px 20px 20px 0px #00000021;
               }  
             </style>
             <ut-ex>
-                <div style="height:100%; background-color:white; border-radius: ${this.theme.cornerRadius};">
+                <div style="height:100%; background-color:white; border-radius: ${this.theme.cornerRadius}; overflow: hidden;">
                     <lay-them in="column" ma="flex-start" ca="stretch">
                         <div class="header">${this.bloc?.placeholder}</div>
                         <div class="date_year_button">

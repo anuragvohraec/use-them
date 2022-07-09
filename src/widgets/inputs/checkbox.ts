@@ -25,7 +25,6 @@ export class CheckBox<F extends FormBloc> extends FormInputBuilder<string,F>{
                 padding-left: 35px;
                 margin-bottom: 12px;
                 cursor: pointer;
-                font-size: 22px;
                 -webkit-user-select: none;
                 -moz-user-select: none;
                 -ms-user-select: none;
@@ -87,7 +86,7 @@ export class CheckBox<F extends FormBloc> extends FormInputBuilder<string,F>{
                 }
                 </style>
             <label class="container">
-                <slot name="label"><ut-p>${this.config.placeholder}</ut-p></slot>
+                <slot name="label"><ut-h5 .key=${this.config.placeholder}></ut-h5></slot>
                 <input type="checkbox" value="${this.checkValue}" ?disabled=${this.disabled} @click=${this.haveChanged} ?checked=${state[this.config.name]===this.checkValue?true:false}>
                 <span class="checkmark"></span>
             </label>`;

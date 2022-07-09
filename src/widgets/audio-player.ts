@@ -209,7 +209,7 @@ class AudioPlayer extends MultiBlocsReactiveWidget<State>{
             position: absolute;
             left: 0px;
             height: 5px;
-            width: ${state.progress_percent}%;
+            width: ${state.progress_percent+"%"};
         }
         .current_time{
             color: var(--theme-color,#ffcc00ff);
