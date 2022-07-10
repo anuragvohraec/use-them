@@ -269,9 +269,13 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
         }
         .current_time{
             color: var(--theme-color,#ffcc00ff);
+            text-shadow: 0 0 3px #000000c9;
+            font-weight: bold;
         }
         .total_time{
             color: white;
+            text-shadow: 0 0 3px #000000c9;
+            font-weight: bold;
         }
         .progress-stat{
             width: 100%;
