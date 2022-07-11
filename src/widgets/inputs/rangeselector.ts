@@ -36,7 +36,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
            }
         </style>
       ${this.config.rangeSelectorConfig?.no_label?html``:html`<lay-them in="row" ma="center">
-         <div class="no-select" style="font-weight: bold;  font-size: ${this.theme.H3_font_size};">${this.isint?this.value.start:this.value.start.toFixed(2)}</div>
+         <div class="no-select" style="font-weight: bold;  font-size: 1.1em;">${this.isint?this.value.start:this.value.start.toFixed(2)}</div>
       </lay-them>`}
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -188,12 +188,13 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
        
        @touchstart=${this._drag_ON}
        @touchend=${this._drag_OFF}
-       @touchmove=${this._end_dragHandler}/>
+       @touchmove=${this._end_dragHandler}
+       />
   </g>
 </svg>
 ${this.config.rangeSelectorConfig?.no_label?html``:html`<lay-them in="row" ma="space-between">
 <div class="no-select"><ut-p>${this.min}</ut-p></div>
-<div class="no-select" style="font-weight: bold;  font-size: ${this.theme.H3_font_size};">${this.isint?this.value.end:this.value.end.toFixed(2)}</div>
+<div class="no-select" style="font-weight: bold;  font-size: 1.1em">${this.isint?this.value.end:this.value.end.toFixed(2)}</div>
 <div class="no-select"><ut-p>${this.max}</ut-p></div>
 </lay-them>`}
         `;
