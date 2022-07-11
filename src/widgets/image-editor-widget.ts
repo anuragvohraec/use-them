@@ -124,6 +124,7 @@ export class ImageEditorHideBloc extends HideBloc{
     public onPan(movement:XY,axis:XY){
         this.currentValue.movement=movement;
         this.currentValue.axis=axis;
+        this.currentValue.zoom=1;
 
         this.currentValue.draw_purpose=IEDrawPurpose.PAN;
         this.draw(this.currentValue);

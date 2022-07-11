@@ -545,6 +545,7 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
     private handleMove={
         handleEvent:(e:TouchEvent)=>{
             e.stopPropagation();
+            e.preventDefault();
             const touch1 = e.touches[0];
             let touch2:Touch|undefined=undefined;
 

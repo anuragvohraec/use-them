@@ -368,7 +368,7 @@ class TestFilePicker extends FilePickerScreen{
                 }
             },
             picker_config:{
-                type: FilePickerType.AUDIO
+                type: FilePickerType.IMAGE
             }
         })
     }

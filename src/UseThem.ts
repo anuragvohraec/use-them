@@ -47,4 +47,4 @@ export * from './utils/makers/form-input-maker.js';
 
 export * from './interfaces.js';
 
-// export * from './widgets/test.js';
+export * from './widgets/test.js';
