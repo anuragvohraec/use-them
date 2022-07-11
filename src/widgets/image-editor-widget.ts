@@ -110,11 +110,11 @@ export class ImageEditorHideBloc extends HideBloc{
     }
 
     public setBrightness(newValue:number){
-        this.draw({...this.currentValue,brightness:newValue, draw_purpose:IEDrawPurpose.BRIGHTNESS,movement:{x:0,y:0}});
+        this.draw({...this.currentValue,brightness:newValue, draw_purpose:IEDrawPurpose.BRIGHTNESS,movement:{x:0,y:0},zoom:1});
     }
 
     public setContrast(newValue:number){
-        this.draw({...this.currentValue,contrast:newValue, draw_purpose:IEDrawPurpose.CONTRAST,movement:{x:0,y:0}});
+        this.draw({...this.currentValue,contrast:newValue, draw_purpose:IEDrawPurpose.CONTRAST,movement:{x:0,y:0},zoom:1});
     }
     
     public acceptImage(){
