@@ -64,7 +64,7 @@ export abstract class _I18NText extends WidgetBuilder<I18NBloc,LanguagePack>{
         if(!t){
             return nothing as TemplateResult;
         }
-        return html`<span style="font-size: ${this._font_size}; color: ${this.color};user-select:${this.style.userSelect?this.style.userSelect:'none'};text-shadow:${this.style.textShadow??"none"};">${_I18NText._getText(t,state)}</span>`;
+        return html`<span style="font-size: ${this._font_size}; color: ${this.color};user-select:${this.style.userSelect?this.style.userSelect:'none'};text-shadow:${this.style.textShadow?this.style.textShadow:"none"};">${_I18NText._getText(t,state)}</span>`;
     }
 
     

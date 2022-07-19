@@ -29,6 +29,7 @@ export class UtIcon extends WidgetBuilder<BogusBloc,number>{
             width: ${this.theme.icon_size??"25px"};
             height: ${this.theme.icon_size??"25px"};
             fill: ${this.theme.icon_inactive??"#000"};
+            stroke: ${this.theme.icon_stroke??"#fff0"};
         }
         .icon:active{
             fill: ${this.theme.icon_active??"#000"};
