@@ -35,6 +35,8 @@ export interface ConfirmationDialogueInfo{
     user_comments_msg?:string;
 
     blocs_map?: Record<string, Bloc<any>>;
+
+    accept_condition_url?:string;
 }
 
 /**
@@ -153,6 +155,7 @@ export abstract class ConfirmationDialogue extends WidgetBuilder<HideBloc,boolea
                                 </div>`:html`<div style="padding: 10px;">
                                     <textarea class="textAreaBG" @focus=${()=>{navigator.vibrate(UseThemConfiguration.PRESS_VIB);}} placeholder=${this.confirmationInfo.user_comments_msg} @keyup=${this.user_msg_changed} type="text"></textarea>
                                 </div>`):html``}
+                                ${this.confirmationInfo.accept_condition_url?html`<p style="font-size: 0.7em;padding: 0px 10px;">I accept <a href=${this.confirmationInfo.accept_condition_url} target="_blank" style="color: black;font-weight: bold;">Terms and Conditions</a>.</p>`:nothing}
                                 <ut-confirmation-dialogue-progress-indicator>
                                     <lay-them in="row" ma="flex-start" ca="stretch" overflow="hidden">
                                         <div style="flex:1;" class="button" @click=${this.yesAction}>

@@ -10,6 +10,7 @@ import { BogusBloc, WidgetBuilder } from '../utils/blocs';
  */
 export class InkWell extends WidgetBuilder<BogusBloc,number>{
     private ripple_color:string;
+    private ripple_opacity:string;
 
     constructor(){
         super("BogusBloc",{blocs_map:{
@@ -17,13 +18,19 @@ export class InkWell extends WidgetBuilder<BogusBloc,number>{
         }});
 
         let bgColor = "#000";
+        let opacity = ".2";
         if(this.useAttribute){
             let bgc =this.useAttribute!["ripple_color"];
             if(bgc){
                 bgColor = bgc;
             }
+            let op = this.useAttribute!["opacity"];
+            if(op){
+                opacity=op;
+            }
         }
         this.ripple_color=bgColor;
+        this.ripple_opacity=opacity;
     }
 
 
@@ -70,7 +77,7 @@ export class InkWell extends WidgetBuilder<BogusBloc,number>{
 }
 .ripple:active:after {
     transform: scale(0,0);
-    opacity: .2;
+    opacity: ${this.ripple_opacity};
     transition: 0s;
 }
 </style>
