@@ -81,6 +81,8 @@ export class Theme{
     public confirmation_dialogue_border_radius=this.cornerRadius;
 
     public toggleButtonOnColor=this.primaryColor;
+
+    public backable_screen_border_radius="0px";
 }
 
 
