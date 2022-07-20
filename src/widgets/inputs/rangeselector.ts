@@ -340,6 +340,8 @@ ${this.config.rangeSelectorConfig?.no_label?html``:html`<lay-them in="row" ma="s
 
     private width:number=0;
 
+    private isStateInitiated:boolean=false;
+
     connectedCallback(){
        super.connectedCallback();
        this.start = this.bloc?.state[this.config.name].start;
@@ -375,7 +377,11 @@ ${this.config.rangeSelectorConfig?.no_label?html``:html`<lay-them in="row" ma="s
    
            
            this.value = {start: this.start!, end: this.end!};
-           this.bloc?.emit({...this.bloc.state})
+         //   if(!this.isStateInitiated){
+         //      this.isStateInitiated=true;
+         //      this.bloc?.emit({...this.bloc.state});
+         //   }
+           
            this.setActiveStart(start_posX);
     }
 
