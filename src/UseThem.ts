@@ -31,6 +31,7 @@ export * from './widgets/inputs/textinputs.js';
 export * from './widgets/inputs/rangeselector.js';
 export * from './widgets/inputs/togglebutton.js';
 export * from './widgets/image-editor-widget.js';
+export * from './widgets/stepper.js';
 
 export * from './screens/backable-screen.js';
 export * from './screens/file-selector.js';
