@@ -16,7 +16,7 @@ enum SelectorStatus{
 
 type I = Record<string,any>;
 
-interface SelectorState{
+export interface SelectorState{
     listOfItems:I[];
     status: SelectorStatus;
     last_item_interactedWith?:I;
@@ -49,10 +49,13 @@ export abstract class SelectorBloc extends Bloc<SelectorState>{
         });
 
         setTimeout(()=>{
-            this.loadItems().then(e=>{
-                this.initialize(e);
-            });
+            this.reloadItems();
         })
+    }
+
+    async reloadItems(){
+        const e = await this.loadItems();
+        this.initialize(e);
     }
 
     initialize(items:I[]){
