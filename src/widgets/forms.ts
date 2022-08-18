@@ -159,7 +159,10 @@ import { Range } from './inputs/rangeselector';
         no_label:boolean;
         no_start:boolean;
     }
-    
+    /**
+     * If the input type is popup, while using FormInputMaker
+     */
+    popupHideBlocName?:string;
 }
 
 

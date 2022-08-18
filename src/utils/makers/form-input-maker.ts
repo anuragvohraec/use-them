@@ -11,7 +11,7 @@ import { BlocsProvider } from 'bloc-them';
 import { ToggleButton } from '../../widgets/inputs/togglebutton';
 
 export interface InputInfo{
-    type:"SingleLineInput"|"TextAreaInput"|"CheckBox"|"DatePicker"|"RadioButtons"|"RangeSelector"|"ToggleButton";
+    type:"SingleLineInput"|"TextAreaInput"|"CheckBox"|"DatePicker"|"RadioButtons"|"RangeSelector"|"ToggleButton"|"Popup";
     config: InputBuilderConfig;
     input_init_values?: string[]|RadioButtonValueLabelMap|string|DatePickerConfig;
     label?:string;
@@ -38,6 +38,16 @@ export class FormInputMaker extends BlocsProvider{
             let tag_name = this.convertNameToInputTagName(nameOfInput);
             let inputInfo:InputInfo = this.config.inputs[nameOfInput];
             switch (inputInfo.type) {
+                case "Popup":{
+                    class A extends SingleLineInput<any>{
+                        constructor(){
+                            super(inputInfo.config);
+                        }
+                    }
+                    if(!customElements.get(tag_name)){
+                        customElements.define(tag_name,A);
+                    }
+                }break;
                 case "SingleLineInput": {
                     class A extends SingleLineInput<any>{
                         constructor(){

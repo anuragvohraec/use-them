@@ -4,6 +4,7 @@ import {  BlocsProvider } from 'bloc-them';
 import { I18NBloc } from '../text';
 import {ifDefined} from 'lit-html/directives/if-defined';
 import { UseThemConfiguration } from '../../configs';
+import { HideBloc } from '../dialogues';
 
 export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string,F>{
     builder(state: FormState): TemplateResult {
@@ -50,13 +51,19 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
                 ${this.getIcon()}
                 <div style="flex: 1;">
                     <lay-them in="row" ca="center">
-                        <input id="sli" @focus=${()=>{navigator.vibrate(UseThemConfiguration.PRESS_VIB);}} ?disabled=${this.disabled} @input=${this.haveChanged} list="${ifDefined(this.dataList)}"  inputmode="${ifDefined(this.config.inputmode)}" .value=${state[this.config.name]??""} class="sli-bg" placeholder="${ifDefined(this.config.placeholder)}" type="${ifDefined(this.config.type)}">
+                        <input id="sli" @click=${this.handleOnClick} @focus=${()=>{navigator.vibrate(UseThemConfiguration.PRESS_VIB);}} ?disabled=${this.disabled} @input=${this.haveChanged} list="${ifDefined(this.dataList)}"  inputmode="${ifDefined(this.config.inputmode)}" .value=${state[this.config.name]??""} class="sli-bg" placeholder="${ifDefined(this.config.placeholder)}" type="${ifDefined(this.config.type)}">
                         ${this.getClearButton()}
                     </lay-them>
                 </div>
             </lay-them>
         </div>
         `;
+    }
+
+    private handleOnClick=(e:Event)=>{
+        if(this.config.popupHideBlocName){
+            HideBloc.search<HideBloc>(this.config.popupHideBlocName,this)?.show();
+        }
     }
     
     public get dataList() : string|undefined {
