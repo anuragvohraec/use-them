@@ -86,6 +86,10 @@ class StepperWidget extends WidgetBuilder<StepperBloc,Step[]>{
                 width: 100%;
                 flex-grow:1;
                 height: 0;
+                overflow: auto;
+            }
+            .body::-webkit-scrollbar { 
+                display: none;
             }
             .counter{
                 color: #fff;
