@@ -91,7 +91,10 @@ class QrCodeScannerBloc extends Bloc<QrScannerState>{
                         this.state.codes=[]
                     }
                     this.state.codes.push(e);
-                    this.emit({...this.state,codes:[...this.state.codes]})
+                    this.emit({...this.state,codes:[...this.state.codes]});
+                    if(qrConfig?.scan_limit && this.state.codes.length>=qrConfig.scan_limit){
+                        this.postQrCode();
+                    }
                 });
 
                 if(barCodes.length>0){
@@ -235,6 +238,11 @@ export interface QrCodeScannerConfig{
      * Sound to play for each scan
      */
     sound_url?:string;
+
+    /**
+     * undefined or zero, means no limits scans
+     */
+    scan_limit?:number;
 }
 
 class QrCodeScannerWidget extends WidgetBuilder<HideBloc,boolean>{
