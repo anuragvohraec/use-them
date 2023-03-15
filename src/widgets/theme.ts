@@ -83,6 +83,7 @@ export class Theme{
     public toggleButtonOnColor=this.primaryColor;
 
     public backable_screen_border_radius="0px";
+    public app_bar_max_width="inherit";
 }
 
 

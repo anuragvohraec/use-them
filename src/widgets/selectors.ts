@@ -472,7 +472,7 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
                         .cont{
                             max-width: 95vw;
                             max-height: 95vh;
-                            min-height: 300px;
+                            min-height: var(--height-popup,300px);
                             min-width: 300px;
                             background-color: white;
                             border-radius: ${this.theme.cornerRadius};
