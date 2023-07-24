@@ -1,5 +1,5 @@
 import { Bloc } from "bloc-them";
-import { html, TemplateResult } from 'lit-html';
+import { html, TemplateResult } from 'bloc-them';
 import { WidgetBuilder } from '../utils/blocs';
 import { OverlayPageBloc, OverlayStatus } from "./route-them/overlays";
 import { AppPageBloc } from "./route-them/RouteThem";

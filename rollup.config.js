@@ -9,16 +9,11 @@ export default [{
   output: {
     dir: 'dist',
     paths:{
-        "lit-html": "/js/lit-html/lit-html.js",
-        "lit-html/directives/unsafe-html":"/js/lit-html/directives/unsafe-html.js",
-        "lit-html/directives/unsafe-svg":"/js/lit-html/directives/unsafe-svg.js",
-        "lit-html/directives/repeat": "/js/lit-html/directives/repeat.js",
-        "lit-html/directives/if-defined": "/js/lit-html/directives/if-defined.js",
         "bloc-them":"/js/bloc-them/index.js"
     },
   },
   plugins: [typescript(),minifyHTML(),terser({ format: { comments: false } })],
-  external:["lit-html","bloc-them"]
+  external:["bloc-them"]
 },
 {
   input: './image-utils.ts',

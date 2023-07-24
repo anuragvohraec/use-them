@@ -1,6 +1,6 @@
 import { WidgetBuilder, ActionBloc, NoBlocWidgetBuilder, BogusBloc } from '../utils/blocs';
 import { Bloc, BlocBuilderConfig } from 'bloc-them';
-import { TemplateResult, html } from 'lit-html';
+import { TemplateResult, html } from 'bloc-them';
 import { ColorUtil } from '../utils/utils';
 import { UseThemConfiguration } from '../configs';
 

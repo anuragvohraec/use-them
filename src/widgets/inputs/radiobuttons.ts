@@ -1,5 +1,5 @@
 import { BlocsProvider } from "bloc-them";
-import { html, TemplateResult } from "lit-html";
+import { html, TemplateResult } from 'bloc-them';
 import { UseThemConfiguration } from "../../configs";
 import { WidgetBuilder } from '../../utils/blocs';
 import { FormBloc, FormInputBuilder, FormMessageBloc, FormState, InputBuilderConfig } from "../forms";

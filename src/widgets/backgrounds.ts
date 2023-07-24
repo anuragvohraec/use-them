@@ -1,5 +1,5 @@
 import { WidgetBuilder, BogusBloc } from '../utils/blocs';
-import { TemplateResult, html } from 'lit-html';
+import { TemplateResult, html } from 'bloc-them';
 
 
 export class AnimatedGradientBackground extends WidgetBuilder<BogusBloc,number>{

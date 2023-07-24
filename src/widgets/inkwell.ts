@@ -1,4 +1,4 @@
-import { html, TemplateResult } from 'lit-html';
+import { html, TemplateResult } from 'bloc-them';
 import { UseThemConfiguration } from '../configs';
 import { BogusBloc, WidgetBuilder } from '../utils/blocs';
 

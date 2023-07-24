@@ -1,5 +1,5 @@
 import { Bloc, BlocsProvider } from "bloc-them";
-import { html, TemplateResult } from "lit-html";
+import { html, TemplateResult } from 'bloc-them';
 import { WidgetBuilder } from "../utils/blocs";
 import { HideBloc } from "./dialogues";
 

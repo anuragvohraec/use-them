@@ -1,5 +1,5 @@
 import { Bloc, BlocBuilderConfig, MultiBlocsReactiveWidget } from "bloc-them";
-import { nothing, TemplateResult,html } from "lit-html";
+import { nothing, TemplateResult,html } from 'bloc-them';
 import { ifDefined } from "lit-html/directives/if-defined";
 import { UseThemConfiguration } from "../configs";
 import { XY } from "../interfaces";

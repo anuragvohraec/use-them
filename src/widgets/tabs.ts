@@ -1,5 +1,5 @@
 import { BlocsProvider } from 'bloc-them';
-import { html, render, TemplateResult } from 'lit-html';
+import { html, render, TemplateResult } from 'bloc-them';
 import { APage, RouteState, RouteThem, RouteThemBloc } from '../widgets/route-them/RouteThem';
 import { BogusBloc, WidgetBuilder } from '../utils/blocs';
 import { GestureDetector } from './gesturedetector';

@@ -1,5 +1,5 @@
 import { Bloc, BlocsProvider } from "bloc-them";
-import { html, nothing, TemplateResult } from "lit-html";
+import { html, nothing, TemplateResult } from 'bloc-them';
 import {unsafeHTML} from 'lit-html/directives/unsafe-html';
 import { UseThemConfiguration } from "../configs";
 import { WidgetBuilder } from "../utils/blocs";

@@ -1,5 +1,5 @@
 import { Bloc, BlocsProvider } from "bloc-them";
-import { TemplateResult, html } from 'lit-html';
+import { TemplateResult, html } from 'bloc-them';
 
 
 export class Theme{

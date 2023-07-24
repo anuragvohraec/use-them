@@ -7,7 +7,7 @@ import { SingleLineInput, TextAreaInput } from './inputs/textinputs';
 import { CheckBox } from './inputs/checkbox';
 import { HideBloc } from './dialogues';
 import { BogusBloc, WidgetBuilder } from '../utils/blocs';
-import { html, nothing, TemplateResult } from 'lit-html';
+import { html, nothing, TemplateResult } from 'bloc-them';
 import { InkWell } from './inkwell';
 import { RadioButtonsBuilder } from './inputs/radiobuttons';
 import {CreateSearchableSelector, SelectorBloc, SelectorWidget} from './selectors';

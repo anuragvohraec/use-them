@@ -1,5 +1,5 @@
 import { Bloc, BlocsProvider } from "bloc-them";
-import { html, nothing, TemplateResult } from "lit-html";
+import { html, nothing, TemplateResult } from 'bloc-them';
 import { UseThemConfiguration } from "../configs";
 import { WidgetBuilder } from "../utils/blocs";
 import { GestureDetector } from "./gesturedetector";

@@ -1,5 +1,5 @@
 import { BlocsProvider } from 'bloc-them';
-import { TemplateResult,html } from 'lit-html';
+import { TemplateResult,html } from 'bloc-them';
 import { AppPageBloc, RouteState } from '../widgets/route-them/RouteThem';
 import { WidgetBuilder , NoBlocWidgetBuilder} from "../utils/blocs";
 import { UseThemConfiguration } from '../configs';

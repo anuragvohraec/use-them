@@ -4,7 +4,7 @@
 
 import { Bloc, BlocBuilderConfig, BlocsProvider } from 'bloc-them'
 import { WidgetBuilder } from '../utils/blocs';
-import { TemplateResult, html, nothing } from 'lit-html';
+import { TemplateResult, html, nothing } from 'bloc-them';
 import { Range } from './inputs/rangeselector';
 
 

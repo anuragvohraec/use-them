@@ -1,5 +1,5 @@
 import { FormInputBuilder, FormState, FormBloc, InputBuilderConfig } from '../forms';
-import { TemplateResult, html } from 'lit-html';
+import { TemplateResult, html } from 'bloc-them';
 
 export class ToggleButton<F extends FormBloc> extends FormInputBuilder<boolean, F>{
   builder(state: FormState): TemplateResult {

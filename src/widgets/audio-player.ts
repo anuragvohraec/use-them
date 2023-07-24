@@ -1,5 +1,5 @@
 import { MultiBlocsReactiveWidget , Bloc, BlocBuilderConfig} from "bloc-them";
-import { nothing, TemplateResult, html} from "lit-html";
+import { nothing, TemplateResult, html} from 'bloc-them';
 import { XY } from "../interfaces";
 import { Utils } from "../utils/utils";
 import { HideBloc } from "./dialogues";

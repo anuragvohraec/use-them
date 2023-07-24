@@ -1,5 +1,5 @@
 import { Bloc, BlocBuilderConfig, BlocsProvider } from "bloc-them";
-import { html, nothing, TemplateResult } from "lit-html";
+import { html, nothing, TemplateResult } from 'bloc-them';
 import { ifDefined } from "lit-html/directives/if-defined";
 import { repeat } from "lit-html/directives/repeat";
 import { UseThemConfiguration } from "../configs";

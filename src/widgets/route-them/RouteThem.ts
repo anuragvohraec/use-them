@@ -1,4 +1,4 @@
-import { html, TemplateResult} from 'lit-html';
+import { html, TemplateResult} from 'bloc-them';
 import {Bloc, BlocsProvider, BlocBuilder} from 'bloc-them';
 import { Compass, PathDirection} from './compass';
 import {unsafeHTML} from 'lit-html/directives/unsafe-html';

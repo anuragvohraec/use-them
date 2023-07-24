@@ -1,5 +1,5 @@
 import {Bloc} from 'bloc-them';
-import { TemplateResult,html } from 'lit-html';
+import { TemplateResult,html } from 'bloc-them';
 import { NoBlocWidgetBuilder, WidgetBuilder } from '../utils/blocs';
 
 export class ProgressBloc extends Bloc<number>{

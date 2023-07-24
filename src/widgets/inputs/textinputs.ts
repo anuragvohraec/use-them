@@ -1,5 +1,5 @@
 import { FormInputBuilder, FormBloc, FormState, InputBuilderConfig } from '../forms';
-import { TemplateResult, html } from 'lit-html';
+import { TemplateResult, html } from 'bloc-them';
 import {  BlocsProvider } from 'bloc-them';
 import { I18NBloc } from '../text';
 import {ifDefined} from 'lit-html/directives/if-defined';

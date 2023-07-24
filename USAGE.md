@@ -77,7 +77,7 @@ Extend RaisedButton or NoBlocRaisedButton and then
 We need to extend SelectorBloc and SelectorWidget
 ```html
 import { BlocsProvider } from 'bloc-them';
-import { html, TemplateResult } from 'lit-html';
+import { html, TemplateResult } from 'bloc-them';
 import {FormInputBuilder, FormMessageBloc, FormState, HideBloc, RaisedButton, SelectorBloc, SelectorWidget, WidgetBuilder} from 'use-them';
 import { SignUpFormBloc } from '../screens/sign-up-screen';
 

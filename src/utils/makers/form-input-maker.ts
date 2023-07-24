@@ -6,7 +6,7 @@ import { RangeSelector } from '../../widgets/inputs/rangeselector';
 import { repeat } from 'lit-html/directives/repeat';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html';
 import { InputBuilderConfig } from '../../widgets/forms';
-import { html,  nothing,  TemplateResult } from 'lit-html';
+import { html,  nothing,  TemplateResult } from 'bloc-them';
 import { BlocsProvider } from 'bloc-them';
 import { ToggleButton } from '../../widgets/inputs/togglebutton';
 

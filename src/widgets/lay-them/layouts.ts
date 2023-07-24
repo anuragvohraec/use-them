@@ -1,5 +1,5 @@
 import {BlocBuilder, Bloc} from 'bloc-them';
-import { TemplateResult, html } from 'lit-html';
+import { TemplateResult, html } from 'bloc-them';
 
 class LayThemBloc extends Bloc<any>{
   protected _name: string="LayThemBloc";
