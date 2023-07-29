@@ -1,4 +1,4 @@
-import { html, TemplateResult } from 'bloc-them';
+import { html, TemplateResult,unsafeHTML } from 'bloc-them';
 import { BogusBloc, WidgetBuilder } from "../utils/blocs";
 
 export class UtIcon extends WidgetBuilder<BogusBloc,number>{
@@ -13,8 +13,10 @@ export class UtIcon extends WidgetBuilder<BogusBloc,number>{
     }
 
     builder(state: number): TemplateResult | undefined {
-        if(this.hasAttribute("icon")){
-            const icon = "#"+this.getAttribute("icon");
+        if(this.hasAttribute("icon") && this.getAttribute("icon")!=="<!--{{st}}--> <!--{{ste}}-->"){
+            const t = document.querySelector(`#${this.getAttribute("icon")}`);
+            const icon = `<svg viewBox="0 0 24 24" class="icon">${t?.outerHTML} </svg>`;
+            //"#"+this.getAttribute("icon");
             return html`<style>
                 .icon {
                     display: inline-block;
@@ -42,9 +44,7 @@ export class UtIcon extends WidgetBuilder<BogusBloc,number>{
             <!--Icons usage the xlink ref is the id of the icons-->
             <div class="cont1">
                 <div class="cont2">
-                    <svg viewBox="0 0 24 24" class="icon">
-                        <use href=${icon} />
-                    </svg>
+                    ${unsafeHTML(icon)}
                 </div>
             </div>`;
         }
