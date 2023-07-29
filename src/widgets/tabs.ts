@@ -1,5 +1,5 @@
 import { BlocsProvider } from 'bloc-them';
-import { html, render, TemplateResult } from 'bloc-them';
+import { html, render, TemplateResult,repeat } from 'bloc-them';
 import { APage, RouteState, RouteThem, RouteThemBloc } from '../widgets/route-them/RouteThem';
 import { BogusBloc, WidgetBuilder } from '../utils/blocs';
 import { GestureDetector } from './gesturedetector';
@@ -185,7 +185,11 @@ export class TabController extends WidgetBuilder<BogusBloc,number>{
                     }else{
                         let route = t.getAttribute("route");
                         if(!route){
-                            throw "No route attribute present";
+                            if(i===0){
+                                t.setAttribute("route","/");
+                            }else{
+                                t.setAttribute("route",`/${i}`);
+                            }
                         }
                         listOfIcons[icon]={
                             path: (i===0?"/":`/${i}`),
@@ -194,7 +198,9 @@ export class TabController extends WidgetBuilder<BogusBloc,number>{
                     }
                 }
                 return html`<lay-them in="row" ma="start" ca="stretch">
-                    ${Object.keys(listOfIcons).map(e=>html`<div class="icon"><ut-tab-header icon=${e} indexpath="${listOfIcons[e].path}" .label=${listOfIcons[e].label}></ut-tab-header></div>`)}
+                    ${repeat(Object.keys(listOfIcons),i=>i,(e,idx)=>{
+                        return html`<div class="icon"><ut-tab-header icon=${e} indexpath="${listOfIcons[e].path}" .label=${listOfIcons[e].label}></ut-tab-header></div>`;
+                    })}
                 </lay-them>`;
             }else{
                 throw `No Tabs defined for tabs controller`;
