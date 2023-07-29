@@ -1,7 +1,5 @@
 import { Bloc, BlocBuilderConfig, BlocsProvider } from "bloc-them";
-import { html, nothing, TemplateResult } from 'bloc-them';
-import { ifDefined } from "lit-html/directives/if-defined";
-import { repeat } from "lit-html/directives/repeat";
+import { html, TemplateResult,repeat} from 'bloc-them';
 import { UseThemConfiguration } from "../configs";
 import { IEMessage, IEMessageType, IEValue, IncomingRequest, InfoAboutAFile,PickedFileInfoForOutPut } from "../interfaces";
 import { BogusBloc, NoBlocWidgetBuilder, UtRegistryBloc, WidgetBuilder } from "../utils/blocs";
@@ -706,7 +704,7 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                                                     </div>
                                                 </lay-them>
                                             </div>
-                                        </lay-them>`:nothing as TemplateResult}
+                                        </lay-them>`:html``}
 
                             ${repeat(state,(item)=>item.name,(pickedFileInfo,index)=>{
 
@@ -768,14 +766,14 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                                 <label for="file-upload">
                                     <circular-icon-button use="icon:attach-file"></circular-icon-button>
                                 </label>
-                                <input id="file-upload" type="file" @change=${this.fileChanged} multiple accept=${this.picker_config.accept??"*/*"}  capture=${ifDefined(this.picker_config.capture)}>
+                                <input id="file-upload" type="file" @change=${this.fileChanged} multiple accept=${this.picker_config.accept??"*/*"}  ?capture=${this.picker_config.capture}>
                             </div>
 
                             <div>
                                 <label for="file-add">
                                     <circular-icon-button use="icon:add"></circular-icon-button>
                                 </label>
-                                <input id="file-add" type="file" @change=${this.fileChanged} multiple accept=${this.picker_config.accept??"*/*"}  capture=${ifDefined(this.picker_config.capture)}>
+                                <input id="file-add" type="file" @change=${this.fileChanged} multiple accept=${this.picker_config.accept??"*/*"}  ?capture=${this.picker_config.capture}>
                             </div>
                             
                             <div>
@@ -792,7 +790,7 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                     </image-picker-confirmation-box-container>
                 </div>
             </lay-them>
-            ${((this.picker_config.type===FilePickerType.IMAGE)||(!this.picker_config.coverPicSizeInPX))?nothing as HTMLElement: html`
+            ${((this.picker_config.type===FilePickerType.IMAGE)||(!this.picker_config.coverPicSizeInPX))?html``: html`
             <label for="cover-pic">
                 <div class="addCoverButton">
                     <labeled-icon-button icon="add" label="cover" use="color:white;"></labeled-icon-button>

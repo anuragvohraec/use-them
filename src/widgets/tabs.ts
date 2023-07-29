@@ -74,7 +74,7 @@ export class TabHeader extends WidgetBuilder<TabRouterBloc, RouteState>{
         super.connectedCallback();
         this.icon;
         this.indexpath;
-        render(this.builder(this.bloc?.state!),this.shadowRoot!);
+        render(this.shadowRoot!,this.builder(this.bloc?.state!));
     }
 
     builder(state: RouteState): TemplateResult {

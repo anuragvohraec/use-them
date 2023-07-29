@@ -1,5 +1,5 @@
 import { WidgetBuilder, BogusBloc } from '../utils/blocs';
-import { TemplateResult, html } from 'bloc-them';
+import { TemplateResult, html,unsafeHTML } from 'bloc-them';
 
 
 export class AnimatedGradientBackground extends WidgetBuilder<BogusBloc,number>{
@@ -8,29 +8,28 @@ export class AnimatedGradientBackground extends WidgetBuilder<BogusBloc,number>{
     builder(state: number): TemplateResult {
         return html`
             <style>
-                .animated-gradient {
-                    background: linear-gradient(-45deg, ${this.gradient_colors});
-                    background-size: 400% 400%;
-                    animation: gradient 15s ease infinite;
-                }
+        .animated-gradient {
+            background: linear-gradient(-45deg, ${this.gradient_colors});
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
 
-                @keyframes gradient {
-                    0% {
-                        background-position: 0% 50%;
-                    }
-                    50% {
-                        background-position: 100% 50%;
-                    }
-                    100% {
-                        background-position: 0% 50%;
-                    }
-                }
-                .expanded{
-                    width: 100%;
-                    height: 100%;
-                }
-                </style>
-
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        .expanded{
+            width: 100%;
+            height: 100%;
+        }
+        </style>
             <div class="animated-gradient expanded">
             </div>
         `;

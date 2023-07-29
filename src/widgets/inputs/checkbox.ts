@@ -1,6 +1,5 @@
 
 import { html, TemplateResult } from 'bloc-them';
-import { ifDefined } from 'lit-html/directives/if-defined';
 import { UseThemConfiguration } from '../../configs';
 import { FormBloc, FormInputBuilder, FormState, InputBuilderConfig } from '../forms';
 

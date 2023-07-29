@@ -1,6 +1,6 @@
 import { Bloc, BlocBuilderConfig, MultiBlocsReactiveWidget } from "bloc-them";
 import { nothing, TemplateResult,html } from 'bloc-them';
-import { ifDefined } from "lit-html/directives/if-defined";
+
 import { UseThemConfiguration } from "../configs";
 import { XY } from "../interfaces";
 
@@ -295,7 +295,7 @@ export class OnViewPlayVideo extends MultiBlocsReactiveWidget<State>{
         
             <div class="cont">
                 <lay-them in="stack">
-                    <video class="video" @click=${this.pauseVideo} poster=${ifDefined(poster)} src=${src} preload="none" @timeupdate=${this.followVideoTime} @loadedmetadata=${this.metaDataAvailable} @waiting=${this.isBuffering} @playing=${this.isPlaying}></video>
+                    <video class="video" @click=${this.pauseVideo} ?poster=${poster} src=${src} preload="none" @timeupdate=${this.followVideoTime} @loadedmetadata=${this.metaDataAvailable} @waiting=${this.isBuffering} @playing=${this.isPlaying}></video>
                     <ut-pan-zoom-detector bloc="ZoomAndPanBloc" .blocBuilderConfig=${this.zapBlocBuilderConfig as any}>
                         <div class="seek-bar-cont">
                             <div class="progress-bar-cont">

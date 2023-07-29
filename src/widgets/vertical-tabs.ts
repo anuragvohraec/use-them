@@ -1,6 +1,6 @@
 import { Bloc, BlocsProvider } from "bloc-them";
-import { html, TemplateResult } from 'bloc-them'
-import { repeat } from "lit-html/directives/repeat";
+import { html, TemplateResult, repeat } from 'bloc-them'
+
 import { WidgetBuilder } from "../utils/blocs";
 
 type BuilderFunction=(tab_name:string)=>TemplateResult;

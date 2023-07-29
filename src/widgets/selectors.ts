@@ -1,11 +1,11 @@
 import { Bloc, BlocsProvider } from "bloc-them";
-import { html, TemplateResult,nothing } from 'bloc-them';
+import { html, TemplateResult,repeat,unsafeHTML } from 'bloc-them';
 import { WidgetBuilder } from '../utils/blocs';
-import {repeat} from 'lit-html/directives/repeat';
+
 import { HideBloc } from "./dialogues";
 import { FormBloc, FormMessageBloc, PostValidationOnChangeFunction, ValidatorFunction } from "./forms";
 import { SingleLineInput } from "./inputs/textinputs";
-import { unsafeHTML } from "lit-html/directives/unsafe-html";
+
 import { UseThemConfiguration } from "../configs";
 import { AppPageBloc } from "./route-them/RouteThem";
 
@@ -434,7 +434,7 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
                     <div class="title_bar">
                         <ut-p use="color:white;">${config.title}</ut-p>
                     </div>
-                    `:nothing as TemplateResult}
+                    `:html``}
                     <div class="search_input">
                         ${unsafeHTML(`<${searchInputTagName}></${searchInputTagName}`)}
                     </div>

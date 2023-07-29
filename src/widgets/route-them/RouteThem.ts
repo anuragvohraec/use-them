@@ -1,7 +1,6 @@
 import { html, TemplateResult} from 'bloc-them';
-import {Bloc, BlocsProvider, BlocBuilder} from 'bloc-them';
+import {Bloc, BlocsProvider, BlocBuilder,unsafeHTML} from 'bloc-them';
 import { Compass, PathDirection} from './compass';
-import {unsafeHTML} from 'lit-html/directives/unsafe-html';
 import {Utils} from '../../utils/utils';
 import { UseThemConfiguration } from '../../configs';
 import { OverlayPageBloc } from './overlays';

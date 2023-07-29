@@ -12,7 +12,7 @@ export default [{
         "bloc-them":"/js/bloc-them/index.js"
     },
   },
-  plugins: [typescript(),minifyHTML(),terser({ format: { comments: false } })],
+  plugins: [typescript(),terser({ format: { comments: false } })],
   external:["bloc-them"]
 },
 {

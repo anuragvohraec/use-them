@@ -1,7 +1,7 @@
 import { Bloc, BlocsProvider } from "bloc-them";
-import { html, nothing, TemplateResult } from 'bloc-them';
-import {unsafeHTML} from 'lit-html/directives/unsafe-html';
+import { html, TemplateResult, unsafeHTML} from 'bloc-them';
 import { UseThemConfiguration } from "../configs";
+
 import { WidgetBuilder } from "../utils/blocs";
 import { HideBloc } from "./dialogues";
 
@@ -93,7 +93,7 @@ export abstract class ConfirmationDialogue extends WidgetBuilder<HideBloc,boolea
 
     builder(state: boolean): TemplateResult {
         if(state){
-            return nothing as TemplateResult;
+            return html``;
         }else{
             return html`
             <style>
@@ -155,7 +155,7 @@ export abstract class ConfirmationDialogue extends WidgetBuilder<HideBloc,boolea
                                 </div>`:html`<div style="padding: 10px;">
                                     <textarea class="textAreaBG" @focus=${()=>{navigator.vibrate(UseThemConfiguration.PRESS_VIB);}} placeholder=${this.confirmationInfo.user_comments_msg} @keyup=${this.user_msg_changed} type="text"></textarea>
                                 </div>`):html``}
-                                ${this.confirmationInfo.accept_condition_url?html`<p style="font-size: 0.7em;padding: 0px 10px;">I accept <a href=${this.confirmationInfo.accept_condition_url} target="_blank" style="color: black;font-weight: bold;">Terms and Conditions</a>.</p>`:nothing}
+                                ${this.confirmationInfo.accept_condition_url?html`<p style="font-size: 0.7em;padding: 0px 10px;">I accept <a href=${this.confirmationInfo.accept_condition_url} target="_blank" style="color: black;font-weight: bold;">Terms and Conditions</a>.</p>`:html``}
                                 <ut-confirmation-dialogue-progress-indicator>
                                     <lay-them in="row" ma="flex-start" ca="stretch" overflow="hidden">
                                         <div style="flex:1;" class="button" @click=${this.yesAction}>
