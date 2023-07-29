@@ -372,7 +372,7 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
             public set items(value: I[] | undefined) {
                 this._items = value;
                 if(value){
-                    (this.blocBuilderConfig.blocs_map?.["ISelectorBloc"] as ISelectorBloc).initialize(value)
+                    (this.blocbuilderconfig.blocs_map?.["ISelectorBloc"] as ISelectorBloc).initialize(value)
                 }
             }
             

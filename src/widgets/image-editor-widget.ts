@@ -160,7 +160,7 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
 
     connectedCallback(){
         super.connectedCallback();
-        UtRegistryBloc.add("ImageEditorHideBloc",this.blocBuilderConfig!.blocs_map!["ImageEditorHideBloc"]);
+        UtRegistryBloc.add("ImageEditorHideBloc",this.blocbuilderconfig!.blocs_map!["ImageEditorHideBloc"]);
     }
 
     hideEditor=(e:Event)=>{
