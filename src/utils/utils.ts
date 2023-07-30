@@ -163,4 +163,19 @@ export class Utils {
       const s = Math.floor(mr/1000);
       return `${h>0?`${h}`+":":""}${("0"+m).slice(-2)}:${("0"+s).slice(-2)}`;
   }
+
+  static parseAttributeValue(attrString: string|null){
+      let result:Record<string,string>={};
+      if(attrString){
+          let t1 = attrString.split(";");
+          for(let t2 of t1){
+              let t3 = t2.split(":");
+              if(t3.length===2){
+                  result[t3[0].trim()]=t3[1].trim();
+              }
+          }            
+      }
+      return result;
+  }
+
 }

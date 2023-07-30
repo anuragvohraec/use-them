@@ -1,4 +1,4 @@
-import { Bloc, BlocsProvider } from "bloc-them";
+import { Bloc, findBloc, ListenerWidget } from "bloc-them";
 import { html, TemplateResult } from 'bloc-them';
 import { WidgetBuilder } from "../utils/blocs";
 import { HideBloc } from "./dialogues";
@@ -79,7 +79,7 @@ class QrCodeScannerBloc extends Bloc<QrScannerState>{
         if (!('BarcodeDetector' in window)) {
             this.emit({status:Status.SCANNER_NOT_SUPPORTED});
         } else {
-            let qrConfig = (this.hostElement as QrCodeCameraStream).qrConfig;
+            let qrConfig = (this.hostElement as unknown as QrCodeCameraStream).qrConfig;
 
             // create new detector
             //@ts-ignore
@@ -109,7 +109,7 @@ class QrCodeScannerBloc extends Bloc<QrScannerState>{
     }
 
     postQrCode=()=>{
-        let b = BlocsProvider.search<QrCodeListenerBloc>((this.hostElement as QrCodeCameraStream)?.qrConfig?.notify_bloc_name??"QrCodeListenerBloc",this.hostElement);
+        let b = findBloc<QrCodeListenerBloc>((this.hostElement as unknown as QrCodeCameraStream)?.qrConfig?.notify_bloc_name??"QrCodeListenerBloc",this.hostElement!);
         if(b){
             b.user_selected_qr_codes(this.state.codes);
         }
@@ -117,7 +117,7 @@ class QrCodeScannerBloc extends Bloc<QrScannerState>{
     }
 
     close=()=>{
-        BlocsProvider.search<HideBloc>("QrCodeHideBloc",this.hostElement)?.toggle();
+        findBloc<HideBloc>("QrCodeHideBloc",this.hostElement!)?.toggle();
     }
 
     toggle_torch=()=>{
@@ -129,30 +129,28 @@ class QrCodeScannerBloc extends Bloc<QrScannerState>{
     }
 }
 
-class QrCodeCameraStream extends WidgetBuilder<QrCodeScannerBloc,QrScannerState>{
+class QrCodeCameraStream extends WidgetBuilder<QrScannerState>{
     public qrConfig?:QrCodeScannerConfig;
 
     constructor(){
         super("QrCodeScannerBloc",{
-            blocs_map:{
-                QrCodeScannerBloc: new QrCodeScannerBloc()
-            }
+            QrCodeScannerBloc: new QrCodeScannerBloc()
         })
     }
 
     connectedCallback(){
         super.connectedCallback();
         setTimeout(()=>{
-            this.bloc?.init();
+            this.bloc<QrCodeScannerBloc>()?.init();
         },200);
     }
 
     disconnectedCallback(){
-        this.bloc?.close_camera();
+        this.bloc<QrCodeScannerBloc>()?.close_camera();
         super.disconnectedCallback();
     }
 
-    builder(state: QrScannerState): TemplateResult {
+    build(state: QrScannerState): TemplateResult {
         if(state.status === Status.NO_DEVICE_MEDIA){
             return html`
             <style>
@@ -165,7 +163,7 @@ class QrCodeCameraStream extends WidgetBuilder<QrCodeScannerBloc,QrScannerState>
             <div class="cont">
                 <lay-them in="column" ma="space-around" ca="stretch">
                     <div style="text-align: center;"><ut-p use="color:white">no_camera_found</ut-p></div>
-                    <div @click=${this.bloc?.close}><labeled-icon-button icon="clear" label="close" use="primaryColor:white;color:white;"></labeled-icon-button></div> 
+                    <div @click=${this.bloc<QrCodeScannerBloc>()?.close}><labeled-icon-button icon="clear" label="close" use="primaryColor:white;color:white;"></labeled-icon-button></div> 
                 </lay-them>
             </div>`;
         }else if(state.status === Status.INIT){
@@ -180,7 +178,7 @@ class QrCodeCameraStream extends WidgetBuilder<QrCodeScannerBloc,QrScannerState>
             <div class="cont">
                 <lay-them in="column" ma="space-around" ca="stretch">
                     <div style="text-align: center;"><ut-p use="color:white">camera_permission</ut-p></div>
-                    <div @click=${this.bloc?.close}><labeled-icon-button icon="clear" label="close" use="primaryColor:white;color:white;"></labeled-icon-button></div> 
+                    <div @click=${this.bloc<QrCodeScannerBloc>()?.close}><labeled-icon-button icon="clear" label="close" use="primaryColor:white;color:white;"></labeled-icon-button></div> 
                 </lay-them>
             </div>`;
         }else if(state.status === Status.SCANNER_NOT_SUPPORTED){
@@ -209,11 +207,11 @@ class QrCodeCameraStream extends WidgetBuilder<QrCodeScannerBloc,QrScannerState>
                     }
                 </style>
                 <div style="position: relative;display: flex;align-content: center;justify-content: center;">
-                    <div class="tool count" style="top: 10px;left:10px;">${this.state?.codes?.length??0}</div>
-                    <div class="tool" style="top: 10px;right:10px;" @click=${this.bloc?.close}><labeled-icon-button icon="clear" label="close" use="primaryColor:white;color:white;"></labeled-icon-button></div>
-                    <div class="tool" style="bottom: 10px;right:10px;" @click=${this.bloc?.postQrCode}><labeled-icon-button icon="done" label="ok" use="primaryColor:white;color:white;"></labeled-icon-button></div>
-                    <div class="tool" style="bottom: 10px;" @click=${this.bloc?.scan}><labeled-icon-button icon="qrcode" label="scan" use="primaryColor:white;color:white;"></labeled-icon-button></div>
-                    <div class="tool" style="bottom: 10px;left:10px;" @click=${this.bloc?.toggle_torch}><labeled-icon-button icon="highlight" label="torch" use="primaryColor:white;color:white;"></labeled-icon-button></div>
+                    <div class="tool count" style="top: 10px;left:10px;">${state?.codes?.length??0}</div>
+                    <div class="tool" style="top: 10px;right:10px;" @click=${this.bloc<QrCodeScannerBloc>()?.close}><labeled-icon-button icon="clear" label="close" use="primaryColor:white;color:white;"></labeled-icon-button></div>
+                    <div class="tool" style="bottom: 10px;right:10px;" @click=${this.bloc<QrCodeScannerBloc>()?.postQrCode}><labeled-icon-button icon="done" label="ok" use="primaryColor:white;color:white;"></labeled-icon-button></div>
+                    <div class="tool" style="bottom: 10px;" @click=${this.bloc<QrCodeScannerBloc>()?.scan}><labeled-icon-button icon="qrcode" label="scan" use="primaryColor:white;color:white;"></labeled-icon-button></div>
+                    <div class="tool" style="bottom: 10px;left:10px;" @click=${this.bloc<QrCodeScannerBloc>()?.toggle_torch}><labeled-icon-button icon="highlight" label="torch" use="primaryColor:white;color:white;"></labeled-icon-button></div>
 
                     <div><video style="max-width: 95vw;max-height: 95vh;" autoplay muted id="video_el"></video></div>
                 </div>`;
@@ -245,14 +243,14 @@ export interface QrCodeScannerConfig{
     scan_limit?:number;
 }
 
-class QrCodeScannerWidget extends WidgetBuilder<HideBloc,boolean>{
+class QrCodeScannerWidget extends WidgetBuilder<boolean>{
     public qrConfig?:QrCodeScannerConfig;
 
     constructor(){
         super("QrCodeHideBloc");
     }
 
-    builder(state: boolean): TemplateResult {
+    build(state: boolean): TemplateResult {
         if(state){
             return html``;
         }else{

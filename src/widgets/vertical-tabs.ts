@@ -1,4 +1,4 @@
-import { Bloc, BlocsProvider } from "bloc-them";
+import { Bloc } from "bloc-them";
 import { html, TemplateResult, repeat } from 'bloc-them'
 
 import { WidgetBuilder } from "../utils/blocs";
@@ -23,23 +23,21 @@ export class GenerateVerticalTabs{
             }
         }
 
-        class TabsWidget extends WidgetBuilder<TagChangeBloc,string>{
+        class TabsWidget extends WidgetBuilder<string>{
             constructor(){
                 super("TagChangeBloc",{
-                    blocs_map:{
-                        TagChangeBloc: new TagChangeBloc()
-                    }
+                    TagChangeBloc: new TagChangeBloc()
                 })
             }
             goToTab =(e:Event)=>{
                 let t = e.currentTarget as HTMLElement;
                 let tab_name = t.getAttribute("tab_name");
                 if(tab_name){
-                    this.bloc?.changeTab(tab_name);
+                    this.bloc<TagChangeBloc>()?.changeTab(tab_name);
                 }
             }
 
-            builder(state: string): TemplateResult {
+            build(state: string): TemplateResult {
                 return html`
                 <style>
                     .vtxt{

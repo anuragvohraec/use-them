@@ -1,15 +1,15 @@
-import { Bloc, BlocsProvider } from "bloc-them";
+import { Bloc, findBloc, ListenerWidget } from "bloc-them";
 import { html, TemplateResult, unsafeHTML} from 'bloc-them';
 import { UseThemConfiguration } from "../configs";
 
 import { WidgetBuilder } from "../utils/blocs";
 import { HideBloc } from "./dialogues";
 
-class InProgressIndicator extends WidgetBuilder<HideBloc,boolean>{
+class InProgressIndicator extends WidgetBuilder<boolean>{
     constructor(){
         super("ProgressBloc")
     }
-    builder(state: boolean): TemplateResult {
+    build(state: boolean): TemplateResult {
         if(state){
             return html`<div><slot></slot></div>`;
         }else{
@@ -42,7 +42,7 @@ export interface ConfirmationDialogueInfo{
 /**
  * A confirmation dialogue can be created by extending this class. **Do override its constructor.**
  */
-export abstract class ConfirmationDialogue extends WidgetBuilder<HideBloc,boolean>{
+export abstract class ConfirmationDialogue extends WidgetBuilder<boolean>{
     public get confirmationInfo(): ConfirmationDialogueInfo {
         return this._confirmationInfo;
     }
@@ -50,7 +50,7 @@ export abstract class ConfirmationDialogue extends WidgetBuilder<HideBloc,boolea
     public set confirmationInfo(value: ConfirmationDialogueInfo) {
         if(value){
             this._confirmationInfo = value;
-            this.bloc?.emit(this.bloc.state);
+            this.bloc()?.emit(this.bloc<HideBloc>().state);
         }
     }
     protected user_msg?:any;
@@ -62,19 +62,17 @@ export abstract class ConfirmationDialogue extends WidgetBuilder<HideBloc,boolea
      */
     constructor(blocName:string, private _confirmationInfo: ConfirmationDialogueInfo){
         super(blocName,{
-            blocs_map:{
-                ..._confirmationInfo.blocs_map,
-                ProgressBloc: new HideBloc(),
-            }
+            ..._confirmationInfo.blocs_map,
+            ProgressBloc: new HideBloc(),
         });
     }
 
     show_in_progress=()=>{
-        (BlocsProvider.search<HideBloc>("ProgressBloc",this))?.emit(false);
+        (findBloc<HideBloc>("ProgressBloc",this))?.emit(false);
     }
 
     show_buttons=()=>{
-        (BlocsProvider.search<HideBloc>("ProgressBloc",this))?.emit(true);
+        (findBloc<HideBloc>("ProgressBloc",this))?.emit(true);
     }
 
     /**
@@ -91,7 +89,7 @@ export abstract class ConfirmationDialogue extends WidgetBuilder<HideBloc,boolea
         this.user_msg = ta.value;
     }
 
-    builder(state: boolean): TemplateResult {
+    build(state: boolean): TemplateResult {
         if(state){
             return html``;
         }else{

@@ -1,8 +1,8 @@
-import { Bloc, BlocBuilderConfig, BlocsProvider } from "bloc-them";
+import { Bloc, findBloc, ListenerWidget } from "bloc-them";
 import { html, TemplateResult,repeat} from 'bloc-them';
 import { UseThemConfiguration } from "../configs";
 import { IEMessage, IEMessageType, IEValue, IncomingRequest, InfoAboutAFile,PickedFileInfoForOutPut } from "../interfaces";
-import { BogusBloc, NoBlocWidgetBuilder, UtRegistryBloc, WidgetBuilder } from "../utils/blocs";
+import { BogusBloc, UtRegistryBloc, WidgetBuilder } from "../utils/blocs";
 import { Utils } from "../utils/utils";
 import { HideBloc } from "../widgets/dialogues";
 import { ImageEditorHideBloc } from "../widgets/image-editor-widget";
@@ -152,7 +152,7 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
     }
     
     async addFiles(context:HTMLInputElement){
-        let snackBar = SnackBarBloc.search<SnackBarBloc>("SnackBarBloc",this.hostElement);
+        let snackBar = findBloc<SnackBarBloc>("SnackBarBloc",this.hostElement);
         if(!snackBar){
             throw `Please make sure to provide SnackBarBloc and snack-bar for this to work properly`
         }
@@ -186,7 +186,7 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
     
     async fileSelected(context:HTMLInputElement){
         this.revokeAllObjectURL();
-        const snackBar = SnackBarBloc.search<SnackBarBloc>("SnackBarBloc",context);
+        const snackBar = findBloc<SnackBarBloc>("SnackBarBloc",context);
         if(!snackBar){
             throw `Please make sure to provide SnackBarBloc and snack-bar for this to work properly`
         }
@@ -272,7 +272,7 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
     }
 
     async postFileMessage(context: HTMLElement,picker_type:FilePickerType,doNotCloseFilePicker:boolean=false){
-            let snackBarBloc = SnackBarBloc.search<SnackBarBloc>("SnackBarBloc",this.hostElement);
+            let snackBarBloc = findBloc<SnackBarBloc>("SnackBarBloc",this.hostElement);
             if(!this.current_selected_files?.length){
                 return snackBarBloc?.postMessage({msg:"no_file_selected_msg"}); 
             }
@@ -309,7 +309,7 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
     private async _processFilePicked(picker_type: FilePickerType, files:File[]) {
         let output_type: string = "image/webp";
 
-        const snackBarBloc = this.getBloc<SnackBarBloc>("SnackBarBloc");
+        const snackBarBloc = findBloc<SnackBarBloc>("SnackBarBloc",this.hostElement);
         if (!snackBarBloc) {
             throw `Please make sure to provide SnackBarBloc and snack-bar for this to work properly`;
         }
@@ -391,7 +391,7 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
     }
 
     closeFilePicker(context:HTMLElement){
-        const appPageBloc = AppPageBloc.search<AppPageBloc>("AppPageBloc",context);
+        const appPageBloc = findBloc<AppPageBloc>("AppPageBloc",context);
         appPageBloc?.popOutOfCurrentPage();
     }
 
@@ -408,16 +408,14 @@ export abstract class FilePickerBloc extends Bloc<PickedFileInfo[]>{
     }
 }
 
-export class ImageConfirmationToolBoxContainer extends WidgetBuilder<HideBloc,boolean>{
+export class ImageConfirmationToolBoxContainer extends WidgetBuilder<boolean>{
     constructor(){
         super("HideBloc",{
-            blocs_map:{
-                HideBloc:new HideBloc()
-            }
+            HideBloc:new HideBloc()
         });
     }
 
-    builder(state: boolean): TemplateResult {
+    build(state: boolean): TemplateResult {
         return !state?html`<lay-them ma="center" ca="center" overflow="hide"><circular-progress-indicator></circular-progress-indicator></lay-them>`:html`<div><slot></slot></div>`;
     }
 }
@@ -425,10 +423,10 @@ if(!customElements.get("image-picker-confirmation-box-container")){
     customElements.define("image-picker-confirmation-box-container",ImageConfirmationToolBoxContainer);
 }
 
-export class PickedFileWidget extends BlocsProvider{
+export class PickedFileWidget extends ListenerWidget{
     public _uInfo!:InfoAboutAFile; 
 
-    builder(): TemplateResult {
+    build(): TemplateResult {
         return html`<div style="background-color: #00000026;padding: 10px;padding-bottom: 30px;">
         <lay-them in="column" ca="center">
             <div><ut-icon icon="insert-drive-file"></ut-icon></div>
@@ -442,7 +440,7 @@ export class PickedFileWidget extends BlocsProvider{
     
     public set info_abt_file(v :  InfoAboutAFile) {
         this._uInfo=v;
-        this._build();    
+        this.rebuild();    
     }
     
 }
@@ -484,7 +482,7 @@ interface PickerConfig{
 export interface FilePickerConfig{
     bloc_name:string,
     max_file:number,
-    bloc_config?: BlocBuilderConfig<PickedFileInfo[]>;
+    hostedBlocs?: Record<string, Bloc<any>>,
     picker_config?:PickerConfig;
     imageEditorOutPutSize?:string;
 }
@@ -509,7 +507,7 @@ export class FilePickerExternalTriggers extends Bloc<number>{
      * @param tagName 
      */
     openFilePicker(tagName:string, routeName:string,data?:any){
-        AppPageBloc.search<AppPageBloc>("AppPageBloc",this.hostElement)?.goToPage(routeName,data);
+        findBloc<AppPageBloc>("AppPageBloc",this.hostElement)?.goToPage(routeName,data);
         setTimeout(()=>{
             this.filePickerRegistry[tagName.toLowerCase()]?.openFilePickerExternally();
         },300);
@@ -526,21 +524,21 @@ export class FilePickerExternalTriggers extends Bloc<number>{
 </app-page>
  * ```
  */
-export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,PickedFileInfo[]>{
+export abstract class FilePickerScreen extends WidgetBuilder<PickedFileInfo[]>{
     public picker_config: PickerConfig;
 
     fileChanged=(e:InputEvent)=>{
         //@ts-ignore
         const t: HTMLInputElement = e.target;
         if(t.id === "file-upload"){
-            this.bloc?.fileSelected(t);
+            this.bloc<FilePickerBloc>()?.fileSelected(t);
         }else if(t.id =="file-add"){
-            this.bloc?.addFiles(t);
+            this.bloc<FilePickerBloc>()?.addFiles(t);
         }
     }
 
     constructor(protected config:FilePickerConfig){
-        super(config.bloc_name,config.bloc_config);
+        super(config.bloc_name,config.hostedBlocs);
 
         this.picker_config ={
             accept:"*/*",
@@ -555,17 +553,17 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
     connectedCallback(){
         super.connectedCallback();
         if(this.bloc){
-            this.bloc.max_file_picker=this.config.max_file;
-            this.bloc.revokeAllObjectURL();
-            this.bloc.emit([]);
+            this.bloc<FilePickerBloc>().max_file_picker=this.config.max_file;
+            this.bloc<FilePickerBloc>().revokeAllObjectURL();
+            this.bloc<FilePickerBloc>().emit([]);
         }
         setTimeout(()=>{
-            FilePickerExternalTriggers.search<FilePickerExternalTriggers>("FilePickerExternalTriggers",this)?.register(this);   
+            findBloc<FilePickerExternalTriggers>("FilePickerExternalTriggers",this)?.register(this);   
         },200);
     }
 
     disconnectedCallback(){
-        this.bloc?.revokeAllObjectURL();
+        this.bloc<FilePickerBloc>()?.revokeAllObjectURL();
         super.disconnectedCallback(); 
     }
 
@@ -580,22 +578,22 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
     removeIndex=(e:Event)=>{
         const t= e.currentTarget as HTMLElement;
         const index:number = parseInt(t.getAttribute("i")??"0");
-        this.bloc?.removeFile(index);
+        this.bloc<FilePickerBloc>()?.removeFile(index);
     }
 
     editCoverPic=(e:Event)=>{
         const t = e.currentTarget as HTMLElement;
         const imageSize=parseInt(t.getAttribute("size")!);
         const index=0;
-        if(this.bloc?.coverPic){
+        if(this.bloc<FilePickerBloc>()?.coverPic){
             const ihb = UtRegistryBloc.get<ImageEditorHideBloc>("ImageEditorHideBloc");
             let fileName="cover.webp";
             ihb.editImage({
                 index,
                 fileName,
-                blob: this.bloc.coverPic!,
+                blob: this.bloc<FilePickerBloc>().coverPic!,
                 imageEditedListener:(blob:Blob,index)=>{
-                    this.bloc?.setCoverPic(new File([blob],fileName,{type:"image/webp"}),imageSize)
+                    this.bloc<FilePickerBloc>()?.setCoverPic(new File([blob],fileName,{type:"image/webp"}),imageSize)
                 }
             });
             ihb.toggle();
@@ -608,18 +606,19 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
         const ctx = this.shadowRoot?.querySelector("ut-image-editor") as HTMLElement;
         if(true||ctx){
             const ihb = UtRegistryBloc.get<ImageEditorHideBloc>("ImageEditorHideBloc");//ImageEditorHideBloc.search<ImageEditorHideBloc>("ImageEditorHideBloc",ctx);
-            if(ihb && this.bloc?.selectedFiles?.[index]){
-                const fileName = this.bloc.selectedFiles[index].name;
+            if(ihb && this.bloc<FilePickerBloc>()?.selectedFiles?.[index]){
+                const fileName:string = this.bloc<FilePickerBloc>().selectedFiles![index].name;
                 ihb.editImage({
                     index,
                     fileName,
-                    blob:this.bloc.selectedFiles[index],
+                    blob:this.bloc<FilePickerBloc>().selectedFiles?.[index]!,
                     imageEditedListener:(blob:Blob,i:number)=>{
-                        if(this.bloc?.selectedFiles){
-                            this.bloc.selectedFiles[index]=new File([blob],fileName,{
+                        if(this.bloc<FilePickerBloc>()?.selectedFiles){
+                            //@ts-ignore
+                            this.bloc<FilePickerBloc>().selectedFiles[index]=new File([blob],fileName,{
                                 type:"image/webp"
                             });
-                            this.bloc.emit(this.bloc.selectedFiles.slice(0,this.config.max_file).map(f=>{
+                            this.bloc<FilePickerBloc>().emit(this.bloc<FilePickerBloc>().selectedFiles!.slice(0,this.config.max_file).map(f=>{
                                 return {name: f.name, url: URL.createObjectURL(f),mime:f.type, size:f.size}
                             }));
                         }
@@ -633,16 +632,16 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
     moveUp=(e:Event)=>{
         const t= e.currentTarget as HTMLElement;
         const index:number = parseInt(t.getAttribute("i")??"0");
-        this.bloc?.moveUp(index);
+        this.bloc<FilePickerBloc>()?.moveUp(index);
     }
 
     moveDown=(e:Event)=>{
         const t= e.currentTarget as HTMLElement;
         const index:number = parseInt(t.getAttribute("i")??"0");
-        this.bloc?.moveDown(index);
+        this.bloc<FilePickerBloc>()?.moveDown(index);
     }
 
-    builder(state: PickedFileInfo[]): TemplateResult {
+    build(state: PickedFileInfo[]): TemplateResult {
         let title="attach";
         if(this.title && this.title.trim().length>0){
             title=this.title;
@@ -688,8 +687,8 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                 <div style="flex-grow: 1;height:0px;overflow-y: auto;padding: 10px;">
                     ${state.length===0?html`<lay-them ma="center" ca="center"><ut-p>no_file_selected</ut-p></lay-them>`:html`
                         <div class="image_grid">
-                            ${this.bloc?.coverPicUrl?html`<lay-them in="stack">
-                                            <img class="image_item" src=${this.bloc.coverPicUrl}>
+                            ${this.bloc<FilePickerBloc>()?.coverPicUrl?html`<lay-them in="stack">
+                                            <img class="image_item" src=${this.bloc<FilePickerBloc>().coverPicUrl!}>
                                             <div style="bottom:0px;width:100%;height:50px;background-color: #00000094;">
                                                 <lay-them in="row" ma="space-between" ma="center">
                                                     <div class="edit-button"  @click=${this.editCoverPic} size=${this.picker_config.coverPicSizeInPX!}>
@@ -778,12 +777,12 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
                             
                             <div>
                                 <circular-icon-button use="icon:done;" @click=${(e:Event)=>{  
-                                    this.bloc?.postFileMessage(e.currentTarget as HTMLElement,this.picker_config.type);
+                                    this.bloc<FilePickerBloc>()?.postFileMessage(e.currentTarget as HTMLElement,this.picker_config.type);
                                 }}></circular-icon-button>
                             </div>
                             <div>
                                 <circular-icon-button use="icon:clear;" @click=${(e:Event)=>{
-                                    this.bloc?.closeFilePicker(e.currentTarget as HTMLElement);
+                                    this.bloc<FilePickerBloc>()?.closeFilePicker(e.currentTarget as HTMLElement);
                                 }}></circular-icon-button>
                             </div>
                         </lay-them>
@@ -802,15 +801,20 @@ export abstract class FilePickerScreen extends WidgetBuilder<FilePickerBloc,Pick
 
     selectedACoverPic=(e:InputEvent)=>{
         let coverInput = e.currentTarget as HTMLInputElement;
-        if(this.bloc){
-            this.bloc.setCoverPic(coverInput?.files?.[0]??undefined,this.picker_config.coverPicSizeInPX!);
+        if(this.bloc<FilePickerBloc>()){
+            this.bloc<FilePickerBloc>().setCoverPic(coverInput?.files?.[0]??undefined,this.picker_config.coverPicSizeInPX!);
         }
     }
 }
 
 
-class FilePickerFunctionalityProvider extends NoBlocWidgetBuilder{
-    builder(state: number): TemplateResult {
+class FilePickerFunctionalityProvider extends ListenerWidget{
+    constructor(){
+        super({
+            isShadow: true
+        })
+    }
+    build(state: number): TemplateResult {
         return html`<div style="width:100%;height:100%">
         <slot></slot>
         </div>

@@ -1,4 +1,4 @@
-import { Bloc, BlocsProvider } from "bloc-them";
+import { Bloc, ListenerWidget } from "bloc-them";
 import { TemplateResult, html } from 'bloc-them';
 
 
@@ -98,12 +98,15 @@ export class ThemeBloc extends Bloc<Theme>{
     }
 }
 
-export abstract class ThemeProvider extends BlocsProvider{
+export abstract class ThemeProvider extends ListenerWidget{
     constructor(theme: Theme){
-        super({ThemeBloc:new ThemeBloc(theme)});
+        super({
+            hostedBlocs:{ThemeBloc:new ThemeBloc(theme)},
+            isShadow: true
+        });
         (<any>document).useThemTheme=theme;
     }
-    builder(): TemplateResult {
+    build(): TemplateResult {
        return html`<div style="width:100%; height: 100%;"><slot></slot></div>`;
     }
 }

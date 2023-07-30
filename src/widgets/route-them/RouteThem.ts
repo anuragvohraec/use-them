@@ -1,5 +1,5 @@
 import { html, TemplateResult} from 'bloc-them';
-import {Bloc, BlocsProvider, BlocBuilder,unsafeHTML} from 'bloc-them';
+import {Bloc, ListenerWidget,unsafeHTML, findBloc} from 'bloc-them';
 import { Compass, PathDirection} from './compass';
 import {Utils} from '../../utils/utils';
 import { UseThemConfiguration } from '../../configs';
@@ -54,7 +54,7 @@ export class RouteThemBloc extends Bloc<RouteState>{
 
   public get navHooks(): RouteThemNavigationHookBloc | undefined {
     if(!this._navHooksBlocSearchedOnce && !this._navHooks && this.hostElement){
-      this._navHooks = RouteThemNavigationHookBloc.search<RouteThemNavigationHookBloc>("RouteThemNavigationHookBloc",this.hostElement);
+      this._navHooks = findBloc<RouteThemNavigationHookBloc>("RouteThemNavigationHookBloc",this.hostElement);
       this._navHooksBlocSearchedOnce=true;
     }
     return this._navHooks;
@@ -68,7 +68,7 @@ export class RouteThemBloc extends Bloc<RouteState>{
       this._init_path = document.location.pathname;
       if(window.onpopstate){
         const prev_bloc= (window.onpopstate as PopStateFunction).bloc_name;
-        throw `An app should have only one router which can control history. Some where in your code <${prev_bloc}> window.onpopstate function is already registered. And you are retrying again this in bloc ${this.name}!`;
+        throw `An app should have only one router which can control history. Some where in your code <${prev_bloc}> window.onpopstate function is already registered. And you are retrying again this in bloc ${this.blocName}!`;
       }
       let p = (e: PopStateEvent)=>{
         try{
@@ -95,7 +95,7 @@ export class RouteThemBloc extends Bloc<RouteState>{
           let stateForEmit = {...oldState};
           this.emit(stateForEmit);
 
-          return this.navHooks?.onPopHook(this.save_history,this.hostElement, stateForEmit);
+          return this.navHooks?.onPopHook(this.save_history,this.hostElement!, stateForEmit);
         }finally{
           //Vibrate on back button press
           navigator.vibrate(UseThemConfiguration.PRESS_VIB);
@@ -134,7 +134,7 @@ export class RouteThemBloc extends Bloc<RouteState>{
           let t = this._convertUrlToPath(url_path);
           history.pushState(newRouteState,t,Utils.build_path(window.location.origin,this._init_path!,url_path));
         }
-        this.navHooks?.onGoToPageHook(this.save_history,this.hostElement,newRouteState);
+        this.navHooks?.onGoToPageHook(this.save_history,this.hostElement!,newRouteState);
       }else{
         console.log(`No route exists for path: ${url_path}`);
       }
@@ -165,7 +165,7 @@ export class RouteThemBloc extends Bloc<RouteState>{
   }
 
   private popOverlayStack(overlay_id:string){
-    OverlayPageBloc.search<OverlayPageBloc>("OverlayPageBloc",this.hostElement)?.hide(overlay_id);
+    findBloc<OverlayPageBloc>("OverlayPageBloc",this.hostElement!)?.hide(overlay_id);
     if(this.state?.data?.overlay_id){
       delete this.state.data.overlay_id;
     }
@@ -193,12 +193,15 @@ export class RouteThemBloc extends Bloc<RouteState>{
 
 }
 
-export class RouteThemController extends BlocsProvider{
+export class RouteThemController extends ListenerWidget{
   constructor(){
-    super({RouteThemBloc: new RouteThemBloc()})
+    super({
+      hostedBlocs:{RouteThemBloc: new RouteThemBloc()},
+      isShadow: true
+    })
   }
 
-  builder(): TemplateResult {
+  build(): TemplateResult {
     return html`<div style="width:100%;height:100%;"><slot></slot></div>`;
   }
 }
@@ -208,18 +211,16 @@ export class RouteThemController extends BlocsProvider{
  * At first this may seems redundant, but its required to encapsulate pages.
  * Without this man content will be visible uncontrollably.
  */
-export class RouteThem extends BlocBuilder<BogusBloc,number>{
+export class RouteThem extends ListenerWidget{
   constructor(private pageTagName: string = "a-page", private routeBlocName: string="RouteThemBloc"){
-    super("BogusBloc", {
-      blocs_map:{
-          BogusBloc: new BogusBloc()
-      }
+    super({
+      isShadow: true
     });
   }
   
   connectedCallback(){
     super.connectedCallback();
-    let routeBloc = RouteThemBloc.search<RouteThemBloc>(this.routeBlocName,this);
+    let routeBloc = findBloc<RouteThemBloc>(this.routeBlocName,this);
     
     this.querySelectorAll(this.pageTagName).forEach(e=>{
       let r = e.getAttribute("route");
@@ -237,18 +238,20 @@ export class RouteThem extends BlocBuilder<BogusBloc,number>{
     }
   }
 
-  builder(state: number): TemplateResult {
+  build(state: number): TemplateResult {
     return html`<div style="width:100%;height:100%;"><slot></slot></div>`;
   }
 }
 
 
-export class APage extends BlocBuilder<RouteThemBloc, RouteState>{
+export class APage extends ListenerWidget<RouteState>{
   private initInnerHTML:string;
   private behavior:"hide"|"reload"="hide";
   
   constructor(blocName:string="RouteThemBloc"){
-    super(blocName)
+    super({
+      blocName, isShadow: true
+    })
     this.initInnerHTML=this.innerHTML;
     let r = this.getAttribute("behaves");
     if(r){
@@ -275,7 +278,7 @@ export class APage extends BlocBuilder<RouteThemBloc, RouteState>{
     }
   }
 
-  builder(state: RouteState): TemplateResult {
+  build(state: RouteState): TemplateResult {
     let doHide:boolean = this.toBeHidden(state);
 
     switch(this.behavior){
@@ -326,16 +329,19 @@ export class AppPageBloc extends RouteThemBloc{
   }
 }
 
-export class AppPageController extends BlocsProvider{
+export class AppPageController extends ListenerWidget{
   constructor(){
     super({
-      AppPageBloc: new AppPageBloc(),
-      OverlayPageBloc: new OverlayPageBloc(),
-      FilePickerExternalTriggers: new FilePickerExternalTriggers()
+      hostedBlocs:{
+        AppPageBloc: new AppPageBloc(),
+        OverlayPageBloc: new OverlayPageBloc(),
+        FilePickerExternalTriggers: new FilePickerExternalTriggers()
+      },
+      isShadow: true
     })
   }
 
-  builder(): TemplateResult {
+  build(): TemplateResult {
     return html`<div style="width:100%;height:100%;"><slot></slot></div>`;
   }
 }

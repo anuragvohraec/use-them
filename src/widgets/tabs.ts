@@ -1,4 +1,4 @@
-import { BlocsProvider } from 'bloc-them';
+import { findBloc, ListenerWidget } from 'bloc-them';
 import { html, render, TemplateResult,repeat } from 'bloc-them';
 import { APage, RouteState, RouteThem, RouteThemBloc } from '../widgets/route-them/RouteThem';
 import { BogusBloc, WidgetBuilder } from '../utils/blocs';
@@ -33,7 +33,7 @@ class TabRouterBloc extends RouteThemBloc{
     }
 }
 
-export class TabHeader extends WidgetBuilder<TabRouterBloc, RouteState>{
+export class TabHeader extends WidgetBuilder<RouteState>{
     private _icon!:string;
     private _indexpath!: string;
     public label!:string;
@@ -74,10 +74,10 @@ export class TabHeader extends WidgetBuilder<TabRouterBloc, RouteState>{
         super.connectedCallback();
         this.icon;
         this.indexpath;
-        render(this.shadowRoot!,this.builder(this.bloc?.state!));
+        render(this.shadowRoot!,this.build(this.bloc<TabRouterBloc>()?.state!));
     }
 
-    builder(state: RouteState): TemplateResult {
+    build(state: RouteState): TemplateResult {
         return html`
         <style>
             .icon{
@@ -98,7 +98,7 @@ export class TabHeader extends WidgetBuilder<TabRouterBloc, RouteState>{
         </style>
         <ink-well>
         <div class="icon" @click=${()=>{
-            this.bloc?.goToPage(this._indexpath,{saveToBrowserHistory:false,title:""})
+            this.bloc<TabRouterBloc>()?.goToPage(this._indexpath,{saveToBrowserHistory:false,title:""})
         }}>
         
             <lay-them  ca="center" ma="center">
@@ -123,7 +123,7 @@ class _TabsGestureDetector extends GestureDetector{
 
     connectedCallback(){
         super.connectedCallback();
-        let t = BlocsProvider.search<TabRouterBloc>("TabRouterBloc", this);
+        let t = findBloc<TabRouterBloc>("TabRouterBloc", this);
         if(!t){
             throw `No TabRouterBloc found for gesture detector for tabs`;
         }else{
@@ -158,16 +158,14 @@ class _TabsGestureDetector extends GestureDetector{
 
 customElements.define("tabs-gesture-detector", _TabsGestureDetector);
 
-export class TabController extends WidgetBuilder<BogusBloc,number>{
+export class TabController extends WidgetBuilder<number>{
     
     private _headers?: TemplateResult;
 
     constructor(){
         super("BogusBloc",{
-            blocs_map:{
-                BogusBloc: new BogusBloc(),
-                TabRouterBloc: new TabRouterBloc()
-            }
+            BogusBloc: new BogusBloc(),
+            TabRouterBloc: new TabRouterBloc()
         })
     }
 
@@ -224,7 +222,7 @@ export class TabController extends WidgetBuilder<BogusBloc,number>{
         }
     }
 
-    builder(state:number): TemplateResult {
+    build(state:number): TemplateResult {
         return html`
         <style>
             .headers{
@@ -269,7 +267,7 @@ export class Tabs extends RouteThem{
         super("ut-tab","TabRouterBloc");
     }
 
-    builder(state: number): TemplateResult {
+    build(state: number): TemplateResult {
         return html`<div style="width: 100%; height: 100%;"><slot></slot></div>`;
     }
 }

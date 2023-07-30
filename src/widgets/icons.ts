@@ -1,18 +1,16 @@
 import { html, TemplateResult,unsafeHTML } from 'bloc-them';
 import { BogusBloc, WidgetBuilder } from "../utils/blocs";
 
-export class UtIcon extends WidgetBuilder<BogusBloc,number>{
+export class UtIcon extends WidgetBuilder{
    
     
     constructor(){
         super("BogusBloc",{
-            blocs_map:{
-                BogusBloc: new BogusBloc()
-            }
+            BogusBloc: new BogusBloc()
         })
     }
 
-    builder(state: number): TemplateResult | undefined {
+    build(state: number): TemplateResult | undefined {
         if(this.hasAttribute("icon") && this.getAttribute("icon")!=="<!--{{st}}--> <!--{{ste}}-->"){
             const t = document.querySelector(`#${this.getAttribute("icon")}`);
             const icon = `<svg viewBox="0 0 24 24" class="icon">${t?.outerHTML} </svg>`;

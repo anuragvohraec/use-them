@@ -1,15 +1,11 @@
-import { WidgetBuilder, BogusBloc } from "../utils/blocs";
-import { TemplateResult, html } from 'bloc-them';
 
-export class Expanded extends WidgetBuilder<BogusBloc,number>{
+import { TemplateResult, html, ListenerWidget } from 'bloc-them';
+
+export class Expanded extends ListenerWidget{
     constructor(){
-        super("BogusBloc", {
-            blocs_map:{
-                BogusBloc: new BogusBloc()
-            }
-        });
+        super();
     }
-    builder(state: number): TemplateResult {
+    build(state: number): TemplateResult {
         return html`<div style="width:100%; height: 100%;"><slot></slot></div>`;
     }
 }

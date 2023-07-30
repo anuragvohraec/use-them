@@ -1,4 +1,4 @@
-import { Bloc, BlocsProvider } from 'bloc-them';
+import { Bloc, findBloc, ListenerWidget } from 'bloc-them';
 import { html, TemplateResult } from 'bloc-them';
 import { WidgetBuilder} from '../utils/blocs.js';
 import {UseThemConfiguration} from "../configs";
@@ -128,35 +128,26 @@ export class GestureDetectorBloc extends Bloc<GESTURE>{
 
 }
 
-export abstract class GestureDetectorBuilder extends WidgetBuilder<GestureDetectorBloc,GESTURE>{
+export abstract class GestureDetectorBuilder extends WidgetBuilder<GESTURE>{
     constructor(private drag_sensitivity:number = 1, private minDistanceInPx:number=100, private doubleTapTimer:number=300){
         super("GestureDetectorBloc",{
-            blocs_map:{
-                GestureDetectorBloc:new GestureDetectorBloc(drag_sensitivity, minDistanceInPx, doubleTapTimer)
-            },
-            buildWhen:(o,n)=>{
-                if(n === GESTURE.NO_ACTION){
-                    return false;
-                }else{
-                    return true;
-                }
-            }
+            GestureDetectorBloc:new GestureDetectorBloc(drag_sensitivity, minDistanceInPx, doubleTapTimer)
         })
     }
 
     handle_touch_start=(e:TouchEvent)=>{
         e.stopPropagation();
-        this.bloc?.onStart(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
+        this.bloc<GestureDetectorBloc>()?.onStart(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
     };
 
     handle_touch_end=(e:TouchEvent)=>{
         e.stopPropagation();
-        this.bloc?.onEnd(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
+        this.bloc<GestureDetectorBloc>()?.onEnd(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
     }
 
     handle_touch_move=(e:TouchEvent)=>{
         e.stopPropagation();
-        this.bloc?.onMove(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
+        this.bloc<GestureDetectorBloc>()?.onMove(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
     }
 
     connectedCallback(){
@@ -174,7 +165,7 @@ export abstract class GestureDetectorBuilder extends WidgetBuilder<GestureDetect
     }
 }
 
-export class GestureDetector extends WidgetBuilder<GestureDetectorBloc,GESTURE>{
+export class GestureDetector extends WidgetBuilder<GESTURE>{
     private capture:boolean=false;
     //private drag_sensitivity:number = 1, private minDistanceInPx:number=100, private doubleTapTimer:number=300,private capture:boolean=false
     constructor({drag_sensitivity=1,minDistanceInPx=100,doubleTapTimer=300,capture=false}:  {
@@ -184,16 +175,7 @@ export class GestureDetector extends WidgetBuilder<GestureDetectorBloc,GESTURE>{
         capture?: boolean | undefined;
     }){
         super("GestureDetectorBloc",{
-            blocs_map:{
-                GestureDetectorBloc: new GestureDetectorBloc(drag_sensitivity, minDistanceInPx, doubleTapTimer)
-            },
-            buildWhen:(o,n)=>{
-                if(n === GESTURE.NO_ACTION){
-                    return false;
-                }else{
-                    return true;
-                }
-            }
+            GestureDetectorBloc: new GestureDetectorBloc(drag_sensitivity, minDistanceInPx, doubleTapTimer)
         });
         this.capture =capture;
     }
@@ -201,7 +183,7 @@ export class GestureDetector extends WidgetBuilder<GestureDetectorBloc,GESTURE>{
 
     private _onTouchStart = {
         handleEvent: (e:TouchEvent)=>{
-            this.bloc?.onStart(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
+            this.bloc<GestureDetectorBloc>()?.onStart(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
             e.stopPropagation();
         },
         capture: this.capture
@@ -209,7 +191,7 @@ export class GestureDetector extends WidgetBuilder<GestureDetectorBloc,GESTURE>{
 
     private _onTouchEnd = {
         handleEvent: (e:TouchEvent)=>{
-            this.bloc?.onEnd(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
+            this.bloc<GestureDetectorBloc>()?.onEnd(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
             e.stopPropagation();
         },
         capture: this.capture
@@ -217,13 +199,13 @@ export class GestureDetector extends WidgetBuilder<GestureDetectorBloc,GESTURE>{
 
     private _onTouchMove = {
         handleEvent: (e:TouchEvent)=>{
-            this.bloc?.onMove(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
+            this.bloc<GestureDetectorBloc>()?.onMove(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
             e.stopPropagation();
         },
         capture: this.capture
     }
 
-    builder(state: GESTURE): TemplateResult {
+    build(state: GESTURE): TemplateResult {
         switch (state) {
             case GESTURE.NO_ACTION: break;
             case GESTURE.TAP: this.onTap();break;
@@ -299,7 +281,7 @@ class SliderGestureDetector extends GestureDetector{
     
     public get circularCounterBloc() : CircularCounterBloc {
         if(!this._circularCounterBloc){
-            this._circularCounterBloc = CircularCounterBloc.search<CircularCounterBloc>("CircularCounterBloc",this);
+            this._circularCounterBloc = findBloc<CircularCounterBloc>("CircularCounterBloc",this);
         }
         return this._circularCounterBloc!;
     }
@@ -323,13 +305,14 @@ if(!customElements.get("ut-horizontal-circular-slider-gesture-detector")){
     customElements.define("ut-horizontal-circular-slider-gesture-detector",SliderGestureDetector);
 }
 
-class UtHorizontalCircularSlider extends BlocsProvider{
+class UtHorizontalCircularSlider extends ListenerWidget{
     constructor(initCount:number=0){
         super({
-            CircularCounterBloc: new CircularCounterBloc(initCount)
+            hostedBlocs:{CircularCounterBloc: new CircularCounterBloc(initCount)},
+            isShadow:true
         });
     }
-    builder(): TemplateResult {
+    build(): TemplateResult {
         return html`<ut-horizontal-circular-slider-gesture-detector><slot></slot></ut-horizontal-circular-slider-gesture-detector>`;
     }
 }
@@ -337,7 +320,7 @@ if(!customElements.get("ut-horizontal-circular-slider")){
     customElements.define("ut-horizontal-circular-slider",UtHorizontalCircularSlider);
 }
 
-export abstract class VerticalScrollLimitDetector extends BlocsProvider{
+export abstract class VerticalScrollLimitDetector extends ListenerWidget{
 
     private _scroller?:HTMLDivElement|null;
 
@@ -374,7 +357,7 @@ export abstract class VerticalScrollLimitDetector extends BlocsProvider{
         capture:false
     }
 
-    builder(): TemplateResult {
+    build(): TemplateResult {
     let snap= this.getAttribute("snap");
     return html`<style>
         .con{
@@ -393,7 +376,7 @@ export abstract class VerticalScrollLimitDetector extends BlocsProvider{
     }
 }
 
-export abstract class HorizontalScrollLimitDetector extends BlocsProvider{
+export abstract class HorizontalScrollLimitDetector extends ListenerWidget{
     private _scroller?:HTMLDivElement|null;
 
     disconnectedCallback(){
@@ -429,7 +412,7 @@ export abstract class HorizontalScrollLimitDetector extends BlocsProvider{
         capture:false
     }
 
-    builder(): TemplateResult {
+    build(): TemplateResult {
     let snap= this.getAttribute("snap");
     return html`<style>
         .con{
@@ -477,7 +460,7 @@ export abstract class ZoomAndPanBloc extends Bloc<number>{
     abstract onPan(movement:XY,axis:XY):void;
 }
 
-class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
+class ZoomAndPanWidget extends ListenerWidget<number>{
     private initDistance:number=0;
     private touch2PointerID?:number;
 
@@ -495,12 +478,12 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
                 if(!this.tapedOnceTimer) {
                     this.tapedOnceTimer=setTimeout( ()=>{
                         this.tapedOnceTimer=undefined;
-                        this.bloc?.onPointTouch({x:touch1.screenX,y:touch1.screenY});
+                        this.bloc<ZoomAndPanBloc>()?.onPointTouch({x:touch1.screenX,y:touch1.screenY});
                     }, UseThemConfiguration.PinchZoomBlocDoubleTapTime );
                 }else{
                     clearTimeout(this.tapedOnceTimer);
                     this.tapedOnceTimer=undefined;
-                    this.bloc?.onDoublePointTouch({x:touch1.screenX,y:touch1.screenY});
+                    this.bloc<ZoomAndPanBloc>()?.onDoublePointTouch({x:touch1.screenX,y:touch1.screenY});
                 }
                 
 
@@ -534,7 +517,7 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
            this.init();
            if(e.changedTouches.length===1){
                let touch1=e.changedTouches[0];
-               this.bloc?.onPointRelease({x:touch1.screenX,y:touch1.screenY});
+               this.bloc<ZoomAndPanBloc>()?.onPointRelease({x:touch1.screenX,y:touch1.screenY});
            }
         },
         capture:true
@@ -575,7 +558,7 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
                 //if there is no movement there is no point in calling pan
                 if(this.isNotEqual(this.prevPan,p1)){
                     //case for panning
-                    this.bloc?.onPan({x:p1.x-this.prevPan!.x,y:p1.y-this.prevPan!.y},this.axis);
+                    this.bloc<ZoomAndPanBloc>()?.onPan({x:p1.x-this.prevPan!.x,y:p1.y-this.prevPan!.y},this.axis);
                     this.prevPan=p1;
                 }
             }else{
@@ -583,7 +566,7 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
                 const zoom=currentDistance/this.initDistance;
                 //if zoom has not changed there is no point in calling on zoom
                 if(this.prevZoom!==zoom){
-                    this.bloc?.onZoom(zoom,this.axis);
+                    this.bloc<ZoomAndPanBloc>()?.onZoom(zoom,this.axis);
                     this.prevZoom=zoom;
                 }
             }
@@ -607,7 +590,7 @@ class ZoomAndPanWidget extends WidgetBuilder<ZoomAndPanBloc,number>{
         }
     }
 
-    builder(state: number): TemplateResult {
+    build(state: number): TemplateResult {
         return html`<div id="target" style="width:100%;height:100%;" @touchstart=${this.handleStart} @touchmove=${this.handleMove} @touchend=${this.handleEnd}><slot></slot></div>`;
     }
 }

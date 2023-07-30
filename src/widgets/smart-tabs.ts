@@ -1,4 +1,4 @@
-import { Bloc, BlocsProvider } from "bloc-them";
+import { Bloc, findBloc, ListenerWidget } from "bloc-them";
 import { html, nothing, TemplateResult } from 'bloc-them';
 import { UseThemConfiguration } from "../configs";
 import { WidgetBuilder } from "../utils/blocs";
@@ -52,7 +52,7 @@ export abstract class SmartTabsBloc extends Bloc<string>{
     }
 
     abstract onTabChangeCallBack?(id:string):void
-    abstract builderForId(id:string, ctx:WidgetBuilder<SmartTabsBloc,string>):TemplateResult
+    abstract builderForId(id:string, ctx:WidgetBuilder<string>):TemplateResult
 }
 
 class StbGestureDetector extends GestureDetector{
@@ -60,7 +60,7 @@ class StbGestureDetector extends GestureDetector{
 
     getStbBloc():SmartTabsBloc{
         if(!this.stbBloc){
-            this.stbBloc = BlocsProvider.search<SmartTabsBloc>("STB",this);
+            this.stbBloc = findBloc<SmartTabsBloc>("STB",this);
         }
         return this.stbBloc!;
     }
@@ -81,16 +81,16 @@ class StbGestureDetector extends GestureDetector{
 }
 customElements.define("ut-stb-gesture-detector",StbGestureDetector);
 
-abstract class SmartTabsWidgetBuilder<B extends SmartTabsBloc> extends WidgetBuilder<B,string>{
+abstract class SmartTabsWidgetBuilder<B extends SmartTabsBloc> extends WidgetBuilder<string>{
 
     goToTab=(e:Event)=>{
         let t = e.currentTarget as HTMLElement & {tab_id:string};
-        this.bloc?.goToTab(t.getAttribute("tab_id")!);
+        this.bloc<B>()?.goToTab(t.getAttribute("tab_id")!);
     }
 
-    builder(state: string): TemplateResult {
+    build(state: string): TemplateResult {
         let tabs_bar = html`
-            ${this.bloc?.smartTabConfigs.map(e=>{
+            ${this.bloc<B>()?.smartTabConfigs.map(e=>{
                 return html`
                     <ink-well tab_id=${e.id} @click=${this.goToTab}>
                         <div class="tab_icon">
@@ -101,7 +101,7 @@ abstract class SmartTabsWidgetBuilder<B extends SmartTabsBloc> extends WidgetBui
                 `;
             })}`;
 
-        let tabContent = this.bloc!.builderForId(state, this);
+        let tabContent = this.bloc<B>()!.builderForId(state, this);
         
         return html`<style>
             .tabs_bar{
@@ -142,7 +142,7 @@ export interface OnTabChangeCallBack{
 }
 
 export interface BuilderForIDFunction{
-    (id: string, ctx: WidgetBuilder<SmartTabsBloc, string>): TemplateResult;
+    (id: string, ctx: WidgetBuilder<string>): TemplateResult;
 }
 
 export class SmartTabsBuilder{
@@ -167,7 +167,7 @@ export class SmartTabsBuilder{
         class StbBuilder extends SmartTabsWidgetBuilder<STB>{
             constructor(){
                 super("STB",{
-                    blocs_map
+                    ...blocs_map
                 })
             }
         }

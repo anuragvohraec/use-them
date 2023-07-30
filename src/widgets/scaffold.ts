@@ -1,4 +1,4 @@
-import { Bloc } from 'bloc-them';
+import { Bloc, findBloc } from 'bloc-them';
 import { TemplateResult, html } from 'bloc-them';
 import { UseThemConfiguration } from '../configs';
 import { WidgetBuilder } from '../utils/blocs';
@@ -23,13 +23,13 @@ export class ScaffoldBloc extends Bloc<ScaffoldState>{
 
 
     private overlayPageBloc?:OverlayPageBloc;
-    private overlayPageBlocListenerId?:string;
+    private overlayPageBlocListenerId:number=-1;
 
 
-    onConnection(ctx:HTMLElement){
-        super.onConnection(ctx);
+    onConnection(ctx:HTMLElement, blocName:string){
+        super.onConnection(ctx,blocName);
         //listen for OverlayBloc events
-        this.overlayPageBloc = OverlayPageBloc.search<OverlayPageBloc>("OverlayPageBloc",ctx);
+        this.overlayPageBloc = findBloc<OverlayPageBloc>("OverlayPageBloc",ctx);
         if(this.overlayPageBloc && !this.overlayPageBlocListenerId){
             let t:any =(newState:OverlayStatus)=>{
                 if(newState && newState.overlay_id === this._name && !newState.show){
@@ -59,7 +59,7 @@ export class ScaffoldBloc extends Bloc<ScaffoldState>{
         navigator.vibrate(UseThemConfiguration.PRESS_VIB);
         let newState = { ...this.state };
         newState.showMenu = !newState.showMenu;
-        const appPageBloc=AppPageBloc.search<AppPageBloc>("AppPageBloc",this.hostElement);
+        const appPageBloc=findBloc<AppPageBloc>("AppPageBloc",this.hostElement!);
         if(newState.showMenu && pushOverlayStack){
             appPageBloc?.pushOverlayStack(this._name,true);
         }else if(!newState.showMenu && pushOverlayStack){
@@ -88,21 +88,19 @@ export class ScaffoldBloc extends Bloc<ScaffoldState>{
 }
 
 
-export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
+export class ScaffoldBuilder extends WidgetBuilder<ScaffoldState>{
     constructor() {
         super("ScaffoldBloc", {
-            blocs_map:{
-                ScaffoldBloc: new ScaffoldBloc()
-            }
+            ScaffoldBloc: new ScaffoldBloc()
         });
     }
 
     toggleMenuBar=()=>{
         // this.bloc?.toggleMenu();
-        AppPageBloc.search<AppPageBloc>("AppPageBloc",this)?.popOutOfCurrentPage();
+        findBloc<AppPageBloc>("AppPageBloc",this)?.popOutOfCurrentPage();
     }
 
-    builder(state: ScaffoldState): TemplateResult {
+    build(state: ScaffoldState): TemplateResult {
         return html`
         <!-- TODO menu bar-->
         <style>
@@ -190,18 +188,18 @@ export class ScaffoldBuilder extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
 
 customElements.define("ut-scaffold", ScaffoldBuilder);
 
-class MenuButton extends WidgetBuilder<ScaffoldBloc, ScaffoldState>{
+class MenuButton extends WidgetBuilder<ScaffoldState>{
     constructor() {
         super("ScaffoldBloc");
     }
 
     toggleMenuBar=()=>{
-        setTimeout(()=>{this.bloc?.toggleMenu(true);},300);
+        setTimeout(()=>{this.bloc<ScaffoldBloc>()?.toggleMenu(true);},300);
         //@ts-ignore
         this.shadowRoot.querySelector("#animateTransform5322").beginElement();
     }
 
-    builder(state: ScaffoldState): TemplateResult {
+    build(state: ScaffoldState): TemplateResult {
         return html`<svg
         style="fill:${this.theme.scaffold_menu_icon_color};"
         width="10mm"

@@ -2,7 +2,7 @@ import { FormInputBuilder, FormState, FormBloc, InputBuilderConfig } from '../fo
 import { TemplateResult, html } from 'bloc-them';
 
 export class ToggleButton<F extends FormBloc> extends FormInputBuilder<boolean, F>{
-  builder(state: FormState): TemplateResult {
+  build(state: FormState): TemplateResult {
     return html`<style>
     .switch {
       position: relative;

@@ -1,4 +1,4 @@
-import { Bloc, BlocsProvider} from 'bloc-them';
+import { Bloc,ListenerWidget} from 'bloc-them';
 import { TemplateResult , html, nothing} from 'bloc-them';
 import {WidgetBuilder} from '../utils/blocs';
 
@@ -34,16 +34,19 @@ export class I18NBloc  extends Bloc<LanguagePack>{
     }
 }
 
-export abstract class I18NBlocProvider extends BlocsProvider{
-    builder(): TemplateResult {
+export abstract class I18NBlocProvider extends ListenerWidget{
+    build(): TemplateResult {
         return html`<div style="width:100%; height: 100%;"><slot></slot></div>`;
     }
     constructor(initState: LanguagePack){
-        super({I18NBloc: new I18NBloc(initState)});
+        super({
+            hostedBlocs:{I18NBloc: new I18NBloc(initState)},
+            isShadow: true
+        });
     }
 }
 
-export abstract class _I18NText extends WidgetBuilder<I18NBloc,LanguagePack>{
+export abstract class _I18NText extends WidgetBuilder<LanguagePack>{
     private _font_size:string = "1em";
     private _key?: string | undefined;
     
@@ -54,12 +57,12 @@ export abstract class _I18NText extends WidgetBuilder<I18NBloc,LanguagePack>{
     public set key(value: string | undefined) {
         this._key = value;
         if(this.bloc){
-            this._build(this.bloc.state);
+            this.rebuild(this.bloc<I18NBloc>().state);
         }
     }
 
 
-    builder(state: LanguagePack): TemplateResult {
+    build(state: LanguagePack): TemplateResult {
         let t = this.key??this.textContent;
         if(!t){
             return nothing as TemplateResult;
@@ -86,7 +89,7 @@ export abstract class _I18NText extends WidgetBuilder<I18NBloc,LanguagePack>{
     static _getText(textKey: string|null, state: LanguagePack): string|undefined{
         if(textKey){
             let t = textKey.toLowerCase();
-               if(state[t]){
+               if(state?.[t]){
                    return state[t];
                }else{
                    return textKey;

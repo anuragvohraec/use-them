@@ -1,11 +1,11 @@
-import { WidgetBuilder, ActionBloc, NoBlocWidgetBuilder, BogusBloc } from '../utils/blocs';
-import { Bloc, BlocBuilderConfig } from 'bloc-them';
+import { WidgetBuilder, BogusBloc } from '../utils/blocs';
+import { Bloc, ListenerWidget } from 'bloc-them';
 import { TemplateResult, html } from 'bloc-them';
 import { ColorUtil } from '../utils/utils';
 import { UseThemConfiguration } from '../configs';
 
 
-export abstract class RaisedButton<B extends Bloc<S>, S> extends WidgetBuilder<B,S>{
+export abstract class RaisedButton<S> extends WidgetBuilder<S>{
     private bgColor!: string;
     private onPressButtonColor!:string;
     private light!: string;
@@ -20,7 +20,7 @@ export abstract class RaisedButton<B extends Bloc<S>, S> extends WidgetBuilder<B
         }
     }
 
-    builder(state: S): TemplateResult {
+    build(state: S): TemplateResult {
         return html`
             <style>
                 .ripple {
@@ -75,13 +75,13 @@ export abstract class RaisedButton<B extends Bloc<S>, S> extends WidgetBuilder<B
             this.bgColor = this.theme.primaryColor;
             this.onPressButtonColor=ColorUtil.shadeColor(this.bgColor,this.shades[0]);
             this.light=ColorUtil.shadeColor(this.bgColor,this.shades[1]);
-            this._build(this.state!);
+            this.rebuild(this.bloc().state!);
         })
     }
     
 
-    constructor(blocName: string,  configs?: BlocBuilderConfig<S>,private shades:number[]=[20,80],){
-        super(blocName, configs);
+    constructor(blocName: string,  hostedBlocs?: Record<string, Bloc<any>>,private shades:number[]=[20,80],){
+        super(blocName, hostedBlocs);
     }
 
     abstract onPress():void;
@@ -101,7 +101,7 @@ export abstract class RaisedButton<B extends Bloc<S>, S> extends WidgetBuilder<B
  * * label
  * * use : for color
  */
-export class LabeledIconButton extends NoBlocWidgetBuilder{
+export class LabeledIconButton extends WidgetBuilder{
 
     private get icon() : string {
         let t =this.getAttribute("icon");
@@ -117,7 +117,7 @@ export class LabeledIconButton extends NoBlocWidgetBuilder{
         return t; 
     }
 
-    builder(state: number): TemplateResult {
+    build(state: number): TemplateResult {
         const color = this.useAttribute?.["color"];
         return html`
         <ink-well>
@@ -135,9 +135,9 @@ if(!customElements.get("labeled-icon-button")){
     customElements.define("labeled-icon-button",LabeledIconButton);
 }
 
-export class CircularIconButton extends NoBlocWidgetBuilder{
+export class CircularIconButton extends WidgetBuilder{
 
-    builder(state: number): TemplateResult {
+    build(state: number): TemplateResult {
         const radius = this.useAttribute?.["radius"]??"50px";
         const icon = this.useAttribute?.["icon"];
         if(!icon){
@@ -153,12 +153,10 @@ if(!customElements.get("circular-icon-button")){
     customElements.define("circular-icon-button",CircularIconButton);
 }
 
-export abstract class NoBlocRaisedButton extends RaisedButton<BogusBloc,number>{
+export abstract class NoBlocRaisedButton extends RaisedButton<number>{
     constructor(){
         super("BogusBloc",{
-            blocs_map:{
-                BogusBloc: new BogusBloc()
-            }
+            BogusBloc: new BogusBloc()
         })
     }
 }

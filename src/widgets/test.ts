@@ -7,11 +7,11 @@ import { SingleLineInput, TextAreaInput } from './inputs/textinputs';
 import { CheckBox } from './inputs/checkbox';
 import { HideBloc } from './dialogues';
 import { BogusBloc, WidgetBuilder } from '../utils/blocs';
-import { html, nothing, TemplateResult } from 'bloc-them';
+import { findBloc, html, nothing, TemplateResult } from 'bloc-them';
 import { InkWell } from './inkwell';
 import { RadioButtonsBuilder } from './inputs/radiobuttons';
 import {CreateSearchableSelector, SelectorBloc, SelectorWidget} from './selectors';
-import { BlocsProvider } from 'bloc-them';
+import { ListenerWidget } from 'bloc-them';
 import { DatePicker } from './inputs/date-picker';
 import { CircularCounterBloc , GESTURE, GestureDetectorBloc, GestureDetector, GestureDetectorBuilder, VerticalScrollLimitDetector, HorizontalScrollLimitDetector} from './gesturedetector';
 import { FilePickerBloc,FilePickerScreen, FilePickerType } from '../screens/file-selector';
@@ -106,7 +106,7 @@ customElements.define("my-toggle-button", MyToggleButton);
 
 export class MyForm extends FormBlocProvider<MyFormBloc>{
     constructor(){
-        super(new MyFormBloc())
+        super(new MyFormBloc(),"MyFormBloc")
     }
 }
 
@@ -125,9 +125,9 @@ export class PriceRange extends RangeSelector<MyFormBloc>{
 customElements.define("price-range", PriceRange);
 
 //You can make it : MyFormBloc too if needed
-export class MyButton extends RaisedButton<ScaffoldBloc,ScaffoldState>{
+export class MyButton extends RaisedButton<ScaffoldState>{
     onPress(): void {
-        this.bloc?.postMessageToSnackBar("Hi this is a message for you!")
+        this.bloc<ScaffoldBloc>()?.postMessageToSnackBar("Hi this is a message for you!")
     }
     constructor(){
         super("ScaffoldBloc")
@@ -170,24 +170,22 @@ export class MyCheckBox extends CheckBox<MyFormBloc>{
 }
 customElements.define("my-check-box", MyCheckBox);
 
-class MyDialogueButton extends RaisedButton<HideBloc,boolean>{
+class MyDialogueButton extends RaisedButton<boolean>{
     onPress(): void {
-        this.bloc?.toggle();
+        this.bloc<HideBloc>()?.toggle();
     }
 
     constructor(){
-        super("HideBloc",{blocs_map:{
-            HideBloc: new HideBloc(true,"ddf")
-        }},[40,100])
+        super("HideBloc",{HideBloc: new HideBloc(true,"ddf")},[40,100])
     }
 }
 
 customElements.define("my-dialogue-button",MyDialogueButton);
 
-class CrossButtonForPopUp extends WidgetBuilder<HideBloc,boolean>{
-    builder(state: boolean): TemplateResult {
+class CrossButtonForPopUp extends WidgetBuilder<boolean>{
+    build(state: boolean): TemplateResult {
         return html`<div style="color: white" @click=${()=>{
-            this.bloc?.toggle()
+            this.bloc<HideBloc>()?.toggle()
         }}>X</div>`;
     }
     constructor(){
@@ -249,13 +247,15 @@ class MySelectorWidget extends SelectorWidget{
 }
 customElements.define("my-selector-list",MySelectorWidget);
 
-class MySelectorWidgetContainer extends BlocsProvider{
-    builder(): TemplateResult {
+class MySelectorWidgetContainer extends ListenerWidget{
+    build(): TemplateResult {
        return html`<my-selector-list></my-selector-list>`;
     }
     constructor(){
         super({
-            MySelectorBloc: new MySelectorBloc()
+            hostedBlocs:{
+                MySelectorBloc: new MySelectorBloc()
+            }
         });
     }
 }
@@ -263,7 +263,7 @@ class MySelectorWidgetContainer extends BlocsProvider{
 customElements.define("my-selector",MySelectorWidgetContainer);
 
 
-class MyDatePicker extends DatePicker<MyFormBloc>{
+class MyDatePicker extends DatePicker{
     constructor(){
         super({bloc_name: "MyFormBloc",name:"date"},{
             formBlocName:"MyFormBloc",
@@ -279,15 +279,15 @@ class MyDatePicker extends DatePicker<MyFormBloc>{
 customElements.define("my-date-picker",MyDatePicker);
 
 
-class TestMutiData extends WidgetBuilder<CircularCounterBloc,number>{
+class TestMutiData extends WidgetBuilder<number>{
     private data:string[]=["One","Two","Three","Four"];
 
     connectedCallback(){
         super.connectedCallback();
-        this.bloc?.setMaxCount(this.data.length);
+        this.bloc<CircularCounterBloc>()?.setMaxCount(this.data.length);
     }
 
-    builder(state: number): TemplateResult {
+    build(state: number): TemplateResult {
         let t = this.data[state];
         return html`<div style="width:200px;height:200px;"><lay-them ma="center" ca="center">${t}</lay-them></div>`
     }
@@ -300,7 +300,7 @@ customElements.define("test-horizontal-slider",TestMutiData);
 
 
 class TestGestureDetector extends GestureDetectorBuilder{
-    builder(state: GESTURE): TemplateResult {
+    build(state: GESTURE): TemplateResult {
         let t:string="";
         switch (state) {
             case GESTURE.NO_ACTION: t="NO_ACTION";  break;
@@ -362,11 +362,7 @@ class TestFilePicker extends FilePickerScreen{
         super({
             bloc_name:"TestFilePickerBloc",
             max_file: 3,
-            bloc_config: {
-                blocs_map:{
-                    TestFilePickerBloc: new TestFilePickerBloc()
-                }
-            },
+            hostedBlocs:{TestFilePickerBloc: new TestFilePickerBloc()},
             picker_config:{
                 type: FilePickerType.IMAGE
             }
@@ -410,18 +406,16 @@ customElements.define("test-my-text-area",MyTextArea);
 //////////////// Text Area code: END
 
 ///////////////// Confirmation Dialogue code: START
-class ShowUserConfirmationButton extends RaisedButton<HideBloc,boolean>{
+class ShowUserConfirmationButton extends RaisedButton<boolean>{
     onPress(): void {
-        if(this.bloc?.state){
-            this.bloc?.show();
+        if(this.bloc<HideBloc>()?.state){
+            this.bloc<HideBloc>()?.show();
         }
     }
 
     constructor(){
         super("HideBloc",{
-            blocs_map: {
-                HideBloc: new HideBloc(true,"confirmation_box1")
-            }
+            HideBloc: new HideBloc(true,"confirmation_box1")
         })
     }
 }
@@ -440,11 +434,11 @@ class GetUSerConfirmation extends ConfirmationDialogue{
         console.log(this.user_msg);
         setTimeout(()=>{
             this.show_buttons();
-            this.bloc?.toggle();
+            this.bloc<HideBloc>()?.toggle();
         },4000);
     }
     noAction: Function=(e:Event)=>{
-        this.bloc?.toggle();
+        this.bloc<HideBloc>()?.toggle();
     }
 }
 customElements.define("test-conf-dia",GetUSerConfirmation);
@@ -462,24 +456,24 @@ class TestQrCodeListenerBloc extends QrCodeListenerBloc{
     }
 }
 
-class TesQrCodeIconButtonDisplayer extends WidgetBuilder<BogusBloc,number>{
+class TesQrCodeIconButtonDisplayer extends ListenerWidget{
     private qrConfig: QrCodeScannerConfig={
         notify_bloc_name:"TestQrCodeListenerBloc",
         sound_url:"/sound/scan_sound.mp3"
     }
 
     constructor(){
-        super("BogusBloc",{
-            blocs_map: {
+        super({
+            hostedBlocs:{
                 BogusBloc: new BogusBloc(),
                 TestQrCodeListenerBloc: new TestQrCodeListenerBloc(),
                 QrCodeHideBloc: new HideBloc()
             } 
         })
     }
-    builder(state: number): TemplateResult {
+    build(state: number): TemplateResult {
         return html`<labeled-icon-button icon="qrcode" label="scan" @click=${()=>{
-            BlocsProvider.search<HideBloc>("QrCodeHideBloc",this)?.toggle();
+            findBloc<HideBloc>("QrCodeHideBloc",this)?.toggle();
         }}></labeled-icon-button>
         <ut-qr-code-widget .qrConfig=${this.qrConfig}></ut-qr-code-widget>`;
     }
@@ -515,19 +509,19 @@ CreateSearchableSelector.create({
 })
 
 
-class TesSearchableSelectorButtonDisplayer extends WidgetBuilder<BogusBloc,number>{
+class TesSearchableSelectorButtonDisplayer extends ListenerWidget{
 
     constructor(){
-        super("BogusBloc",{
-            blocs_map: {
+        super({
+            hostedBlocs: {
                 BogusBloc: new BogusBloc(),
                 HideSearchSelectorBloc: new HideBloc(),
             } 
         })
     }
-    builder(state: number): TemplateResult {
+    build(state: number): TemplateResult {
         return html`<labeled-icon-button icon="search" label="Employee" @click=${()=>{
-            BlocsProvider.search<HideBloc>("HideSearchSelectorBloc",this)?.toggle();
+            findBloc<HideBloc>("HideSearchSelectorBloc",this)?.toggle();
         }}></labeled-icon-button>
         <test-search-employee></test-search-employee>`;
     }

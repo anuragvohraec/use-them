@@ -8,14 +8,14 @@ import { BogusBloc, WidgetBuilder } from '../utils/blocs';
  * 
  * Example: &lt;ink-well use="ripple_color: #6eb9f7;"&gt;&lt;/inkwell&gt;
  */
-export class InkWell extends WidgetBuilder<BogusBloc,number>{
+export class InkWell extends WidgetBuilder<number>{
     private ripple_color:string;
     private ripple_opacity:string;
 
     constructor(){
-        super("BogusBloc",{blocs_map:{
+        super("BogusBloc",{
             BogusBloc: new BogusBloc()
-        }});
+        });
 
         let bgColor = "#000";
         let opacity = ".2";
@@ -49,7 +49,7 @@ export class InkWell extends WidgetBuilder<BogusBloc,number>{
         this.onpressaction(e);
     }
 
-    builder(state: number): TemplateResult {
+    build(state: number): TemplateResult {
         return html`<style>
         /* Ripple effect */
 .ripple {

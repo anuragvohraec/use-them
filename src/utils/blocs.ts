@@ -1,5 +1,6 @@
-import { Bloc, BlocBuilder,BlocBuilderConfig, BlocsProvider } from "bloc-them";
+import { Bloc, ListenerWidget } from "bloc-them";
 import { Theme } from '../widgets/theme';
+import { Utils } from "./utils";
 
 
 export abstract class ActionBloc<S> extends Bloc<S>{
@@ -16,13 +17,24 @@ export class BogusBloc extends ActionBloc<number>{
     }
 }
 
-export abstract class WidgetBuilder<B extends Bloc<S>, S> extends BlocBuilder<B,S>{
+
+export abstract class WidgetBuilder<S=any> extends ListenerWidget<S>{
     protected _theme : Theme;
+    protected useAttribute?:Record<string,string>;
     
-    constructor(blocName: string, configs?: BlocBuilderConfig<S>){
-        super(blocName, configs);
+    constructor(blocName: string, hostedBlocs?: Record<string, Bloc<any>>){
+        super({
+            blocName,
+            isShadow: true,
+            hostedBlocs
+        });
         let theme: Theme = (<any>document).useThemTheme; 
-        this._theme={...theme,...this.useAttribute};
+        if(this.hasAttribute("use")){
+            this.useAttribute = Utils.parseAttributeValue(this.getAttribute("use"));
+            this._theme={...theme,...this.useAttribute}
+        }else{
+            this._theme={...theme};
+        }
     }
 
     public  static get observedAttributes() : string[]{
@@ -31,10 +43,10 @@ export abstract class WidgetBuilder<B extends Bloc<S>, S> extends BlocBuilder<B,
     
     attributeChangedCallback(name:string, oldValue:string, newValue:string) {
         if(name==="use"){
-            const t = WidgetBuilder.parseUseAttribute(newValue);
+            const t = Utils.parseAttributeValue(newValue);
             this._theme={...this._theme,...t};
             if(this.bloc && newValue){
-                this._build(this.bloc!.state);
+                this.rebuild(this.bloc()?.state);
             }
         }
     }
@@ -44,22 +56,6 @@ export abstract class WidgetBuilder<B extends Bloc<S>, S> extends BlocBuilder<B,
     }
 }
 
-
-export abstract class NoBlocWidgetBuilder extends WidgetBuilder<BogusBloc,number>{
-    constructor(){
-        super("BogusBloc", {
-            blocs_map:{
-                BogusBloc: new BogusBloc()
-            }
-        })
-    }
-}
-
-export abstract class NoBlocNoStateWidget extends BlocsProvider{
-    constructor(){
-        super({});
-    }
-}
 
 /**
  * The sole purpose of this bloc is to attach items and receive where ever needed.

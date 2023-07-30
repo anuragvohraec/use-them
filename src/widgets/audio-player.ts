@@ -1,4 +1,4 @@
-import { MultiBlocsReactiveWidget , Bloc, BlocBuilderConfig} from "bloc-them";
+import { Bloc, findBloc, ListenerWidget} from "bloc-them";
 import { nothing, TemplateResult, html} from 'bloc-them';
 import { XY } from "../interfaces";
 import { Utils } from "../utils/utils";
@@ -74,90 +74,109 @@ interface State{
      play:boolean;
 }
 
-class AudioPlayer extends MultiBlocsReactiveWidget<State>{
+class AudioPlayerMixerBloc extends Bloc<State>{
+    constructor(){
+        super({
+            progress_percent:0,
+            timings:{total:"0",elapsed:"0"},
+            play:false
+        },["AudioPlayController","ProgressBarBloc"])
+    }
 
-    private _zapBlocBuilderConfig!:BlocBuilderConfig<number>;
+    private _ProgressBarBloc!: PercentageBloc;
+    public get ProgressBarBloc(): PercentageBloc {
+        if(!this._ProgressBarBloc){
+            this._ProgressBarBloc=findBloc<PercentageBloc>("ProgressBarBloc",this.hostElement!)!;
+        }
+        return this._ProgressBarBloc;
+    }
 
-    private get zapBlocBuilderConfig():BlocBuilderConfig<number>{
+    protected reactToStateChangeFrom(blocName: string, newState: any): void {
+        if(blocName==="AudioPlayController"){
+            this.emit({
+                ...this.state,play:newState
+            });
+        }else if(blocName==="ProgressBarBloc"){
+            this.emit({
+                ...this.state,progress_percent:newState,
+                timings:{
+                    total: Utils.covertToPlayTime(this.ProgressBarBloc.max),
+                    elapsed: Utils.covertToPlayTime(this.ProgressBarBloc.state * this.ProgressBarBloc.max/100)
+                },
+            });
+        }
+    }
+}
+
+class AudioPlayer extends ListenerWidget<State>{
+
+    private _zapBlocBuilderConfig!:Record<string, Bloc<any>>;
+
+    private get zapBlocBuilderConfig():Record<string, Bloc<any>>{
         if(!this._zapBlocBuilderConfig){
             let self=this;
             this._zapBlocBuilderConfig={
-                    blocs_map:{
-                        ZoomAndPanBloc: new class extends ZoomAndPanBloc{
-                            onDoublePointTouch(xy: XY): void {
-                                self.AudioPlayController.play();
-                            }
-                            private hideToolBarTimer:any;
+                ZoomAndPanBloc: new class extends ZoomAndPanBloc{
+                        onDoublePointTouch(xy: XY): void {
+                            self.AudioPlayController.play();
+                        }
+                        private hideToolBarTimer:any;
 
-                            onPointRelease(xy: XY): void {
-                                if(this.changeCurrentTimeTo>=0){
-                                    //seek video in here
-                                    self.AudioPlayController.audio.currentTime=this.changeCurrentTimeTo;
-                                    this.changeCurrentTimeTo=-1;
-                                    self.AudioPlayController.pause();
-                                }
-                            }
-                            onPointTouch(xy: XY): void {
+                        onPointRelease(xy: XY): void {
+                            if(this.changeCurrentTimeTo>=0){
+                                //seek video in here
+                                self.AudioPlayController.audio.currentTime=this.changeCurrentTimeTo;
+                                this.changeCurrentTimeTo=-1;
                                 self.AudioPlayController.pause();
                             }
+                        }
+                        onPointTouch(xy: XY): void {
+                            self.AudioPlayController.pause();
+                        }
 
-                            onZoom=(zoom: number,axis:XY): void=> {
-                                //TODO volume control
-                                if(zoom>1.8){
-                                    self.AudioPlayController.audio.volume=1;
-                                }else if(zoom<0.2){
-                                    self.AudioPlayController.audio.volume=0;
-                                }else{
-                                    self.AudioPlayController.audio.volume=zoom;
-                                }
+                        onZoom=(zoom: number,axis:XY): void=> {
+                            //TODO volume control
+                            if(zoom>1.8){
+                                self.AudioPlayController.audio.volume=1;
+                            }else if(zoom<0.2){
+                                self.AudioPlayController.audio.volume=0;
+                            }else{
+                                self.AudioPlayController.audio.volume=zoom;
+                            }
+                        }
+
+                        private changeCurrentTimeTo:number=-1;
+
+                        onPan=(movement: XY,axis:XY): void =>{
+                            if(this.hideToolBarTimer){
+                                clearTimeout(this.hideToolBarTimer);
+                                this.hideToolBarTimer=undefined;
                             }
 
-                            private changeCurrentTimeTo:number=-1;
-
-                            onPan=(movement: XY,axis:XY): void =>{
-                                if(this.hideToolBarTimer){
-                                    clearTimeout(this.hideToolBarTimer);
-                                    this.hideToolBarTimer=undefined;
+                            //add progress to current progress
+                            //x movement
+                            let totalProgressWidth=self.progressBarCont.offsetWidth;
+                            let additionalProgress=100*movement.x/totalProgressWidth;
+                            if(self.ProgressBarBloc){
+                                let calcProgress=self.ProgressBarBloc.state+additionalProgress;
+                                if(calcProgress<=0){
+                                    calcProgress=0;
+                                }else if(calcProgress>=100){
+                                    calcProgress=100;
                                 }
-
-                                //add progress to current progress
-                                //x movement
-                                let totalProgressWidth=self.progressBarCont.offsetWidth;
-                                let additionalProgress=100*movement.x/totalProgressWidth;
-                                if(self.ProgressBarBloc){
-                                    let calcProgress=self.ProgressBarBloc.state+additionalProgress;
-                                    if(calcProgress<=0){
-                                        calcProgress=0;
-                                    }else if(calcProgress>=100){
-                                        calcProgress=100;
-                                    }
-                                    this.changeCurrentTimeTo=calcProgress*self.AudioPlayController.audio.duration/100
-                                    self.ProgressBarBloc.update(this.changeCurrentTimeTo);
-                                }
+                                this.changeCurrentTimeTo=calcProgress*self.AudioPlayController.audio.duration/100
+                                self.ProgressBarBloc.update(this.changeCurrentTimeTo);
                             }
-            
-                            protected _name: string="ZoomAndPanBloc";
-                            constructor(){
-                                super(0);
-                            }
+                        }
+        
+                        protected _name: string="ZoomAndPanBloc";
+                        constructor(){
+                            super(0);
                         }
                     }
                 }
         }
         return this._zapBlocBuilderConfig;
-    }
-
-    convertSubscribedStatesToReactiveState(subscribed_states?: Record<string, any>): State | undefined {
-        if(subscribed_states){
-            return {
-                timings:{
-                    total: Utils.covertToPlayTime(this.ProgressBarBloc.max),
-                    elapsed: Utils.covertToPlayTime(this.ProgressBarBloc.state * this.ProgressBarBloc.max/100)
-                },
-                progress_percent: subscribed_states["ProgressBarBloc"],
-                play: subscribed_states["AudioPlayController"],
-            }
-        }
     }
 
     private followAudioTime=(e:Event)=>{
@@ -237,7 +256,7 @@ class AudioPlayer extends MultiBlocsReactiveWidget<State>{
                 <lay-them in="stack">
                     ${poster?html`<div class="cover" @click=${this.pauseAudio}><img class="full" src=${poster}></div>`:html``}
                     <audio class="audio" src=${src} preload="none" @timeupdate=${this.followAudioTime} @loadedmetadata=${this.metaDataAvailable}></audio>
-                    <ut-pan-zoom-detector bloc="ZoomAndPanBloc" .blocBuilderConfig=${this.zapBlocBuilderConfig as any}>
+                    <ut-pan-zoom-detector bloc="ZoomAndPanBloc" .hostedblocs=${this.zapBlocBuilderConfig as any}>
                         <div class="seek-bar-cont">
                             <div class="progress-bar-cont">
                                 <div class="progress"></div>
@@ -268,7 +287,7 @@ class AudioPlayer extends MultiBlocsReactiveWidget<State>{
     private _ProgressBarBloc!: PercentageBloc;
     public get ProgressBarBloc(): PercentageBloc {
         if(!this._ProgressBarBloc){
-            this._ProgressBarBloc=this.getBloc<PercentageBloc>("ProgressBarBloc");
+            this._ProgressBarBloc=findBloc<PercentageBloc>("ProgressBarBloc",this)!;
         }
         return this._ProgressBarBloc;
     }
@@ -282,7 +301,7 @@ class AudioPlayer extends MultiBlocsReactiveWidget<State>{
     
     public get AudioPlayController() : AudioPlayController {
         if(!this._AudioPlayController){
-            this._AudioPlayController=this.getBloc<AudioPlayController>("AudioPlayController");
+            this._AudioPlayController=findBloc<AudioPlayController>("AudioPlayController",this)!;
             this._AudioPlayController.audio=this.shadowRoot?.querySelector(".audio") as HTMLAudioElement;
         }
         return this._AudioPlayController
@@ -291,7 +310,10 @@ class AudioPlayer extends MultiBlocsReactiveWidget<State>{
 
     constructor(){
         super({
-            blocs_map:{
+            blocName:"AudioPlayerMixerBloc",
+            isShadow: true,
+            hostedBlocs:{
+                AudioPlayerMixerBloc:new AudioPlayerMixerBloc(),
                 AudioPlayController: new AudioPlayController(),
                 ProgressBarBloc: new PercentageBloc({initState:0,max:100}),
                 AudioPlayerBloc: new class extends Bloc<any>{
@@ -300,8 +322,8 @@ class AudioPlayer extends MultiBlocsReactiveWidget<State>{
                         super(undefined);
                     }
 
-                    onConnection=(ctx:AudioPlayer)=>{
-                        super.onConnection(ctx);
+                    onConnection=(ctx:AudioPlayer, blocName:string)=>{
+                        super.onConnection(ctx,blocName);
                         setTimeout(()=>{
                             ctx.progressBarCont= ctx.shadowRoot?.querySelector(".cont") as HTMLElement;
 
@@ -333,8 +355,7 @@ class AudioPlayer extends MultiBlocsReactiveWidget<State>{
                         },100);  
                     }
                 }()
-            },
-            subscribed_blocs:["AudioPlayController","ProgressBarBloc"]
+            }
         })
     }
 

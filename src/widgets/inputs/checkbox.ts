@@ -14,7 +14,7 @@ export class CheckBox<F extends FormBloc> extends FormInputBuilder<string,F>{
 
     }
     
-    builder(state: FormState): TemplateResult {
+    build(state: FormState): TemplateResult {
         return html`
             <style>
                 /* The container */

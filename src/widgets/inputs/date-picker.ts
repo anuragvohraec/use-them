@@ -1,4 +1,4 @@
-import { Bloc, BlocsProvider } from "bloc-them";
+import { Bloc, findBloc } from "bloc-them";
 import { html, TemplateResult } from 'bloc-them';
 import { UseThemConfiguration } from "../../configs";
 import { WidgetBuilder } from '../../utils/blocs';
@@ -117,8 +117,8 @@ class DatePickerBloc extends Bloc<DatePickerState>{
         t.setDate(this.state.date);
         t.setMonth(this.state.month);
         t.setFullYear(this.state.year);
-        let fm = FormMessageBloc.search<FormMessageBloc>("FormMessageBloc",context);
-        let fb = FormBloc.search<FormBloc>(this.config.formBlocName,context);
+        let fm = findBloc<FormMessageBloc>("FormMessageBloc",context);
+        let fb = findBloc<FormBloc>(this.config.formBlocName,context);
         fb!.delegateChangeTo(this.config.nameForThisInForm,t.getTime(),fm!);
         this.emit(this.convertDateToState(t));
     }
@@ -164,12 +164,12 @@ class DatePickerBloc extends Bloc<DatePickerState>{
     }
 }
 
-class _DatePickerModalBody extends WidgetBuilder<DatePickerBloc,DatePickerState>{
+class _DatePickerModalBody extends WidgetBuilder<DatePickerState>{
     constructor(){
         super("DatePickerBloc");
     }
 
-    builder(state: DatePickerState): TemplateResult {
+    build(state: DatePickerState): TemplateResult {
         switch (state.status) {
             case DatePickerStatus.SHOW_DATE: {
                 return html`
@@ -205,12 +205,12 @@ class _DatePickerModalBody extends WidgetBuilder<DatePickerBloc,DatePickerState>
                 </style>
                 <lay-them in="column" ma="flex-start" ca="stretch">
                     <div class="container">
-                        ${this.bloc?.day_pattern_for_month.map(d=>html`<div class="day dayheader">${d}</div>`)}
+                        ${this.bloc<DatePickerBloc>()?.day_pattern_for_month.map(d=>html`<div class="day dayheader">${d}</div>`)}
                     </div>
                     <div class="container">
-                        ${this.bloc?.dates_of_current_month.map(d=>{
+                        ${this.bloc<DatePickerBloc>()?.dates_of_current_month.map(d=>{
                             return html`<div class="${d===state.date?'date selected':'date'}" @click=${()=>{
-                                this.bloc?.select_date(d);
+                                this.bloc<DatePickerBloc>()?.select_date(d);
                             }}>${d}</div>`;
                         })}
                     </div>
@@ -235,9 +235,9 @@ class _DatePickerModalBody extends WidgetBuilder<DatePickerBloc,DatePickerState>
                 </style>
                 <lay-them in="column" ma="flex-start" ca="stretch">
                     <div class="container">
-                        ${this.bloc?.month_list.map(d=>{
+                        ${this.bloc<DatePickerBloc>()?.month_list.map(d=>{
                             return html`<div class="month" @click=${()=>{
-                                this.bloc?.select_month(d);
+                                this.bloc<DatePickerBloc>()?.select_month(d);
                             }}>${DatePickerBloc.MonthMap[d]}</div>`;
                         })}
                     </div>
@@ -264,13 +264,13 @@ class _DatePickerModalBody extends WidgetBuilder<DatePickerBloc,DatePickerState>
                 </style>
                 <lay-them in="column" ma="flex-start" ca="stretch">
                     <div class="container">
-                        ${this.bloc?.year_list.map(d=>{
+                        ${this.bloc<DatePickerBloc>()?.year_list.map(d=>{
                             let c = "year";
                             if(d%5 === 0){
                                 c+=" bold";
                             }
                             return html`<div class=${c} @click=${()=>{
-                                this.bloc?.select_year(d);
+                                this.bloc<DatePickerBloc>()?.select_year(d);
                             }}>${d}</div>`;
                         })}
                     </div>
@@ -282,11 +282,11 @@ class _DatePickerModalBody extends WidgetBuilder<DatePickerBloc,DatePickerState>
 
 customElements.define("date-picker-body",_DatePickerModalBody);
 
-class DatePickerOKButton extends RaisedButton<HideBloc,boolean>{
+class DatePickerOKButton extends RaisedButton<boolean>{
     onPress(): void {
-        const t= DatePickerBloc.search<DatePickerBloc>("DatePickerBloc",this);
+        const t= findBloc<DatePickerBloc>("DatePickerBloc",this);
         t?.postDateToForm(this);
-        this.bloc?.toggle();
+        this.bloc<HideBloc>()?.toggle();
     }
 
     constructor(){
@@ -295,7 +295,7 @@ class DatePickerOKButton extends RaisedButton<HideBloc,boolean>{
 }
 customElements.define("date-picker-ok-button", DatePickerOKButton);
 
-class DatePickerModal extends WidgetBuilder<DatePickerBloc,DatePickerState>{
+class DatePickerModal extends WidgetBuilder<DatePickerState>{
     private _date?: number | undefined;
     public get date(): number | undefined {
         return this._date;
@@ -305,10 +305,10 @@ class DatePickerModal extends WidgetBuilder<DatePickerBloc,DatePickerState>{
         if(value){
             let newDate = new Date();
             newDate.setTime(this.date!);
-            if(this.bloc){
-                let newState:DatePickerState=this.bloc.convertDateToState(newDate);
-                this.bloc.isDirty=true;
-                this.bloc.emit(newState);
+            if(this.bloc()){
+                let newState:DatePickerState=this.bloc<DatePickerBloc>().convertDateToState(newDate);
+                this.bloc<DatePickerBloc>().isDirty=true;
+                this.bloc().emit(newState);
             }
         }
     }
@@ -319,9 +319,9 @@ class DatePickerModal extends WidgetBuilder<DatePickerBloc,DatePickerState>{
             if(this.bloc && this.date){
                 let newDate = new Date();
                 newDate.setTime(this.date!);
-                let newState:DatePickerState=this.bloc.convertDateToState(newDate);
-                this.bloc.isDirty=true;
-                this.bloc.emit(newState);
+                let newState:DatePickerState=this.bloc<DatePickerBloc>().convertDateToState(newDate);
+                this.bloc<DatePickerBloc>().isDirty=true;
+                this.bloc<DatePickerBloc>().emit(newState);
             }
         },300)
     }
@@ -329,7 +329,7 @@ class DatePickerModal extends WidgetBuilder<DatePickerBloc,DatePickerState>{
     constructor(){
         super("DatePickerBloc");
     }
-    builder(state: DatePickerState): TemplateResult {
+    build(state: DatePickerState): TemplateResult {
         return html`
             <style>
               .selectButton{
@@ -351,14 +351,14 @@ class DatePickerModal extends WidgetBuilder<DatePickerBloc,DatePickerState>{
             <ut-ex>
                 <div style="height:100%; background-color:white; border-radius: ${this.theme.cornerRadius}; overflow: hidden;">
                     <lay-them in="column" ma="flex-start" ca="stretch">
-                        <div class="header">${this.bloc?.placeholder}</div>
+                        <div class="header">${this.bloc<DatePickerBloc>()?.placeholder}</div>
                         <div class="date_year_button">
                             <lay-them in="row" ma="space-between">
                                 <div class="selectButton" @click=${()=>{
-                                    this.bloc?.show_months();
+                                    this.bloc<DatePickerBloc>()?.show_months();
                                 }}>${DatePickerBloc.MonthMap[state.month]}</div>
                                 <div class="selectButton" @click=${()=>{
-                                    this.bloc?.show_years();
+                                    this.bloc<DatePickerBloc>()?.show_years();
                                 }}>${state.year}</div>
                             </lay-them>
                         </div>
@@ -376,19 +376,19 @@ class DatePickerModal extends WidgetBuilder<DatePickerBloc,DatePickerState>{
 }
 customElements.define("date-picker-modal",DatePickerModal);
 
-class DatePickerInput extends WidgetBuilder<DatePickerBloc,DatePickerState>{
+class DatePickerInput extends WidgetBuilder<DatePickerState>{
     convert_sate_to_date_string(state:DatePickerState){
         return html`${state.date}-${DatePickerBloc.MonthMap[state.month]}-${state.year}`;
     }
 
-    builder(state: DatePickerState): TemplateResult {
+    build(state: DatePickerState): TemplateResult {
        return html`<div style="width: 100%; height:100%;" @click=${()=>{
             navigator.vibrate(UseThemConfiguration.PRESS_VIB);
-           let t = HideBloc.search<HideBloc>("HideBloc",this);
+           let t = findBloc<HideBloc>("HideBloc",this);
            t?.toggle();
        }}>${(()=>{
-           if(!state || !this.bloc?.isDirty) {
-               return html`<lay-them in="row" ma="space-between" ca="center"><div style="color: #808080; padding: 0px 10px;">${this.bloc?.placeholder}</div><div style="padding: 0px 10px;"><ut-icon icon="today" use="icon_inactive: #a7a7a7;"></ut-icon></div></lay-them><slot></slot>`;
+           if(!state || !this.bloc<DatePickerBloc>()?.isDirty) {
+               return html`<lay-them in="row" ma="space-between" ca="center"><div style="color: #808080; padding: 0px 10px;">${this.bloc<DatePickerBloc>()?.placeholder}</div><div style="padding: 0px 10px;"><ut-icon icon="today" use="icon_inactive: #a7a7a7;"></ut-icon></div></lay-them><slot></slot>`;
            }else{
                return html`<lay-them in="row" ma="space-between" ca="center"><div style="padding: 0px 10px;">${this.convert_sate_to_date_string(state)}</div><div style="padding: 0px 10px;"><ut-icon icon="today" ></ut-icon></div></lay-them><slot></slot>`;
            }
@@ -400,16 +400,14 @@ class DatePickerInput extends WidgetBuilder<DatePickerBloc,DatePickerState>{
 }
 customElements.define("date-picker-input",DatePickerInput);
 
-export class DatePicker<F extends FormBloc> extends WidgetBuilder<F,FormState>{
+export class DatePicker extends WidgetBuilder<FormState>{
     constructor(private formInputConfig:InputBuilderConfig,datePickerConfig: DatePickerConfig){
         super(formInputConfig.bloc_name,{
-            blocs_map:{
-                HideBloc: new HideBloc(true,`date_picker_${formInputConfig.name}`),
-                DatePickerBloc: new DatePickerBloc(datePickerConfig)
-            }
+            HideBloc: new HideBloc(true,`date_picker_${formInputConfig.name}`),
+            DatePickerBloc: new DatePickerBloc(datePickerConfig)
         })
     }
-    builder(state:FormState): TemplateResult {
+    build(state:FormState): TemplateResult {
         return html`
         <div style="width: 100%; height: 40px; border-radius: 4px;background-color:#e6e6e6;font-family: monospace; user-select:none;">
             <date-picker-input>

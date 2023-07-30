@@ -6,7 +6,7 @@ import { RangeSelector } from '../../widgets/inputs/rangeselector';
 
 import { InputBuilderConfig } from '../../widgets/forms';
 import { html,  repeat,  TemplateResult,unsafeHTML } from 'bloc-them';
-import { BlocsProvider } from 'bloc-them';
+import { ListenerWidget } from 'bloc-them';
 import { ToggleButton } from '../../widgets/inputs/togglebutton';
 
 export interface InputInfo{
@@ -18,12 +18,14 @@ export interface InputInfo{
 }
 
 
-export class FormInputMaker extends BlocsProvider{
+export class FormInputMaker extends ListenerWidget{
     private nameList!:string[];
     private tags_list:Record<string,string>={};
 
     constructor(private config:{ formBloc_name:string,tag_prefix:string, inputs:Record<string,InputInfo>}){
-        super({});
+        super({
+            isShadow:true
+        });
         this.defineTags();
     }
 
@@ -81,7 +83,7 @@ export class FormInputMaker extends BlocsProvider{
                     break;
                 }
                 case "DatePicker": {
-                    class A extends DatePicker<any>{
+                    class A extends DatePicker{
                         constructor(){
                             super(inputInfo.config, inputInfo.input_init_values as DatePickerConfig);
                         }
@@ -129,7 +131,7 @@ export class FormInputMaker extends BlocsProvider{
      }
 
 
-    builder(): TemplateResult {
+    build(): TemplateResult {
         return html`
         <style>
             .input{

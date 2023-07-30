@@ -131,7 +131,7 @@ class OkButtonStateSelector extends RaisedButton<HideBloc,boolean>{
 customElements.define("ok-button-state-selector",OkButtonStateSelector);
 
 class StateSelectorLabel extends WidgetBuilder<SignUpFormBloc,FormState>{
-    builder(state: FormState): TemplateResult {
+    build(state: FormState): TemplateResult {
         const cls = state["state"]?"black":"#838383";
         const cnt = state["state"]?state["state"]:"State";
 
@@ -160,7 +160,7 @@ export class StateSelector extends BlocsProvider{
         ])
     }
     
-    builder(): TemplateResult {
+    build(): TemplateResult {
         return html`
         <style>
             .container{

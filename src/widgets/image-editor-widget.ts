@@ -1,5 +1,5 @@
-import { BlocBuilderConfig } from "bloc-them";
-import { html, TemplateResult } from 'bloc-them';
+
+import { Bloc, findBloc, html, TemplateResult } from 'bloc-them';
 import { UseThemConfiguration } from "../configs";
 import { IEDrawPurpose, IEMessage, IEMessageType, IEValue, XY } from "../interfaces";
 import { UtRegistryBloc, WidgetBuilder } from "../utils/blocs";
@@ -29,14 +29,16 @@ export class ImageEditorHideBloc extends HideBloc{
 
     private _canvas?: HTMLCanvasElement;
 
-    onConnection(ctx:HTMLElement){
-        super.onConnection(ctx);
-        let offCan = this.canvas.transferControlToOffscreen();
-        let msg:IEMessage={
-            type:IEMessageType.INIT,
-            value:offCan
-        };
-        this.imageEditorWorker.postMessage(msg,[offCan]);
+    onConnection(ctx:HTMLElement, blocName:string){
+        super.onConnection(ctx,blocName);
+        setTimeout(() => {
+            let offCan = (this.canvas as any).transferControlToOffscreen();
+            let msg:IEMessage={
+                type:IEMessageType.INIT,
+                value:offCan
+            };
+            this.imageEditorWorker.postMessage(msg,[offCan]);
+        }, 100);
     }
 
     onDisconnection(){
@@ -45,7 +47,7 @@ export class ImageEditorHideBloc extends HideBloc{
 
     private getInitValue():IEValue{
         let t=UseThemConfiguration.IMAGE_EDIT_OP_DEFAULT_SIZE;
-        let p = this.hostElement.getAttribute("iesize");
+        let p = this.hostElement!.getAttribute("iesize");
         if(p){
             t= parseInt(p)??UseThemConfiguration.IMAGE_EDIT_OP_DEFAULT_SIZE;
         }
@@ -75,7 +77,7 @@ export class ImageEditorHideBloc extends HideBloc{
 
     private get canvas(): HTMLCanvasElement {
         if(!this._canvas){
-            this._canvas=this.hostElement.shadowRoot?.querySelector("#output") as HTMLCanvasElement;
+            this._canvas=this.hostElement!.shadowRoot?.querySelector("#output") as HTMLCanvasElement;
         }
         return this._canvas;
     }
@@ -90,7 +92,7 @@ export class ImageEditorHideBloc extends HideBloc{
     }
 
     public initDraw(){
-        ImageEditorFormBloc.search<ImageEditorFormBloc>("ImageEditorFormBloc",this.hostElement)?.resetForm();
+        findBloc<ImageEditorFormBloc>("ImageEditorFormBloc",this.hostElement!)?.resetForm();
         let initValue = this.getInitValue();
         this.draw(initValue,IEMessageType.NEW_IMAGE);
         delete initValue.newImageConfig;
@@ -147,56 +149,54 @@ export class ImageEditorHideBloc extends HideBloc{
     }
 }
 
-class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
+class ImageEditor extends WidgetBuilder<boolean>{
     constructor(){
         super("ImageEditorHideBloc",{
-            blocs_map:{
-                ImageEditorHideBloc: new ImageEditorHideBloc(true,"ImageEditorHideBloc"),
-                ImageEditorFormBloc: new ImageEditorFormBloc(),
-                FormMessageBloc: new FormMessageBloc()
-            }
+            ImageEditorHideBloc: new ImageEditorHideBloc(true,"ImageEditorHideBloc"),
+            ImageEditorFormBloc: new ImageEditorFormBloc(),
+            FormMessageBloc: new FormMessageBloc()
         });
     }
 
     connectedCallback(){
         super.connectedCallback();
-        UtRegistryBloc.add("ImageEditorHideBloc",this.blocbuilderconfig!.blocs_map!["ImageEditorHideBloc"]);
+        setTimeout(() => {
+            UtRegistryBloc.add("ImageEditorHideBloc",this.hostedblocs["ImageEditorHideBloc"]);
+        }, 100);
     }
 
     hideEditor=(e:Event)=>{
-        this.bloc?.toggle();
+        this.bloc<ImageEditorHideBloc>()?.toggle();
     }
 
     acceptImage=(e:Event)=>{
-        this.bloc?.acceptImage();
-        this.bloc?.toggle();
+        this.bloc<ImageEditorHideBloc>()?.acceptImage();
+        this.bloc<ImageEditorHideBloc>()?.toggle();
     }
 
-    private get zapBlocBuilderConfig():BlocBuilderConfig<number>{
-        let imageEditorBloc=this.bloc;
+    private get zapBlocBuilderConfig():Record<string, Bloc<any>>{
+        let imageEditorBloc=this.bloc<ImageEditorHideBloc>();
         return {
-            blocs_map:{
-                ZoomAndPanBloc: new class extends ZoomAndPanBloc{
-                    onDoublePointTouch(xy: XY): void {
-                        
-                    }
-                    onPointRelease(xy: XY): void {
-                         //do nothing
-                    }
-                    onPointTouch(xy: XY): void {
-                        //do nothing
-                    }
-                    onZoom=(zoom: number,axis:XY): void=> {
-                        imageEditorBloc?.onZoom(zoom,axis);
-                    }
-                    onPan=(movement: XY,axis:XY): void =>{
-                        imageEditorBloc?.onPan(movement,axis);
-                    }
-    
-                    protected _name: string="ZoomAndPanBloc";
-                    constructor(){
-                        super(0);
-                    }
+            ZoomAndPanBloc: new class extends ZoomAndPanBloc{
+                onDoublePointTouch(xy: XY): void {
+                    
+                }
+                onPointRelease(xy: XY): void {
+                     //do nothing
+                }
+                onPointTouch(xy: XY): void {
+                    //do nothing
+                }
+                onZoom=(zoom: number,axis:XY): void=> {
+                    imageEditorBloc?.onZoom(zoom,axis);
+                }
+                onPan=(movement: XY,axis:XY): void =>{
+                    imageEditorBloc?.onPan(movement,axis);
+                }
+
+                protected _name: string="ZoomAndPanBloc";
+                constructor(){
+                    super(0);
                 }
             }
         }
@@ -210,7 +210,7 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
         return t;
     }
 
-    builder(state: boolean): TemplateResult {
+    build(state: boolean): TemplateResult {
         return html`
             <style>
                 .cont{
@@ -249,7 +249,7 @@ class ImageEditor extends WidgetBuilder<ImageEditorHideBloc,boolean>{
             <div class="cont">
                 <lay-them in="column" ma="space-between" ca="stretch">
                     <div class="opCont">
-                        <ut-pan-zoom-detector bloc="ZoomAndPanBloc" .blocBuilderConfig=${this.zapBlocBuilderConfig as any}>
+                        <ut-pan-zoom-detector bloc="ZoomAndPanBloc" .hostedblocs=${this.zapBlocBuilderConfig as any}>
                             <canvas class="output" width=${this.iesize} height=${this.iesize} id="output"></canvas>
                         </ut-pan-zoom-detector>
                     </div>
@@ -273,7 +273,7 @@ class ImageEditorFormBloc extends FormBloc{
 
     private get editorBloc():ImageEditorHideBloc{
         if(!this._editorBloc){
-            let t = ImageEditorHideBloc.search<ImageEditorHideBloc>("ImageEditorHideBloc",this.hostElement);
+            let t = findBloc<ImageEditorHideBloc>("ImageEditorHideBloc",this.hostElement!);
             this._editorBloc=t;
         }
         return this._editorBloc!;

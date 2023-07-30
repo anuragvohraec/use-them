@@ -1,6 +1,6 @@
-import {Bloc} from 'bloc-them';
+import {Bloc, ListenerWidget} from 'bloc-them';
 import { TemplateResult,html } from 'bloc-them';
-import { NoBlocWidgetBuilder, WidgetBuilder } from '../utils/blocs';
+import { WidgetBuilder } from '../utils/blocs';
 
 export class ProgressBloc extends Bloc<number>{
     protected _name: string="ProgressBloc";
@@ -41,11 +41,11 @@ export class ProgressBloc extends Bloc<number>{
 /**
  * Will listen for progress for the progress bloc from the tree.
  */
-export class ProgressBarWidget<PB extends ProgressBloc> extends WidgetBuilder<PB,number>{
+export class ProgressBarWidget extends WidgetBuilder<number>{
     constructor(progressBlocName: string){
         super(progressBlocName);
     }
-    builder(state: number): TemplateResult {
+    build(state: number): TemplateResult {
         return html`
 <svg 
 style="height: 4px;width: 100%;"
@@ -68,7 +68,7 @@ inkscape:version="1.0.1 (0767f8302a, 2020-10-17)" sodipodi:docname="progress-bar
 /**
  * Extends this class and provide an extends progress Bloc.
  */
-export abstract class ProgressBarBuilder extends WidgetBuilder<ProgressBloc,number>{
+export abstract class ProgressBarBuilder extends WidgetBuilder<number>{
 
     constructor(progressBloc : ProgressBloc, progressBlocName:string){
         super(progressBlocName, {
@@ -80,7 +80,7 @@ export abstract class ProgressBarBuilder extends WidgetBuilder<ProgressBloc,numb
         });
     }
 
-    builder(state: number): TemplateResult {
+    build(state: number): TemplateResult {
         return html`
 <svg 
 style="height: 4px;width: 100%;"
@@ -101,9 +101,9 @@ inkscape:version="1.0.1 (0767f8302a, 2020-10-17)" sodipodi:docname="progress-bar
 }
 
 
-export class CircularProgressIndicator extends NoBlocWidgetBuilder{
+export class CircularProgressIndicator extends WidgetBuilder{
     
-    builder(state: number): TemplateResult {
+    build(state: number): TemplateResult {
         return html`
         <style>
            .pure-material-progress-circular {
@@ -234,8 +234,8 @@ if(!customElements.get("circular-progress-indicator")){
 }
 
 
-class LoadingCell extends NoBlocWidgetBuilder{
-    builder(state: number): TemplateResult {
+class LoadingCell extends WidgetBuilder{
+    build(state: number): TemplateResult {
         return html`
     <style>
 .load-wraper{
@@ -271,8 +271,8 @@ if(!customElements.get("loading-cell")){
     customElements.define("loading-cell",LoadingCell);
 }
 
-class IndeterminateLoadingBar extends NoBlocWidgetBuilder{
-    builder(state: number): TemplateResult {
+class IndeterminateLoadingBar extends WidgetBuilder{
+    build(state: number): TemplateResult {
         return html`<style>
 .progress-line, .progress-line:before {
   height: 3px;

@@ -1,11 +1,11 @@
 import { WidgetBuilder, BogusBloc } from '../utils/blocs';
-import { TemplateResult, html,unsafeHTML } from 'bloc-them';
+import { TemplateResult, html,unsafeHTML, ListenerWidget } from 'bloc-them';
 
 
-export class AnimatedGradientBackground extends WidgetBuilder<BogusBloc,number>{
+export class AnimatedGradientBackground extends WidgetBuilder<number>{
     private gradient_colors:string;
 
-    builder(state: number): TemplateResult {
+    build(state: number): TemplateResult {
         return html`
             <style>
         .animated-gradient {
@@ -36,9 +36,7 @@ export class AnimatedGradientBackground extends WidgetBuilder<BogusBloc,number>{
     }
     constructor(){
         super("BogusBloc",{
-            blocs_map:{
-                BogusBloc: new BogusBloc()
-            }
+            BogusBloc: new BogusBloc()
         })
         this.gradient_colors = `#${this.theme.primaryColor},#${this.theme.secondaryColor}`
         if(this.useAttribute){
@@ -52,15 +50,11 @@ export class AnimatedGradientBackground extends WidgetBuilder<BogusBloc,number>{
 
 customElements.define("animated-grad-bg", AnimatedGradientBackground);
 
-export class ImageBackground extends WidgetBuilder<BogusBloc,number>{
-    builder(state: number): TemplateResult {
+export class ImageBackground extends ListenerWidget{
+    build(state: number): TemplateResult {
         throw new Error("Method not implemented.");
     }
     constructor(){
-        super("BogusBloc",{
-            blocs_map:{
-                BogusBloc: new BogusBloc()
-            }
-        })
+        super();
     }
 }

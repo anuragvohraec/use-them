@@ -1,19 +1,19 @@
-import { BlocsProvider } from 'bloc-them';
-import { TemplateResult,html } from 'bloc-them';
+
+import { TemplateResult,html, findBloc } from 'bloc-them';
 import { AppPageBloc, RouteState } from '../widgets/route-them/RouteThem';
-import { WidgetBuilder , NoBlocWidgetBuilder} from "../utils/blocs";
+import { WidgetBuilder} from "../utils/blocs";
 import { UseThemConfiguration } from '../configs';
 
-class TitleBarWithBackButton extends WidgetBuilder<AppPageBloc,RouteState>{
+class TitleBarWithBackButton extends WidgetBuilder<RouteState>{
     static get observedAttributes() { return ['title']; }
 
     attributeChangedCallback(name:string) {
         if(name==="title"){
-            this._build(this.bloc?.state!);
+            this.rebuild(this.bloc<AppPageBloc>()?.state!);
         }
     }
 
-    builder(state: RouteState): TemplateResult {
+    build(state: RouteState): TemplateResult {
         return html`<div style="height: 60px;">
         <lay-them in="stack">
             <div style="width:100%;height:100%;">
@@ -32,7 +32,7 @@ class TitleBarWithBackButton extends WidgetBuilder<AppPageBloc,RouteState>{
             <div style="width:100%;height:100%;">
                 <lay-them in="row" ma="flex-start" ca="stretch">
                     <div @click=${()=>{
-                        let routeBloc = AppPageBloc.search<AppPageBloc>("AppPageBloc",this);
+                        let routeBloc = findBloc<AppPageBloc>("AppPageBloc",this);
                         routeBloc!.popOutOfCurrentPage();
                     }}>
                         <lay-them ma="center" ca="center">
@@ -57,16 +57,16 @@ if(!customElements.get("title-bar-with-back-button")){
     customElements.define("title-bar-with-back-button",TitleBarWithBackButton);
 }
 
-export class BackableScreen extends NoBlocWidgetBuilder{
+export class BackableScreen extends WidgetBuilder{
     static get observedAttributes() { return ['title']; }
 
     attributeChangedCallback(name:string) {
         if(name==="title"){
-            this._build(1);
+            this.rebuild(1);
         }
     }
     
-    builder(state: number): TemplateResult {
+    build(state: number): TemplateResult {
         return html`<lay-them in="column" ma="flex-start" ca="stretch" overflow="hidden">
             <title-bar-with-back-button title=${this.title} use=${this.getAttribute("use")!} style="box-shadow: 0px 0px 4px;z-index: 2;border-radius: ${this.theme.backable_screen_border_radius};overflow: hidden;"></title-bar-with-back-button>
             <div class="body" style="flex: 1 1 auto;overflow-y: auto;">

@@ -1,4 +1,4 @@
-import { Bloc, BlocsProvider } from "bloc-them";
+import { Bloc, findBloc, ListenerWidget } from "bloc-them";
 import { html, TemplateResult,repeat,unsafeHTML } from 'bloc-them';
 import { WidgetBuilder } from '../utils/blocs';
 
@@ -120,7 +120,7 @@ export abstract class SelectorBloc extends Bloc<SelectorState>{
      * Post change to on change function, unselects all element after this
      */
     post_change(){
-        this.onchange(this._selectedItems,this.hostElement);
+        this.onchange(this._selectedItems,this.hostElement!);
         this.state.listOfItems=this.fullListOfItemLoadedInitially!;
         this.unselectAll();
     }
@@ -129,7 +129,7 @@ export abstract class SelectorBloc extends Bloc<SelectorState>{
      * Cancel selection and unselects all element after this
      */
     cancel(){
-        this.onchange(new Set<I>(),this.hostElement);
+        this.onchange(new Set<I>(),this.hostElement!);
         this.state.listOfItems=this.fullListOfItemLoadedInitially!;
         this.unselectAll();
     }
@@ -152,7 +152,7 @@ export abstract class SelectorBloc extends Bloc<SelectorState>{
 }
 
 
-export abstract class SelectorWidget extends WidgetBuilder<SelectorBloc, SelectorState>{
+export abstract class SelectorWidget extends WidgetBuilder<SelectorState>{
     constructor(selectorBlocName:string){
         super(selectorBlocName);
     }
@@ -160,14 +160,14 @@ export abstract class SelectorWidget extends WidgetBuilder<SelectorBloc, Selecto
     protected abstract itemBuilder(item:I, index:number, isSelected:boolean):TemplateResult;
 
     private _itemBuilder(item:I, index:number,isSelected:boolean):TemplateResult{
-        const maxItemSelected = this.bloc!._isMaxItemSelected;
+        const maxItemSelected = this.bloc<SelectorBloc>()!._isMaxItemSelected;
         return html`<div @click=${(e:Event)=>{
             if(maxItemSelected){
-                this.bloc?._removeFirst(this);   
+                this.bloc<SelectorBloc>()?._removeFirst(this);   
             }
-            this.bloc?._toggleItemSelection(item,this);
+            this.bloc<SelectorBloc>()?._toggleItemSelection(item,this);
         }} class=${isSelected?"item selected":"item"}>
-            ${this.itemBuilder(item,index, this.bloc!._isItemSelected(item))}
+            ${this.itemBuilder(item,index, this.bloc<SelectorBloc>()!._isItemSelected(item))}
         </div>`;
     }
 
@@ -178,7 +178,7 @@ export abstract class SelectorWidget extends WidgetBuilder<SelectorBloc, Selecto
         return t;
     }
 
-    builder(state: SelectorState): TemplateResult {
+    build(state: SelectorState): TemplateResult {
         switch (state.status) {
             case SelectorStatus.LOADING:{
                 return html`<lay-them ma="center" ca="center"><div><circular-progress-indicator></circular-progress-indicator></div></lay-them>`;
@@ -193,9 +193,9 @@ export abstract class SelectorWidget extends WidgetBuilder<SelectorBloc, Selecto
                 </style>
                 <lay-them in="column" ma="flex-start" ca="stretch">
                 ${repeat(state.listOfItems,(item:I)=>{
-                    return `${this.bloc?._isItemSelected(item)}_${this.itemToKey(item)}`;
+                    return `${this.bloc<SelectorBloc>()?._isItemSelected(item)}_${this.itemToKey(item)}`;
                 },(item:I,index:number)=>{
-                    return this._itemBuilder(item,index,this.bloc!._isItemSelected(item));
+                    return this._itemBuilder(item,index,this.bloc<SelectorBloc>()!._isItemSelected(item));
                 })}
             </lay-them>`;
             }
@@ -203,7 +203,7 @@ export abstract class SelectorWidget extends WidgetBuilder<SelectorBloc, Selecto
     }
 }
 
-export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, SelectorState>{
+export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorState>{
     constructor(selectorBlocName:string){
         super(selectorBlocName);
     }
@@ -211,14 +211,14 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
     protected abstract itemBuilder(item:I, index:number, isSelected:boolean):TemplateResult;
 
     private _itemBuilder(item:I, index:number,isSelected:boolean):TemplateResult{
-        const maxItemSelected = this.bloc!._isMaxItemSelected;
+        const maxItemSelected = this.bloc<SelectorBloc>()!._isMaxItemSelected;
         return html`<div @click=${(e:Event)=>{
             if(maxItemSelected){
-                this.bloc?._removeFirst(this);   
+                this.bloc<SelectorBloc>()?._removeFirst(this);   
             }
-            this.bloc?._toggleItemSelection(item,this);
+            this.bloc<SelectorBloc>()?._toggleItemSelection(item,this);
         }} class=${isSelected?"selected":""}>
-            ${this.itemBuilder(item,index, this.bloc!._isItemSelected(item))}
+            ${this.itemBuilder(item,index, this.bloc<SelectorBloc>()!._isItemSelected(item))}
         </div>`;
     }
 
@@ -229,7 +229,7 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
         return t;
     }
 
-    builder(state: SelectorState): TemplateResult {
+    build(state: SelectorState): TemplateResult {
         switch (state.status) {
             case SelectorStatus.LOADING:{
                 return html`<lay-them ma="center" ca="center"><div><circular-progress-indicator></circular-progress-indicator></div></lay-them>`;
@@ -243,9 +243,9 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
                 </style>
                 <lay-them in="row" ma="flex-start" wrap="wrap">
                     ${repeat(state.listOfItems,(item:I)=>{
-                        return `${this.bloc?._isItemSelected(item)}_${this.itemToKey(item)}`;
+                        return `${this.bloc<SelectorBloc>()?._isItemSelected(item)}_${this.itemToKey(item)}`;
                     },(item:I,index:number)=>{
-                        return this._itemBuilder(item,index,this.bloc!._isItemSelected(item));
+                        return this._itemBuilder(item,index,this.bloc<SelectorBloc>()!._isItemSelected(item));
                     })}
                 </lay-them>`;
             }
@@ -336,7 +336,7 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
             }
             postOnChangeFunctionGiver(nameOfInput: string): PostValidationOnChangeFunction<any> | undefined {
                 if(!this.selectorBloc){
-                    this.selectorBloc=BlocsProvider.search<ISelectorBloc>("ISelectorBloc",this.hostElement);
+                    this.selectorBloc=findBloc<ISelectorBloc>("ISelectorBloc",this.hostElement);
                 }
                 if(nameOfInput === "search_string"){
                     return (cv:string,val)=>{
@@ -364,7 +364,7 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
             customElements.define(searchInputTagName,SearchInput)
         }
 
-        class SearchableSelector extends WidgetBuilder<HideBloc,boolean>{
+        class SearchableSelector extends WidgetBuilder<boolean>{
             private _items?: I[] | undefined;
             public get items(): I[] | undefined {
                 return this._items;
@@ -372,25 +372,23 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
             public set items(value: I[] | undefined) {
                 this._items = value;
                 if(value){
-                    (this.blocbuilderconfig.blocs_map?.["ISelectorBloc"] as ISelectorBloc).initialize(value)
+                    (this.hostedblocs["ISelectorBloc"] as ISelectorBloc).initialize(value)
                 }
             }
             
             constructor(){
                 super(config.selector_hide_bloc_name,{
-                    blocs_map:{
-                        ISelectorBloc: new ISelectorBloc(),
-                        SearchFormBloc: new SearchFormBloc(),
-                        FormMessageBloc: new FormMessageBloc()
-                    }
+                    ISelectorBloc: new ISelectorBloc(),
+                    SearchFormBloc: new SearchFormBloc(),
+                    FormMessageBloc: new FormMessageBloc()
                 });
             }
 
             private acceptSelection=(e:Event)=>{
-                let s = BlocsProvider.search<ISelectorBloc>("ISelectorBloc",this);
+                let s = findBloc<ISelectorBloc>("ISelectorBloc",this);
                 if(!backable_screen_config){ 
                     config.onAccept?.(s?.selectedItems,this);  
-                    this.bloc?.toggle();
+                    this.bloc<HideBloc>()?.toggle();
                 }else{
                     backable_screen_config.onAccept(s?.selectedItems,this);   
                 }
@@ -398,10 +396,10 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
             }
 
             private cancelSelection=(e:Event)=>{
-                let s = BlocsProvider.search<ISelectorBloc>("ISelectorBloc",this);
+                let s = findBloc<ISelectorBloc>("ISelectorBloc",this);
                 s?.cancel();
                 if(!backable_screen_config){
-                    this.bloc?.toggle();
+                    this.bloc<HideBloc>()?.toggle();
                 }else{
                     backable_screen_config.onCancel(this);
                 }
@@ -454,7 +452,7 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorBloc, Sel
                 </lay-them>`;
             }
 
-            builder(state: boolean): TemplateResult {
+            build(state: boolean): TemplateResult {
                 if(state){
                     return html``;
                 }else{

@@ -1,12 +1,12 @@
 import { FormInputBuilder, FormBloc, FormState, InputBuilderConfig } from '../forms';
-import { TemplateResult, html } from 'bloc-them';
-import {  BlocsProvider } from 'bloc-them';
+import { TemplateResult, html, findBloc } from 'bloc-them';
+
 import { I18NBloc } from '../text';
 import { UseThemConfiguration } from '../../configs';
 import { HideBloc } from '../dialogues';
 
 export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string,F>{
-    builder(state: FormState): TemplateResult {
+    build(state: FormState): TemplateResult {
         return html`
         <style>
             .glass{
@@ -61,7 +61,7 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
 
     private handleOnClick=(e:Event)=>{
         if(this.config.popupHideBlocName){
-            HideBloc.search<HideBloc>(this.config.popupHideBlocName,this)?.show();
+            findBloc<HideBloc>(this.config.popupHideBlocName,this)?.show();
         }
     }
     
@@ -118,7 +118,7 @@ export class TextAreaInput<F extends FormBloc> extends FormInputBuilder<string,F
         this.hasChanged(ctx.value);
     }
 
-    builder(state: FormState): TemplateResult {
+    build(state: FormState): TemplateResult {
         setTimeout(()=>{
             let t = this.shadowRoot?.querySelector("textarea");
             if(t){

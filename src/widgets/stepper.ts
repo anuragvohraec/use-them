@@ -55,7 +55,7 @@ export abstract class StepperBloc extends Bloc<Step[]>{
     abstract stepBuilder(step:Step):TemplateResult;
 }
 
-class StepperWidget extends WidgetBuilder<StepperBloc,Step[]>{
+class StepperWidget extends WidgetBuilder<Step[]>{
     private colorMapWithStepStatus:Record<string,string>;
 
     constructor(){
@@ -71,10 +71,10 @@ class StepperWidget extends WidgetBuilder<StepperBloc,Step[]>{
     goToStep=(e:Event)=>{
         let t =e.currentTarget as HTMLElement & {n:string};
         const name = t.n;
-        this.bloc?.goToStep(name); 
+        this.bloc<StepperBloc>()?.goToStep(name); 
     }
 
-    builder(state: Step[]): TemplateResult {
+    build(state: Step[]): TemplateResult {
         return html`
             <style>
             .header{
@@ -122,8 +122,8 @@ class StepperWidget extends WidgetBuilder<StepperBloc,Step[]>{
                                 <div class="header_item">
                                 
                                     <lay-them in="row" ma="center" ca="center">
-                                        <div class="counter" style=${"background-color:"+(this.bloc!.currentStep.name===e.name?"black":this.colorMapWithStepStatus[e.status])}>${i+1}</div>
-                                        <div class="title" style=${"color:"+ (this.bloc!.currentStep.name===e.name?"black":this.colorMapWithStepStatus[e.status])}>${e.name}</div>
+                                        <div class="counter" style=${"background-color:"+(this.bloc<StepperBloc>()!.currentStep.name===e.name?"black":this.colorMapWithStepStatus[e.status])}>${i+1}</div>
+                                        <div class="title" style=${"color:"+ (this.bloc<StepperBloc>()!.currentStep.name===e.name?"black":this.colorMapWithStepStatus[e.status])}>${e.name}</div>
                                     </lay-them>
                                 
                                 </div>
@@ -133,7 +133,7 @@ class StepperWidget extends WidgetBuilder<StepperBloc,Step[]>{
                 </div>
 
                 <div class="body">
-                    ${this.bloc?.stepBuilder(this.bloc.currentStep)}
+                    ${this.bloc<StepperBloc>()?.stepBuilder(this.bloc<StepperBloc>().currentStep)}
                 </div>
             </lay-them>
             `;

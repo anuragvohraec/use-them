@@ -1,4 +1,4 @@
-import { Bloc, BlocsProvider } from "bloc-them";
+import { Bloc, findBloc } from "bloc-them";
 import { html, TemplateResult } from 'bloc-them';
 import { WidgetBuilder } from '../utils/blocs';
 import { I18NBloc } from "./text";
@@ -30,18 +30,18 @@ export class SnackBarBloc extends Bloc<SnackBarMessage|undefined>{
     }
 } 
 
-class Snackbar extends WidgetBuilder<SnackBarBloc,SnackBarMessage|undefined>{
+class Snackbar extends WidgetBuilder<SnackBarMessage|undefined>{
     private i18nBloc?: I18NBloc;
 
     connectedCallback(){
         super.connectedCallback();
         setTimeout(()=>{
             if(!this.i18nBloc){
-                this.i18nBloc = BlocsProvider.search("I18NBloc",this);
+                this.i18nBloc = findBloc("I18NBloc",this);
             }
         })
     }
-    builder(state: SnackBarMessage|undefined): TemplateResult {
+    build(state: SnackBarMessage|undefined): TemplateResult {
         let msg = state?.msg;
         if(this.i18nBloc && state?.msg){
             let t = this.i18nBloc.getText(state?.msg);

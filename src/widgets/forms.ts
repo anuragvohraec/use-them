@@ -2,7 +2,7 @@
  * Inputs must be unware of form existense.
  */
 
-import { Bloc, BlocBuilderConfig, BlocsProvider } from 'bloc-them'
+import { Bloc, ListenerWidget, findBloc } from 'bloc-them'
 import { WidgetBuilder } from '../utils/blocs';
 import { TemplateResult, html, nothing } from 'bloc-them';
 import { Range } from './inputs/rangeselector';
@@ -107,7 +107,7 @@ import { Range } from './inputs/rangeselector';
             if(val){
                  validationResult = val(currentValue);
                 if(!formMessageBloc){
-                    formMessageBloc = BlocsProvider.search(this.formMessageBlocName,this.hostElement);
+                    formMessageBloc = findBloc(this.formMessageBlocName,this.hostElement!);
                 }
                 formMessageBloc!.postMessage(nameOfInput,validationResult!);
             }
@@ -119,7 +119,7 @@ import { Range } from './inputs/rangeselector';
 
     checkAllValidationPassed(){
         //check there are no validation messages
-        let msgBloc = BlocsProvider.search<FormMessageBloc>(this.formMessageBlocName,this.hostElement);
+        let msgBloc = findBloc<FormMessageBloc>(this.formMessageBlocName,this.hostElement!);
         let msgState = JSON.parse(JSON.stringify(msgBloc!.state));
         if(Object.keys(msgState).length>0){
             return false;
@@ -168,7 +168,7 @@ import { Range } from './inputs/rangeselector';
 }
 
 
- export abstract class FormInputBuilder<V, F extends FormBloc> extends WidgetBuilder<F,FormState>{
+ export abstract class FormInputBuilder<V, F extends FormBloc> extends WidgetBuilder<FormState>{
      /**
       * Input made based on FormInputBuilder can use this to delegate change to Form.
       */
@@ -176,28 +176,28 @@ import { Range } from './inputs/rangeselector';
 
      public get disabled() : boolean {
          if(this.bloc){
-            return this.bloc.isDisabled(this.config.name);
+            return this.bloc<F>().isDisabled(this.config.name);
          }else{
              return true;
          }
      }
      
 
-     constructor( protected config: InputBuilderConfig, protected blocConfig?:BlocBuilderConfig<FormState>){
-         super(config.bloc_name,blocConfig);
+     constructor( protected config: InputBuilderConfig,  hostedBlocs?: Record<string, Bloc<any>>){
+         super(config.bloc_name,hostedBlocs);
      }
 
      connectedCallback(){
          super.connectedCallback();
          setTimeout(()=>{
              this.hasChanged = (newValue?:V)=>{
-                this.bloc?.delegateChangeTo(this.config.name,newValue);
+                this.bloc<F>()?.delegateChangeTo(this.config.name,newValue);
              }
          })
      }
  }
 
- export class MessageBuilder extends WidgetBuilder<FormMessageBloc,FormMessageState>{
+ export class MessageBuilder extends WidgetBuilder<FormMessageState>{
      private name?: string;
 
      constructor(protected formMessageBlocName:string="FormMessageBloc"){
@@ -215,7 +215,7 @@ import { Range } from './inputs/rangeselector';
          });
      }
 
-     builder(state: FormMessageState): TemplateResult {
+     build(state: FormMessageState): TemplateResult {
          if(!this.name){
              return nothing as TemplateResult;
          }
@@ -228,19 +228,21 @@ import { Range } from './inputs/rangeselector';
  customElements.define("form-message", MessageBuilder);
 
 
- export class FormBlocProvider<F extends FormBloc> extends BlocsProvider{
-     builder(): TemplateResult {
+ export class FormBlocProvider<F extends FormBloc> extends ListenerWidget{
+     build(): TemplateResult {
          return html`<div><slot></slot></div>`;
      }
 
-     constructor(formBloc: F){
+     constructor(formBloc: F, formBlocName:string){
          super((()=>{
-             let n = formBloc.name;
+             let n = formBlocName;
              let t: any = {
                 FormMessageBloc: new FormMessageBloc(),
              }
              t[n]=formBloc;
-             return t;
+             return {
+                hostedBlocs:t
+             };
          })());
      }
  }

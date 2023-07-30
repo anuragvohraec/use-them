@@ -1,14 +1,7 @@
-import {BlocBuilder, Bloc} from 'bloc-them';
+import {Bloc, ListenerWidget} from 'bloc-them';
 import { TemplateResult, html } from 'bloc-them';
 
-class LayThemBloc extends Bloc<any>{
-  protected _name: string="LayThemBloc";
-  constructor(){
-    super(undefined);
-  }
-}
-
-export class LayThem extends BlocBuilder<LayThemBloc, any> {
+export class LayThem extends ListenerWidget {
   private lay_them_in:string;
   private main_axis_alignment: string;
   private cross_axis_alignment: string;
@@ -16,10 +9,8 @@ export class LayThem extends BlocBuilder<LayThemBloc, any> {
   private _wrap:string;
 
   constructor(){
-    super("LayThemBloc", {
-      blocs_map:{
-        LayThemBloc: new LayThemBloc()
-    }
+    super({
+      isShadow: true
     });
     let _in  = this.getAttribute("in");
     if(_in){
@@ -66,7 +57,7 @@ export class LayThem extends BlocBuilder<LayThemBloc, any> {
     }
   }
 
-  builder(state: any): TemplateResult {
+  build(state: any): TemplateResult {
     return html`
     <style>
       .container{

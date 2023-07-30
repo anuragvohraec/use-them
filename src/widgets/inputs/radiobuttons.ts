@@ -1,7 +1,7 @@
-import { BlocsProvider } from "bloc-them";
-import { html, TemplateResult } from 'bloc-them';
+
+import { findBloc, html, TemplateResult } from 'bloc-them';
 import { UseThemConfiguration } from "../../configs";
-import { WidgetBuilder } from '../../utils/blocs';
+
 import { FormBloc, FormInputBuilder, FormMessageBloc, FormState, InputBuilderConfig } from "../forms";
 
 /**
@@ -23,7 +23,7 @@ export class RadioButtonsBuilder<F extends FormBloc> extends FormInputBuilder<st
         //@ts-ignore
         const t:HTMLElement = e.target;
         const v = t.getAttribute("value");
-        this.bloc?.delegateChangeTo(this.config.name,v,FormMessageBloc.search<FormMessageBloc>("FormMessageBloc",t)!);
+        this.bloc<F>()?.delegateChangeTo(this.config.name,v,findBloc<FormMessageBloc>("FormMessageBloc",t)!);
     }
 
     
@@ -32,7 +32,7 @@ export class RadioButtonsBuilder<F extends FormBloc> extends FormInputBuilder<st
     }
     
 
-    builder(state: FormState): TemplateResult {
+    build(state: FormState): TemplateResult {
         return html`
         <style>
             .active{

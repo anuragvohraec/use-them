@@ -20,7 +20,7 @@ export class RangeSelector<F extends FormBloc> extends FormInputBuilder<Range,F>
 
     
     
-    builder(state: FormState): TemplateResult {
+    build(state: FormState): TemplateResult {
        let isDisabled = this.disabled;
        if(isDisabled){
           this.start_color = this.base_color;
@@ -344,8 +344,8 @@ ${this.config.rangeSelectorConfig?.no_label?html``:html`<lay-them in="row" ma="s
 
     connectedCallback(){
        super.connectedCallback();
-       this.start = this.bloc?.state[this.config.name].start;
-         this.end = this.bloc?.state[this.config.name].end;
+       this.start = this.bloc<F>()?.state[this.config.name].start;
+         this.end = this.bloc<F>()?.state[this.config.name].end;
            if(!(this.start ==0 ||(this.start && this.start>=0) && this.end ==0 || (this.end && this.end>=0))){
               throw `No start and end provided for range selector in form initialization for : ${this.config.name}`
            }
