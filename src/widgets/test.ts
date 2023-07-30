@@ -412,7 +412,9 @@ customElements.define("test-my-text-area",MyTextArea);
 ///////////////// Confirmation Dialogue code: START
 class ShowUserConfirmationButton extends RaisedButton<HideBloc,boolean>{
     onPress(): void {
-       this.bloc?.toggle();
+        if(this.bloc?.state){
+            this.bloc?.show();
+        }
     }
 
     constructor(){
