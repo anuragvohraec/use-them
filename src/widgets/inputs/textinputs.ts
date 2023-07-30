@@ -119,7 +119,13 @@ export class TextAreaInput<F extends FormBloc> extends FormInputBuilder<string,F
     }
 
     builder(state: FormState): TemplateResult {
-        return html`<textarea ?disabled=${this.disabled} ?placeholder=${this.config.placeholder} @focus=${()=>{navigator.vibrate(UseThemConfiguration.PRESS_VIB);}} @keyup=${this.haveChanged} style="padding:10px;outline: none;resize: none;width: 100%;height:100%;box-sizing: border-box; min-height: 100px; background-color: ${this.theme.input_bg_color};border-radius: ${this.theme.cornerRadius};border: none;" type="text">${state[this.config.name]}</textarea>`;
+        setTimeout(()=>{
+            let t = this.shadowRoot?.querySelector("textarea");
+            if(t){
+                t.value=state[this.config.name]??"";
+            }
+        });
+        return html`<textarea ?disabled=${this.disabled} ?placeholder=${this.config.placeholder} @focus=${()=>{navigator.vibrate(UseThemConfiguration.PRESS_VIB);}} @keyup=${this.haveChanged} style="padding:10px;outline: none;resize: none;width: 100%;height:100%;box-sizing: border-box; min-height: 100px; background-color: ${this.theme.input_bg_color};border-radius: ${this.theme.cornerRadius};border: none;" type="text"></textarea>`;
     }
 
  }
