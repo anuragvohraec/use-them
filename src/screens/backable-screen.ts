@@ -34,7 +34,7 @@ class TitleBarWithBackButton extends WidgetBuilder<AppPageBloc,RouteState>{
                     </div>
                     <div style="flex:1;">
                         <lay-them in="row" ca="center" ma="flex-start">
-                            <ut-p use="color: white;">${this.title}</ut-p>
+                            <ut-p use="color: white;" .key=${this.title}></ut-p>
                         </lay-them>
                     </div>
                 </lay-them>
