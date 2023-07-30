@@ -5,6 +5,13 @@ import { WidgetBuilder , NoBlocWidgetBuilder} from "../utils/blocs";
 import { UseThemConfiguration } from '../configs';
 
 class TitleBarWithBackButton extends WidgetBuilder<AppPageBloc,RouteState>{
+    static get observedAttributes() { return ['title']; }
+
+    attributeChangedCallback(name:string) {
+        if(name==="title"){
+            this._build(this.bloc?.state!);
+        }
+    }
 
     builder(state: RouteState): TemplateResult {
         return html`<div style="height: 60px;">
@@ -51,6 +58,13 @@ if(!customElements.get("title-bar-with-back-button")){
 }
 
 export class BackableScreen extends NoBlocWidgetBuilder{
+    static get observedAttributes() { return ['title']; }
+
+    attributeChangedCallback(name:string) {
+        if(name==="title"){
+            this._build(1);
+        }
+    }
     
     builder(state: number): TemplateResult {
         return html`<lay-them in="column" ma="flex-start" ca="stretch" overflow="hidden">
