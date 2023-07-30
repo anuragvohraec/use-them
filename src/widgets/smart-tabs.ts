@@ -74,6 +74,10 @@ class StbGestureDetector extends GestureDetector{
         navigator.vibrate(UseThemConfiguration.PRESS_VIB);
         this.getStbBloc().goToPrevTab();
     }
+
+    constructor(){
+        super({});
+    }
 }
 customElements.define("ut-stb-gesture-detector",StbGestureDetector);
 

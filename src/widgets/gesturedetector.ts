@@ -175,7 +175,14 @@ export abstract class GestureDetectorBuilder extends WidgetBuilder<GestureDetect
 }
 
 export class GestureDetector extends WidgetBuilder<GestureDetectorBloc,GESTURE>{
-    constructor(private drag_sensitivity:number = 1, private minDistanceInPx:number=100, private doubleTapTimer:number=300,private capture:boolean=false){
+    private capture:boolean=false;
+    //private drag_sensitivity:number = 1, private minDistanceInPx:number=100, private doubleTapTimer:number=300,private capture:boolean=false
+    constructor({drag_sensitivity=1,minDistanceInPx=100,doubleTapTimer=300,capture=false}:  {
+        drag_sensitivity?: number | undefined;
+        minDistanceInPx?: number | undefined;
+        doubleTapTimer?: number | undefined;
+        capture?: boolean | undefined;
+    }){
         super("GestureDetectorBloc",{
             blocs_map:{
                 GestureDetectorBloc: new GestureDetectorBloc(drag_sensitivity, minDistanceInPx, doubleTapTimer)
@@ -187,7 +194,8 @@ export class GestureDetector extends WidgetBuilder<GestureDetectorBloc,GESTURE>{
                     return true;
                 }
             }
-        })
+        });
+        this.capture =capture;
     }
 
 
@@ -298,7 +306,7 @@ class SliderGestureDetector extends GestureDetector{
     
 
     constructor(){
-        super(1,100);
+        super({});
     }
 
     onSwipeLeft=()=>{

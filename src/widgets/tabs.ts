@@ -116,7 +116,9 @@ customElements.define("ut-tab-header", TabHeader);
 class _TabsGestureDetector extends GestureDetector{
     private _routeBloc?: TabRouterBloc;
     constructor(){
-        super(1,100,300,true);
+        super({
+            capture: true
+        });
     }
 
     connectedCallback(){
