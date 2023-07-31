@@ -321,9 +321,6 @@ class TestGestureDetector extends GestureDetectorBuilder{
 customElements.define("test-gesture-detector",TestGestureDetector);
 
 class VTestDetector extends VerticalScrollLimitDetector{
-    constructor(){
-        super({})
-    }
 
     bottomLimitReached(): void {
         console.log("Its bottom");
@@ -335,9 +332,6 @@ class VTestDetector extends VerticalScrollLimitDetector{
 customElements.define("test-v-scroll-detector",VTestDetector);
 
 class HTestDetector extends HorizontalScrollLimitDetector{
-    constructor(){
-        super({})
-    }
 
     rightLimitReached(): void {
         console.log("Right Limit reached");

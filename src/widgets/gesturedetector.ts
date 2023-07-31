@@ -322,6 +322,12 @@ if(!customElements.get("ut-horizontal-circular-slider")){
 
 export abstract class VerticalScrollLimitDetector extends ListenerWidget{
 
+    constructor(){
+        super({
+            isShadow: true
+        })
+    }
+
     private _scroller?:HTMLDivElement|null;
 
     disconnectedCallback(){
@@ -378,6 +384,12 @@ export abstract class VerticalScrollLimitDetector extends ListenerWidget{
 
 export abstract class HorizontalScrollLimitDetector extends ListenerWidget{
     private _scroller?:HTMLDivElement|null;
+
+    constructor(){
+        super({
+            isShadow: true
+        })
+    }
 
     disconnectedCallback(){
         this._scroller?.removeEventListener("scroll",this._doListenScroll);
