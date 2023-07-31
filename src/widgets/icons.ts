@@ -11,7 +11,8 @@ export class UtIcon extends WidgetBuilder{
     }
 
     build(state: number): TemplateResult | undefined {
-        if(this.hasAttribute("icon") && this.getAttribute("icon")!=="<!--{{st}}--> <!--{{ste}}-->"){
+        const i = this.getAttribute("icon");
+        if(this.hasAttribute("icon") && i!=="<!--{{st}}--> <!--{{ste}}-->" && i!="{{st}}"){
             const t = document.querySelector(`#${this.getAttribute("icon")}`);
             const icon = `<svg viewBox="0 0 24 24" class="icon">${t?.outerHTML} </svg>`;
             //"#"+this.getAttribute("icon");

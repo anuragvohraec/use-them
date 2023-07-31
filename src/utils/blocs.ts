@@ -45,7 +45,7 @@ export abstract class WidgetBuilder<S=any> extends ListenerWidget<S>{
         if(name==="use"){
             const t = Utils.parseAttributeValue(newValue);
             this._theme={...this._theme,...t};
-            if(this.bloc && newValue){
+            if(this.bloc() && newValue){
                 this.rebuild(this.bloc()?.state);
             }
         }
