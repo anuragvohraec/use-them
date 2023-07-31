@@ -170,6 +170,7 @@ export class OnViewPlayVideo extends ListenerWidget<State>{
         super({
             blocName:"VideoControlMixer",
             hostedBlocs:{
+                VideoControlMixer: new VideoControlMixer(),
                 HideToolBarBloc: new HideBloc(),
                 ProgressBarBloc: new PercentageBloc({initState:0,max:100}),
                 VideoPlayerInView: new HideBloc(false), //assumes video player not in view
