@@ -241,7 +241,8 @@ import { Range } from './inputs/rangeselector';
              }
              t[n]=formBloc;
              return {
-                hostedBlocs:t
+                hostedBlocs:t,
+                isShadow: true
              };
          })());
      }
