@@ -12,17 +12,6 @@ npm i use-them
 npx rollup -c rollup.config.js
 ```
 
-## Usage
-```html
-<script type="module">
-  import 'use-them/use-them.js';
-</script>
-
-<use-them></use-them>
-```
-
-
-
 ## Tooling configs
 
 For most of the tools, the configuration is in the `package.json` to reduce the amount of files in your project.
@@ -69,7 +58,7 @@ See next section to see its demonstration.
 * menu bar slot for menu options.
 * one can emit snack bar messages too, using blocs.
 ```ts
-export class MyButton extends RaisedButton<ScaffoldBloc,ScaffoldState>{
+export class MyButton extends RaisedButton<ScaffoldState>{
     onPress(): void {
         this.bloc?.postMessageToSnackBar("Hi this is a message for you!")
     }
@@ -106,8 +95,9 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+
 ### "version" : "11.0.0"
-1. Upgraded Bloc them. Removed dependencies from lit-html
+1. Upgraded Bloc them. Removed dependencies from lit-html. `bloc-them` itself have now has its own templating engine.
 
 ### "version" : "10.0.12": IN PROGRESS
 1. Now Searchable Selector: has a property items to change its items list at runtime.
