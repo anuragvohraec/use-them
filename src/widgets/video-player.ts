@@ -122,7 +122,15 @@ class VideoPlayController extends HideBloc{
 
 class VideoControlMixer extends Bloc<State|undefined>{
     constructor(){
-        super(undefined,["HideToolBarBloc","ProgressBarBloc","IsVideoBuffering","VideoPlayerInView","VideoPlayControl"])
+        super({
+            hideToolBar:true,
+            isBuffering: true,
+            isNotFullScreen: true,
+            play:false,
+            playerInView:false,
+            progress_percent:0,
+            timings:{elapsed:'0:0',total:'0:0'}
+        },["HideToolBarBloc","ProgressBarBloc","IsVideoBuffering","VideoPlayerInView","VideoPlayControl"])
     }
 
     private _ProgressBarBloc!: PercentageBloc;
