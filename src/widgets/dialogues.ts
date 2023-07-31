@@ -85,7 +85,7 @@ export class HideBloc extends Bloc<boolean>{
 
 
     private overlayPageBloc?:OverlayPageBloc;
-    private overlayPageBlocListenerId:number=-1;
+    private overlayPageBlocListenerId:number=0;
 
 
     onConnection(ctx:HTMLElement, blocName:string){

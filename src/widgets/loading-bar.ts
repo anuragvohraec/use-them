@@ -71,13 +71,11 @@ inkscape:version="1.0.1 (0767f8302a, 2020-10-17)" sodipodi:docname="progress-bar
 export abstract class ProgressBarBuilder extends WidgetBuilder<number>{
 
     constructor(progressBloc : ProgressBloc, progressBlocName:string){
-        super(progressBlocName, {
-            blocs_map:(()=>{
-                let a:any={};
-                a[progressBlocName]=progressBloc;
-                return a;
-            })()
-        });
+        super(progressBlocName,(()=>{
+            let a:Record<string, Bloc<any>>={};
+            a[progressBlocName]=progressBloc;
+            return a;
+        })());
     }
 
     build(state: number): TemplateResult {

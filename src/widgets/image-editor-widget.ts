@@ -161,7 +161,7 @@ class ImageEditor extends WidgetBuilder<boolean>{
     connectedCallback(){
         super.connectedCallback();
         setTimeout(() => {
-            UtRegistryBloc.add("ImageEditorHideBloc",this.hostedblocs["ImageEditorHideBloc"]);
+            UtRegistryBloc.add("ImageEditorHideBloc",this.getHostedBloc("ImageEditorHideBloc"));
         }, 100);
     }
 

@@ -460,7 +460,7 @@ export abstract class ZoomAndPanBloc extends Bloc<number>{
     abstract onPan(movement:XY,axis:XY):void;
 }
 
-class ZoomAndPanWidget extends ListenerWidget<number>{
+class ZoomAndPanWidget extends WidgetBuilder{
     private initDistance:number=0;
     private touch2PointerID?:number;
 

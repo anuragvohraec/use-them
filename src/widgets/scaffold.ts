@@ -23,7 +23,7 @@ export class ScaffoldBloc extends Bloc<ScaffoldState>{
 
 
     private overlayPageBloc?:OverlayPageBloc;
-    private overlayPageBlocListenerId:number=-1;
+    private overlayPageBlocListenerId:number=0;
 
 
     onConnection(ctx:HTMLElement, blocName:string){
