@@ -134,13 +134,24 @@ export abstract class SelectorBloc extends Bloc<SelectorState>{
         this.unselectAll();
     }
 
-    find(search:string,key:string){
+    find(search:string,key:string|string[]){
         if(!search || search.trim().length===0){
             this.emit({...this.state,listOfItems: this.fullListOfItemLoadedInitially!})
         }else{
-            let listOfItems = this.filterFunctionForSearchSelector(this.fullListOfItemLoadedInitially??[],search,key);
+            if(Array.isArray(key)){
+                let listOfItems:any[]=[];
+                for(let k of key){
+                    listOfItems = this.filterFunctionForSearchSelector(this.fullListOfItemLoadedInitially??[],search,k);
+                    if(listOfItems.length>0){
+                        break;
+                    }
+                }
+                this.emit({...this.state, listOfItems});
+            }else{
+                let listOfItems = this.filterFunctionForSearchSelector(this.fullListOfItemLoadedInitially??[],search,key);
 
-            this.emit({...this.state, listOfItems});
+                this.emit({...this.state, listOfItems});
+            }
         }
     }
 
@@ -258,7 +269,7 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorState>{
  export class CreateSearchableSelector{
     static create(config:{
         id_key_name:string,
-        search_key_name:string,
+        search_key_name:string|string[],
         selector_type:"grid"|"list",
         tag_name:string,
         selector_hide_bloc_name:string,
