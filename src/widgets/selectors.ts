@@ -160,9 +160,8 @@ export abstract class SelectorWidget extends WidgetBuilder<SelectorState>{
     protected abstract itemBuilder(item:I, index:number, isSelected:boolean):TemplateResult;
 
     private _itemBuilder(item:I, index:number,isSelected:boolean):TemplateResult{
-        const maxItemSelected = this.bloc<SelectorBloc>()!._isMaxItemSelected;
         return html`<div @click=${(e:Event)=>{
-            if(maxItemSelected){
+            if(this.bloc<SelectorBloc>()!._isMaxItemSelected){
                 this.bloc<SelectorBloc>()?._removeFirst(this);   
             }
             this.bloc<SelectorBloc>()?._toggleItemSelection(item,this);

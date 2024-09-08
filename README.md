@@ -95,6 +95,9 @@ They can be best be seen working in the demo/index.html.
 Simple run `npm run start` to see the demo of the components of **use-them**.
 
 # Change release
+### "version" : "12.0.1"
+1. Bug fixed in range selector.
+2. Updated bloc-them version
 
 ### "version" : "11.0.0"
 1. Upgraded Bloc them. Removed dependencies from lit-html. `bloc-them` itself have now has its own templating engine.
