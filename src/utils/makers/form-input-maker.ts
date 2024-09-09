@@ -21,12 +21,16 @@ export interface InputInfo{
 export class FormInputMaker extends ListenerWidget{
     private nameList!:string[];
     private tags_list:Record<string,string>={};
+    private form_message_bloc_name:string="FormMessageBloc";
 
-    constructor(private config:{ formBloc_name:string,tag_prefix:string, inputs:Record<string,InputInfo>}){
+    constructor(private config:{ formBloc_name:string,tag_prefix:string, inputs:Record<string,InputInfo>, form_message_bloc_name?: string}){
         super({
             isShadow:true
         });
         this.defineTags();
+        if(config.form_message_bloc_name){
+            this.form_message_bloc_name=config.form_message_bloc_name;
+        }
     }
 
     private convertNameToInputTagName(nameOfInput:string){
@@ -154,7 +158,7 @@ export class FormInputMaker extends ListenerWidget{
             <div class="input">
                 ${this.config.inputs[name].label?html`<label for=${name}><ut-h5 .key=${this.config.inputs[name].label} use="color:var(--label-color,#000);"></ut-h5> : <ut-h5 use="color:var(--input-info-msg-color,#8a8a8a);" .key=${this.config.inputs[name].input_info_msg}></ut-h5></label>`:html``}
                 ${unsafeHTML(`<${this.tags_list[name]}></${this.tags_list[name]}>`)}
-                <div class="input-msg"><form-message for=${name}></form-message></div>
+                <div class="input-msg"><form-message for=${name} bloc=${this.form_message_bloc_name}></form-message></div>
             </div>
             `;
         })}
