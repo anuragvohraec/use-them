@@ -365,7 +365,8 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorState>{
                     clearable:true,
                     icon: "search",
                     placeholder: config.search_placeholder,
-                    inputmode: config.inputmode
+                    inputmode: config.inputmode,
+                    autocomplete:"off"
                 })
             }
         }
