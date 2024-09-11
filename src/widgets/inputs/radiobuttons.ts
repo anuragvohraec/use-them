@@ -12,18 +12,20 @@ export interface RadioButtonValueLabelMap{
 }
 
 export class RadioButtonsBuilder<F extends FormBloc> extends FormInputBuilder<string,F>{
-
+    protected isDisabled:boolean = false;
     constructor(config:InputBuilderConfig, private valueLabelMap: RadioButtonValueLabelMap){
         super(config);
     }
 
     
     onChange=(e:Event)=>{
-        navigator.vibrate(UseThemConfiguration.PRESS_VIB);
-        //@ts-ignore
-        const t:HTMLElement = e.target;
-        const v = t.getAttribute("value");
-        this.bloc<F>()?.delegateChangeTo(this.config.name,v,findBloc<FormMessageBloc>("FormMessageBloc",t)!);
+        if(!this.disabled){
+            navigator.vibrate(UseThemConfiguration.PRESS_VIB);
+            //@ts-ignore
+            const t:HTMLElement = e.target;
+            const v = t.getAttribute("value");
+            this.bloc<F>()?.delegateChangeTo(this.config.name,v,findBloc<FormMessageBloc>("FormMessageBloc",t)!);
+        }
     }
 
     
@@ -33,6 +35,9 @@ export class RadioButtonsBuilder<F extends FormBloc> extends FormInputBuilder<st
     
 
     build(state: FormState): TemplateResult {
+        if(state.areDisabled && state.areDisabled.has(this.config.name)){
+            this.isDisabled=true;
+        }
         return html`
         <style>
             .active{

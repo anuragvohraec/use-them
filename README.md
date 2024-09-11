@@ -100,6 +100,7 @@ Simple run `npm run start` to see the demo of the components of **use-them**.
 2. Updated bloc-them version
 3. Now "search_key_name" in `CreateSearchableSelector.create` can be an array to search my multiple key types
 4. Bug fixed `FormMessageBloc` name can be passed in `FormInputMaker` to accpet external `FormMessageBloc`.
+5. Bug fix true disbaling of radio button and toggle buton in areDisabled setting in Form state.
 
 ### "version" : "11.0.0"
 1. Upgraded Bloc them. Removed dependencies from lit-html. `bloc-them` itself have now has its own templating engine.

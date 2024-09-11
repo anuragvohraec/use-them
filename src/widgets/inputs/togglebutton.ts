@@ -2,7 +2,12 @@ import { FormInputBuilder, FormState, FormBloc, InputBuilderConfig } from '../fo
 import { TemplateResult, html } from 'bloc-them';
 
 export class ToggleButton<F extends FormBloc> extends FormInputBuilder<boolean, F>{
+  protected isDisabled:boolean = false;
+
   build(state: FormState): TemplateResult {
+    if(state.areDisabled && state.areDisabled.has(this.config.name)){
+        this.isDisabled=true;
+    }
     return html`<style>
     .switch {
       position: relative;
@@ -65,19 +70,21 @@ export class ToggleButton<F extends FormBloc> extends FormInputBuilder<boolean, 
     }
     </style>
     <label class="switch" @click=${this.toggle}>
-      <input type="checkbox" ?checked=${state[this.config.name]}>
+      <input type="checkbox" ?checked=${state[this.config.name]} ?disabled=${this.isDisabled}>
       <span class="slider round"></span>
     </label>
     `;
   }
 
   toggle=(e:Event)=>{
+    if(!this.disabled){
       e.preventDefault();
       let t = this.shadowRoot?.querySelector("label > input[type=checkbox]") as HTMLInputElement;
       let currentState:boolean = t.checked;
       t.checked = !currentState;
       this.hasChanged(!currentState);
       return false;
+    }
   }
 
   constructor(config:InputBuilderConfig){
