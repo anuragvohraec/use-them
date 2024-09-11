@@ -86,8 +86,10 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
     }
 
     getClearButton = ()=>{
-        if(this.config.clearable || this.valueList){
+        if(!this.disabled && (this.config.clearable || this.valueList)){
             return html`<div style="padding: 5px;" @click=${this.clearText}><ut-icon icon="clear" use="icon_inactive: ${this.theme.input_icon_color};"></ut-icon></div>`;
+        }else{
+            return html``;
         }
     }
 
