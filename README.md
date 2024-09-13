@@ -101,6 +101,7 @@ Simple run `npm run start` to see the demo of the components of **use-them**.
 3. Now "search_key_name" in `CreateSearchableSelector.create` can be an array to search my multiple key types
 4. Bug fixed `FormMessageBloc` name can be passed in `FormInputMaker` to accpet external `FormMessageBloc`.
 5. Bug fix true disbaling of inputs upon disabling them from form bloc
+6. In `ConfirmationDialogue` now a method `userMessageChanged` is provided to track user method change
 
 ### "version" : "11.0.0"
 1. Upgraded Bloc them. Removed dependencies from lit-html. `bloc-them` itself have now has its own templating engine.

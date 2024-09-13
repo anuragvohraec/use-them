@@ -87,6 +87,11 @@ export abstract class ConfirmationDialogue extends WidgetBuilder<boolean>{
     private user_msg_changed=(e:Event)=>{
         const ta:HTMLInputElement = e.target as HTMLInputElement;
         this.user_msg = ta.value;
+        this.userMessageChanged();
+    }
+
+    userMessageChanged(){
+
     }
 
     build(state: boolean): TemplateResult {
@@ -149,9 +154,9 @@ export abstract class ConfirmationDialogue extends WidgetBuilder<boolean>{
                                 <div style="padding: 10px;">${unsafeHTML(this.confirmationInfo?.msg)}</div>
                                 <slot></slot>
                                 ${this.confirmationInfo.user_comments_msg? (this.hasAttribute("type")?html`<div style="padding: 10px;">
-                                    <input class="sli-bg" type=${this.getAttribute("type")as any??"text"} placeholder=${this.confirmationInfo.user_comments_msg} @focus=${()=>{navigator.vibrate(UseThemConfiguration.PRESS_VIB);}} @change=${this.user_msg_changed}>
+                                    <input class="sli-bg" type=${this.getAttribute("type")as any??"text"} placeholder=${this.confirmationInfo.user_comments_msg} @focus=${()=>{navigator.vibrate(UseThemConfiguration.PRESS_VIB);}} @input=${this.user_msg_changed}>
                                 </div>`:html`<div style="padding: 10px;">
-                                    <textarea class="textAreaBG" @focus=${()=>{navigator.vibrate(UseThemConfiguration.PRESS_VIB);}} placeholder=${this.confirmationInfo.user_comments_msg} @keyup=${this.user_msg_changed} type="text"></textarea>
+                                    <textarea class="textAreaBG" @focus=${()=>{navigator.vibrate(UseThemConfiguration.PRESS_VIB);}} placeholder=${this.confirmationInfo.user_comments_msg} @input=${this.user_msg_changed} type="text"></textarea>
                                 </div>`):html``}
                                 ${this.confirmationInfo.accept_condition_url?html`<p style="font-size: 0.7em;padding: 0px 10px;">I accept <a href=${this.confirmationInfo.accept_condition_url} target="_blank" style="color: black;font-weight: bold;">Terms and Conditions</a>.</p>`:html``}
                                 <ut-confirmation-dialogue-progress-indicator>
