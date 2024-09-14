@@ -725,17 +725,12 @@ export abstract class FilePickerScreen extends WidgetBuilder<PickedFileInfo[]>{
                                             return {size: pickedFileInfo.size, ext:pickedFileInfo.mime,name:pickedFileInfo.name};
                                         })()}></ut-picked-file-widget>`;
                                         default: return html`<lay-them in="stack">
-                                            <div style="top:0px;width:100%;height:50px;display:flex;align-items:center;justify-content:space-between">
-                                                <div class="arrangeIcon" i=${index.toString()} @click=${this.moveUp}>
-                                                    <ink-well><ut-icon icon="chevron-up" use="icon_inactive:white;"></ut-icon></ink-well>
-                                                </div>
-                                                <div class="arrangeIcon" i=${index.toString()} @click=${this.moveDown}>
-                                                    <ink-well><ut-icon icon="chevron-down" use="icon_inactive:white;"></ut-icon></ink-well>
-                                                </div>
-                                            </div>
                                             <img class="image_item" src=${pickedFileInfo.url}>
                                             <div style="bottom:0px;width:100%;height:50px;background-color: #00000094;">
                                                 <lay-them in="row" ma="space-between" ma="center">
+                                                    <div class="edit-button"  @click=${this.moveUp} i=${index.toString()}>
+                                                        <ink-well><ut-icon icon="chevron-up" use="icon_inactive:white;"></ut-icon></ink-well>
+                                                    </div>
                                                     <div class="edit-button"  @click=${this.editIndex} i=${index.toString()}>
                                                         <ink-well>
                                                             <ut-icon icon="edit" use="icon_inactive:white;"></ut-icon>
@@ -745,6 +740,9 @@ export abstract class FilePickerScreen extends WidgetBuilder<PickedFileInfo[]>{
                                                         <ink-well>
                                                             <ut-icon icon="clear" use="icon_inactive:white;"></ut-icon>
                                                         </ink-well>
+                                                    </div>
+                                                    <div class="edit-button"  @click=${this.moveDown} i=${index.toString()}>
+                                                        <ink-well><ut-icon icon="chevron-down" use="icon_inactive:white;"></ut-icon></ink-well>
                                                     </div>
                                                 </lay-them>
                                             </div>
