@@ -230,14 +230,16 @@ class ImageEditor extends WidgetBuilder<boolean>{
                     user-select:none;
                 }
                 .output{
-                    width: 300px;
-                    height: 300px;
+                    width: ${this.iesize};
+                    height: ${this.iesize};
                     border: 1px solid #ffffff54;
                 }
                 .opCont{
                     display: flex;
                     justify-content: center;
+                    align-items: center;
                     padding: 0px 12px;
+                    flex:1;
                 }
                 .padH20{
                     padding: 0px 20px;
