@@ -57,6 +57,11 @@ export class LayThem extends ListenerWidget {
     }
   }
 
+  set in(newValue:any){
+    this.lay_them_in=newValue;
+    this.rebuild();
+  }
+
   build(state: any): TemplateResult {
     return html`
     <style>

@@ -13,6 +13,7 @@ export interface RadioButtonValueLabelMap{
 
 export class RadioButtonsBuilder<F extends FormBloc> extends FormInputBuilder<string,F>{
     protected isDisabled:boolean = false;
+    private ly="column";
     constructor(config:InputBuilderConfig, private valueLabelMap: RadioButtonValueLabelMap){
         super(config);
     }
@@ -31,6 +32,11 @@ export class RadioButtonsBuilder<F extends FormBloc> extends FormInputBuilder<st
     
     public get color() : string {
         return this.useAttribute?.["color"]||this.theme.input_radio_button_active_color;
+    }
+
+    setInRow(){
+        this.ly="row";
+        this.rebuild(this.bloc().state);
     }
     
 
@@ -52,7 +58,7 @@ export class RadioButtonsBuilder<F extends FormBloc> extends FormInputBuilder<st
                 margin-right: 5px;
             }
         </style>
-        <lay-them ma="flex-start" ca="stretch">
+        <lay-them .in=${this.ly} ma="flex-start" ca="stretch">
             ${Object.keys(this.valueLabelMap).map(v=>{
                 return html`
                 <div style="padding: 5px;" @click=${this.onChange} value="${v}">
