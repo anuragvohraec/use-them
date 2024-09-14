@@ -14,6 +14,8 @@ export interface ScaffoldState {
 export class ScaffoldBloc extends Bloc<ScaffoldState>{
     protected _name: string="ScaffoldBloc";
 
+    public disablePopouts:boolean=false;
+
     constructor() {
         super({
             showMenu: false,
@@ -85,6 +87,16 @@ export class ScaffoldBloc extends Bloc<ScaffoldState>{
             this.emit(newState);
         }, timeout);
     }
+
+    switchOffMenuBarPopOut(){
+        this.disablePopouts=true;
+        this.emit({...this.state});
+    }
+
+    switchOnMenuBarPopOut(){
+        this.disablePopouts=false;
+        this.emit({...this.state});
+    }
 }
 
 
@@ -97,7 +109,10 @@ export class ScaffoldBuilder extends WidgetBuilder<ScaffoldState>{
 
     toggleMenuBar=()=>{
         // this.bloc?.toggleMenu();
-        findBloc<AppPageBloc>("AppPageBloc",this)?.popOutOfCurrentPage();
+        let b:ScaffoldBloc = this.bloc();
+        if(!b.disablePopouts){
+            findBloc<AppPageBloc>("AppPageBloc",this)?.popOutOfCurrentPage();
+        }
     }
 
     build(state: ScaffoldState): TemplateResult {
@@ -167,7 +182,11 @@ export class ScaffoldBuilder extends WidgetBuilder<ScaffoldState>{
                 <div style="background-color: white; flex: 2 1 auto; max-width: 250px; box-shadow: ${this.theme.scaffold_menu_shadow};">
                     <slot name="menu"></slot>
                 </div>
-                <div style="flex: 1 1 auto;" @click=${this.toggleMenuBar}></div>
+                <div style="flex: 1 1 auto;" @click=${this.toggleMenuBar}>
+                    <lay-them ma="center" ca="center">
+                        <slot name="menu_apps"></slot>
+                    </lay-them>
+                </div>
             </lay-them>
         </div>
         <div class="snack-bar" style="border-radius: ${this.theme.cornerRadius}; display: ${(()=>{
