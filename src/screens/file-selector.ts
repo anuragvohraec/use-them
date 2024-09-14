@@ -728,22 +728,22 @@ export abstract class FilePickerScreen extends WidgetBuilder<PickedFileInfo[]>{
                                             <img class="image_item" src=${pickedFileInfo.url}>
                                             <div style="bottom:0px;width:100%;height:50px;background-color: #00000094;border-radius: 0px 0px 8px 8px;">
                                                 <lay-them in="row" ma="space-between" ma="center">
-                                                    <div class="edit-button"  @click=${this.moveUp} i=${index.toString()}>
+                                                    ${state.length>1?html`<div class="edit-button"  @click=${this.moveUp} i=${index.toString()}>
                                                         <ink-well><ut-icon icon="chevron-up" use="icon_inactive:white;"></ut-icon></ink-well>
-                                                    </div>
-                                                    <div class="edit-button"  @click=${this.editIndex} i=${index.toString()}>
+                                                    </div>`:html``}
+                                                    ${this.hasAttribute("noedit")?html``:html`<div class="edit-button"  @click=${this.editIndex} i=${index.toString()}>
                                                         <ink-well>
                                                             <ut-icon icon="edit" use="icon_inactive:white;"></ut-icon>
                                                         </ink-well>
-                                                    </div>
+                                                    </div>`}
                                                     <div class="edit-button" @click=${this.removeIndex} i=${index.toString()}>
                                                         <ink-well>
                                                             <ut-icon icon="clear" use="icon_inactive:white;"></ut-icon>
                                                         </ink-well>
                                                     </div>
-                                                    <div class="edit-button"  @click=${this.moveDown} i=${index.toString()}>
+                                                    ${state.length>1?html`<div class="edit-button"  @click=${this.moveDown} i=${index.toString()}>
                                                         <ink-well><ut-icon icon="chevron-down" use="icon_inactive:white;"></ut-icon></ink-well>
-                                                    </div>
+                                                    </div>`:html``}
                                                 </lay-them>
                                             </div>
                                         </lay-them>`;
