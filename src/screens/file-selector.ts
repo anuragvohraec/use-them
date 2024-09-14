@@ -717,7 +717,7 @@ export abstract class FilePickerScreen extends WidgetBuilder<PickedFileInfo[]>{
                                     }
                                 </style>
                                 <lay-them in="column" ma="center">
-                                <div>${(()=>{
+                                <div style="margin: 10px;box-shadow: 0px 0px 1px #0000008c;border-radius: 8px;">${(()=>{
                                     switch(this.config.picker_config?.type){
                                         case FilePickerType.VIDEO: return html`<video controls class="video_item" src=${pickedFileInfo.url}></video>`;
                                         case FilePickerType.AUDIO: return html`<audio controls class="video_item" src=${pickedFileInfo.url}></audio>`;
@@ -726,7 +726,7 @@ export abstract class FilePickerScreen extends WidgetBuilder<PickedFileInfo[]>{
                                         })()}></ut-picked-file-widget>`;
                                         default: return html`<lay-them in="stack">
                                             <img class="image_item" src=${pickedFileInfo.url}>
-                                            <div style="bottom:0px;width:100%;height:50px;background-color: #00000094;">
+                                            <div style="bottom:0px;width:100%;height:50px;background-color: #00000094;border-radius: 0px 0px 8px 8px;">
                                                 <lay-them in="row" ma="space-between" ma="center">
                                                     <div class="edit-button"  @click=${this.moveUp} i=${index.toString()}>
                                                         <ink-well><ut-icon icon="chevron-up" use="icon_inactive:white;"></ut-icon></ink-well>
