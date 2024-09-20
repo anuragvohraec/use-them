@@ -162,7 +162,13 @@ import { Range } from './inputs/rangeselector';
     /**
      * If the input type is popup, while using FormInputMaker
      */
-    popupHideBlocName?:string;
+    popupConfig?:{
+        hide_bloc_name:string;
+        additonal_button?:{
+            icon:string,
+            actionOnClick:Function
+        }
+    },
     autocomplete?:string;
     required?:string;
 }

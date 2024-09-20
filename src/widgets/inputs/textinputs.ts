@@ -54,14 +54,34 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
                         ${this.getClearButton()}
                     </lay-them>
                 </div>
+                ${this.getPopupButton()}
             </lay-them>
         </div>
         `;
     }
 
+    private getPopupButton(){
+        if(this.config.popupConfig?.additonal_button){
+            let style=`width:${this.theme.input_height};height:${this.theme.input_height};background-color:${this.theme.primaryColor};border-radius: 0px ${this.theme.cornerRadius} ${this.theme.cornerRadius} 0px;`;
+            return html`<div style=${style}>
+            <ink-well @click=${(e:Event)=>{
+                if(this.config.popupConfig?.additonal_button?.actionOnClick){
+                    this.config.popupConfig?.additonal_button?.actionOnClick(this);
+                }else{
+                    if(this.config.popupConfig){
+                        findBloc<HideBloc>(this.config.popupConfig.hide_bloc_name,this)?.show();
+                    }
+                }
+            }}>
+                <ut-icon icon=${this.config.popupConfig.additonal_button.icon} use="icon_inactive:white;"></ut-icon>
+            </ink-well>
+            </div>`;
+        }
+    }
+
     private handleOnClick=(e:Event)=>{
-        if(this.config.popupHideBlocName){
-            findBloc<HideBloc>(this.config.popupHideBlocName,this)?.show();
+        if(this.config.popupConfig){
+            findBloc<HideBloc>(this.config.popupConfig.hide_bloc_name,this)?.show();
         }
     }
     
