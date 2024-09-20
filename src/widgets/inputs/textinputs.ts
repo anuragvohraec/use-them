@@ -73,7 +73,7 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
                     }
                 }
             }}>
-                <ut-icon icon=${this.config.popupConfig.additonal_button.icon} use="icon_inactive:white;"></ut-icon>
+                <ut-icon icon=${this.config.popupConfig.additonal_button.icon??"search"} use="icon_inactive:white;"></ut-icon>
             </ink-well>
             </div>`;
         }
