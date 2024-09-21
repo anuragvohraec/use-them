@@ -164,6 +164,7 @@ import { Range } from './inputs/rangeselector';
      */
     popupConfig?:{
         hide_bloc_name:string;
+        disable_input_text:boolean;
         additonal_buttons?:{
             icon:string,
             actionOnClick:Function

@@ -50,7 +50,7 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
                 ${this.getIcon()}
                 <div style="flex: 1;" @click=${this.handleOnClick}>
                     <lay-them in="row" ca="center">
-                        <input id="sli" @focus=${()=>{navigator.vibrate(UseThemConfiguration.PRESS_VIB);}} ?required=${this.config.required} ?autocomplete=${this.config.autocomplete} ?disabled=${this.disabled} @input=${this.haveChanged} ?list=${this.dataList}  ?inputmode=${this.config.inputmode} .value=${state[this.config.name]??""} class="sli-bg" ?placeholder=${this.config.placeholder} ?type=${this.config.type}>
+                        <input id="sli" @focus=${()=>{navigator.vibrate(UseThemConfiguration.PRESS_VIB);}} ?required=${this.config.required} ?autocomplete=${this.config.autocomplete} ?disabled=${this.disabled||this.config.popupConfig?.disable_input_text} @input=${this.haveChanged} ?list=${this.dataList}  ?inputmode=${this.config.inputmode} .value=${state[this.config.name]??""} class="sli-bg" ?placeholder=${this.config.placeholder} ?type=${this.config.type}>
                         ${this.getClearButton()}
                     </lay-them>
                 </div>
