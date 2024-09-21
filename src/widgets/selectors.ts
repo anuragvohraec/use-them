@@ -49,12 +49,12 @@ export abstract class SelectorBloc extends Bloc<SelectorState>{
         });
 
         setTimeout(()=>{
-            this.reloadItems();
+            this.reloadItems(undefined);
         })
     }
 
-    async reloadItems(){
-        const e = await this.loadItems();
+    async reloadItems(q:any){
+        const e = await this.loadItems(q);
         this.initialize(e);
     }
 
@@ -73,7 +73,7 @@ export abstract class SelectorBloc extends Bloc<SelectorState>{
     /**
      * 
      */
-    abstract loadItems():Promise<I[]>;
+    abstract loadItems(q:any):Promise<I[]>;
 
     _toggleItemSelection(item:I,context:HTMLElement,skip_onchange:boolean=false){
         navigator.vibrate(UseThemConfiguration.PRESS_VIB);
@@ -274,7 +274,7 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorState>{
         tag_name:string,
         selector_hide_bloc_name:string,
         maxNumberOfSelect:number,
-        loadItemsFunction(): Promise<I[]> ,
+        loadItemsFunction(q:any): Promise<I[]> ,
         title:string,
         search_placeholder:string,
         itemBuilderFunction(item: I, index: number, isSelected: boolean): TemplateResult,
@@ -282,6 +282,7 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorState>{
         onAccept?:Function,
         filterFunctionForSearchSelector?:FilterFunctionForSearchSelector,
         inputmode?:"none"|"decimal"|"numeric"|"tel"|"search"|"email"|"url",
+        listenToBlocForReload?:string,
     }, backable_screen_config?:{
         title:string,
         onAccept:Function,
@@ -295,6 +296,15 @@ export abstract class SelectorWidgetGrid extends WidgetBuilder<SelectorState>{
 
             constructor(){
                 super(false,config.filterFunctionForSearchSelector);
+                if(config.listenToBlocForReload){
+                    this.listenToBlocs.push(config.listenToBlocForReload);
+                }
+            }
+
+            protected reactToStateChangeFrom(blocName: string, newState: any): void {
+                if(config.listenToBlocForReload && config.listenToBlocForReload===blocName){
+                    this.reloadItems(newState);
+                }
             }
 
             protected _name: string="ISelectorBloc"

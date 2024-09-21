@@ -106,6 +106,7 @@ Simple run `npm run start` to see the demo of the components of **use-them**.
 8. Image editor bug fixes
 9. Addtional icon buttons in Popup inputs in form inputs
 10. `additionalInBetweenGUI` now addtional GUI components can be added in between Confirmation Dialogues, by overrdiing its `additionalInBetweenGUI` method which can return an `HTMLTemplate` to provide thos additional inputs.
+11. `listenToBlocForReload` field added to `CreateSearchableSelector.create` to reload its upon some blocs state change
 
 ### "version" : "11.0.0"
 1. Upgraded Bloc them. Removed dependencies from lit-html. `bloc-them` itself have now has its own templating engine.
