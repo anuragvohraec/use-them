@@ -104,7 +104,7 @@ Simple run `npm run start` to see the demo of the components of **use-them**.
 6. In `ConfirmationDialogue` now a method `userMessageChanged` is provided to track user method change
 7. **Radio Buttons**  can be arrangeed in `row` to instead of default column. Use `setInRow()` method on to arrange it in row.
 8. Image editor bug fixes
-9. Addtional icon button in Pupup inputs in form inputs
+9. Addtional icon buttons in Popup inputs in form inputs
 10. `additionalInBetweenGUI` now addtional GUI components can be added in between Confirmation Dialogues, by overrdiing its `additionalInBetweenGUI` method which can return an `HTMLTemplate` to provide thos additional inputs.
 
 ### "version" : "11.0.0"

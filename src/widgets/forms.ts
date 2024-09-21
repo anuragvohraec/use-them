@@ -164,10 +164,10 @@ import { Range } from './inputs/rangeselector';
      */
     popupConfig?:{
         hide_bloc_name:string;
-        additonal_button?:{
+        additonal_buttons?:{
             icon:string,
             actionOnClick:Function
-        }
+        }[]
     },
     autocomplete?:string;
     required?:string;

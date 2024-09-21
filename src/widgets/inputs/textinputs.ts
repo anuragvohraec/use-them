@@ -1,5 +1,5 @@
 import { FormInputBuilder, FormBloc, FormState, InputBuilderConfig } from '../forms';
-import { TemplateResult, html, findBloc } from 'bloc-them';
+import { TemplateResult, html, findBloc,repeat } from 'bloc-them';
 
 import { I18NBloc } from '../text';
 import { UseThemConfiguration } from '../../configs';
@@ -61,28 +61,35 @@ export class SingleLineInput<F extends FormBloc> extends FormInputBuilder<string
     }
 
     private getPopupButton(){
-        if(this.config.popupConfig?.additonal_button){
+        if(this.config.popupConfig?.additonal_buttons){
+            let size = this.config.popupConfig.additonal_buttons.length;
             let color=this.theme.primaryColor;
             if(this.disabled){
                 color=this.theme.input_bg_color;
             }
             
-            let style=`width:${this.theme.input_height};height:${this.theme.input_height};background-color:${color};border-radius: 0px ${this.theme.cornerRadius} ${this.theme.cornerRadius} 0px;`;
-            return html`<div style=${style}>
-            <ink-well @click=${(e:Event)=>{
-                if(!this.disabled){
-                    if(this.config.popupConfig?.additonal_button?.actionOnClick){
-                        this.config.popupConfig?.additonal_button?.actionOnClick(this);
-                    }else{
-                        if(this.config.popupConfig){
-                            findBloc<HideBloc>(this.config.popupConfig.hide_bloc_name,this)?.show();
+            let style=`width:${this.theme.input_height};height:${this.theme.input_height};background-color:${color};`;
+            return html`${repeat(this.config.popupConfig?.additonal_buttons,item=>item.icon,(item,index)=>{
+                let st = style;
+                if(index === size-1){
+                    st = `${style}border-radius: 0px ${this.theme.cornerRadius} ${this.theme.cornerRadius} 0px;`;
+                }
+                return html`<div style=${st}>
+                <ink-well @click=${(e:Event)=>{
+                    if(!this.disabled){
+                        if(item.actionOnClick){
+                            item.actionOnClick(this);
+                        }else{
+                            if(this.config.popupConfig){
+                                findBloc<HideBloc>(this.config.popupConfig.hide_bloc_name,this)?.show();
+                            }
                         }
                     }
-                }
-            }}>
-                <ut-icon icon=${this.config.popupConfig.additonal_button.icon??"search"} use="icon_inactive:white;"></ut-icon>
-            </ink-well>
-            </div>`;
+                }}>
+                    <ut-icon icon=${item.icon} use="icon_inactive:white;"></ut-icon>
+                </ink-well>
+                </div>`;
+            })}`;
         }
     }
 
