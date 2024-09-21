@@ -94,6 +94,10 @@ export abstract class ConfirmationDialogue extends WidgetBuilder<boolean>{
 
     }
 
+    protected additionalInBetweenGUI():TemplateResult|undefined{
+        return;
+    }
+
     build(state: boolean): TemplateResult {
         if(state){
             return html``;
@@ -152,6 +156,7 @@ export abstract class ConfirmationDialogue extends WidgetBuilder<boolean>{
                             <lay-them in="column" ma="flex-start" ca="stretch">
                                 <div style="padding: 10px;color:white;font-size:${this.theme.H2_font_size};background-color:${this.theme.primaryColor};background-image:${this.theme.confirmation_dialogue_title_bar_image};">${this.confirmationInfo?.title}</div>
                                 <div style="padding: 10px;">${unsafeHTML(this.confirmationInfo?.msg)}</div>
+                                ${this.additionalInBetweenGUI()}
                                 <slot></slot>
                                 ${this.confirmationInfo.user_comments_msg? (this.hasAttribute("type")?html`<div style="padding: 10px;">
                                     <input class="sli-bg" type=${this.getAttribute("type")as any??"text"} placeholder=${this.confirmationInfo.user_comments_msg} @focus=${()=>{navigator.vibrate(UseThemConfiguration.PRESS_VIB);}} @input=${this.user_msg_changed}>
